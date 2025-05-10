@@ -149,23 +149,38 @@ const Projects = () => {
                             <div
                                 className={`group bg-dark-800 rounded-xl overflow-hidden border border-${project.color}-500/20 hover:border-${project.color}-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg h-full flex flex-col`}
                             >
-                                {/* Project image with overlay */}
+                                {/* Project header with decorative elements */}
                                 <div className="relative h-48 overflow-hidden">
-                                    {/* Placeholder image with gradient background */}
+                                    {/* Modern gradient background */}
                                     <div
-                                        className={`absolute inset-0 bg-gradient-to-br from-dark-800 to-${project.color}-900/30 flex items-center justify-center`}
+                                        className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-${project.color}-900/20 to-${project.color}-800/30 flex items-center justify-center overflow-hidden`}
                                     >
-                                        <span
-                                            className={`text-${project.color}-400 text-opacity-50 font-bold text-lg`}
+                                        {/* Decorative elements */}
+                                        <div
+                                            className={`absolute -top-10 -right-10 w-40 h-40 bg-${project.color}-500/10 rounded-full blur-xl transform rotate-45 group-hover:scale-110 transition-transform duration-700`}
+                                        ></div>
+                                        <div
+                                            className={`absolute -bottom-10 -left-10 w-40 h-40 bg-${project.color}-500/10 rounded-full blur-xl transform -rotate-45 group-hover:scale-110 transition-transform duration-700`}
+                                        ></div>
+
+                                        {/* Project icon/symbol */}
+                                        <div
+                                            className={`relative z-10 w-16 h-16 flex items-center justify-center bg-${project.color}-500/20 rounded-xl border border-${project.color}-500/30 group-hover:scale-110 transition-transform duration-500`}
                                         >
-                                            {project.title}
-                                        </span>
+                                            <span
+                                                className={`text-${project.color}-400 text-2xl font-bold`}
+                                            >
+                                                {project.title.charAt(0)}
+                                            </span>
+                                        </div>
                                     </div>
 
-                                    {/* Hover overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-dark-900/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                        <div className="text-white text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                            <h4 className="text-lg font-bold mb-2">
+                                    {/* Hover overlay with project info */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-dark-900/95 via-dark-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
+                                        <div className="text-white text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                            <h4
+                                                className={`text-xl font-bold mb-2 text-${project.color}-400`}
+                                            >
                                                 {project.title}
                                             </h4>
                                             <p className="text-sm text-gray-300">
@@ -183,11 +198,11 @@ const Projects = () => {
 
                                 <div className="p-6 flex-grow flex flex-col">
                                     <h3
-                                        className={`text-xl font-bold text-white mb-2 group-hover:text-${project.color}-400 transition-colors duration-300`}
+                                        className={`text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-${project.color}-400 to-${project.color}-300`}
                                     >
                                         {project.title}
                                     </h3>
-                                    <p className="text-gray-400 mb-4 flex-grow">
+                                    <p className="text-gray-300 mb-5 flex-grow leading-relaxed">
                                         {project.description}
                                     </p>
 
@@ -196,7 +211,7 @@ const Projects = () => {
                                             (tech, techIndex) => (
                                                 <span
                                                     key={techIndex}
-                                                    className={`px-2.5 py-1 bg-dark-900 text-${project.color}-400 rounded-md text-xs font-medium`}
+                                                    className={`px-3 py-1.5 bg-dark-900 text-${project.color}-400 rounded-lg text-xs font-medium border border-${project.color}-500/20 hover:border-${project.color}-500/40 transition-colors duration-300`}
                                                 >
                                                     {tech}
                                                 </span>
@@ -207,11 +222,11 @@ const Projects = () => {
                                     <div className="flex gap-3">
                                         <a
                                             href={project.demoLink}
-                                            className={`px-4 py-2 bg-${project.color}-500/10 hover:bg-${project.color}-500/20 text-${project.color}-400 rounded-lg text-sm font-medium transition-colors duration-300 flex items-center`}
+                                            className={`px-5 py-2.5 bg-gradient-to-r from-${project.color}-600 to-${project.color}-500 hover:from-${project.color}-500 hover:to-${project.color}-400 text-white rounded-lg text-sm font-medium transition-all duration-300 flex items-center shadow-md shadow-${project.color}-500/20 hover:shadow-lg hover:shadow-${project.color}-500/30`}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 mr-1.5"
+                                                className="h-4 w-4 mr-2"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
@@ -229,15 +244,15 @@ const Projects = () => {
                                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                                 />
                                             </svg>
-                                            Demo
+                                            Live Demo
                                         </a>
                                         <a
                                             href={project.codeLink}
-                                            className={`px-4 py-2 bg-dark-900 hover:bg-${project.color}-500/10 text-white hover:text-${project.color}-400 rounded-lg text-sm font-medium transition-colors duration-300 flex items-center`}
+                                            className={`px-5 py-2.5 bg-dark-900 border border-${project.color}-500/30 hover:border-${project.color}-500/60 text-white hover:text-${project.color}-400 rounded-lg text-sm font-medium transition-all duration-300 flex items-center`}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 mr-1.5"
+                                                className="h-4 w-4 mr-2"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
@@ -249,7 +264,7 @@ const Projects = () => {
                                                     d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
                                                 />
                                             </svg>
-                                            Code
+                                            View Code
                                         </a>
                                     </div>
                                 </div>

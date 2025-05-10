@@ -143,33 +143,48 @@ const Skills = () => {
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
                             <div
-                                className={`h-full bg-dark-900 rounded-xl p-6 border border-${category.color}-500/20 hover:border-${category.color}-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg group`}
+                                className={`h-full bg-dark-900 rounded-xl p-8 border border-${category.color}-500/20 hover:border-${category.color}-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg group relative overflow-hidden`}
                             >
+                                {/* Background decoration */}
+                                <div
+                                    className={`absolute -top-10 -right-10 w-40 h-40 bg-${category.color}-500/5 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-700`}
+                                ></div>
+                                <div
+                                    className={`absolute -bottom-10 -left-10 w-40 h-40 bg-${category.color}-500/5 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-700`}
+                                ></div>
+
                                 {/* Header */}
-                                <div className="flex items-center mb-6">
+                                <div className="flex items-center mb-8 relative z-10">
                                     <div
-                                        className={`w-10 h-10 rounded-lg bg-${category.color}-500/10 flex items-center justify-center mr-4 text-${category.color}-400 group-hover:bg-${category.color}-500/20 transition-all duration-300`}
+                                        className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${category.color}-600 to-${category.color}-400 flex items-center justify-center mr-4 text-white shadow-lg shadow-${category.color}-500/20 group-hover:shadow-${category.color}-500/40 transition-all duration-300 group-hover:scale-110`}
                                     >
                                         {category.icon}
                                     </div>
-                                    <h3 className="text-xl font-bold text-white">
+                                    <h3
+                                        className={`text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-${category.color}-400 to-white`}
+                                    >
                                         {category.title}
                                     </h3>
                                 </div>
 
                                 {/* Skills */}
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-3 relative z-10">
                                     {category.skills.map(
                                         (skill, skillIndex) => (
                                             <span
                                                 key={skillIndex}
-                                                className={`px-3 py-1.5 bg-dark-800 text-${category.color}-400 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-${category.color}-500/10 hover:scale-105 cursor-default`}
+                                                className={`px-4 py-2 bg-dark-800 text-${category.color}-400 rounded-lg text-sm font-medium border border-${category.color}-500/20 transition-all duration-300 hover:bg-${category.color}-500/10 hover:border-${category.color}-500/40 hover:scale-105 hover:shadow-sm cursor-default`}
                                                 onMouseEnter={() =>
                                                     setHoveredSkill(skill)
                                                 }
                                                 onMouseLeave={() =>
                                                     setHoveredSkill(null)
                                                 }
+                                                style={{
+                                                    animationDelay: `${
+                                                        skillIndex * 0.1
+                                                    }s`,
+                                                }}
                                             >
                                                 {skill}
                                             </span>
@@ -183,23 +198,31 @@ const Skills = () => {
 
                 {/* Additional skills */}
                 <div className="reveal">
-                    <div className="glass-dark rounded-xl p-8 border border-purple-500/20">
-                        <h3 className="text-2xl font-bold text-white mb-8 text-center">
-                            <span className="relative inline-block">
+                    <div className="glass-dark rounded-xl p-10 border border-purple-500/30 hover:border-purple-500/50 transition-all duration-500 shadow-lg relative overflow-hidden">
+                        {/* Background decorations */}
+                        <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-purple-500/10 rounded-bl-full blur-3xl"></div>
+                        <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-cyan-500/10 rounded-tr-full blur-3xl"></div>
+
+                        <h3 className="text-2xl font-bold mb-10 text-center relative z-10">
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 relative inline-block">
                                 Additional Skills
-                                <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-purple"></span>
+                                <span className="absolute -bottom-3 left-0 w-full h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500"></span>
                             </span>
                         </h3>
 
-                        <div className="flex flex-wrap justify-center gap-3">
+                        <div className="flex flex-wrap justify-center gap-4 relative z-10">
                             {additionalSkills.map((skill, index) => (
                                 <span
                                     key={index}
-                                    className={`px-4 py-2 bg-dark-900 text-${
+                                    className={`px-5 py-2.5 bg-dark-900/80 backdrop-blur-sm text-${
                                         skill.color
-                                    }-400 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-${
+                                    }-400 rounded-xl text-sm font-medium border border-${
                                         skill.color
-                                    }-500/10 hover:scale-105 hover:shadow-${
+                                    }-500/30 transition-all duration-500 hover:bg-${
+                                        skill.color
+                                    }-500/20 hover:border-${
+                                        skill.color
+                                    }-500/60 hover:scale-110 hover:shadow-${
                                         skill.color === "purple"
                                             ? "neon"
                                             : skill.color === "cyan"
@@ -209,6 +232,10 @@ const Skills = () => {
                                     style={{
                                         transitionDelay: `${index * 30}ms`,
                                     }}
+                                    onMouseEnter={() =>
+                                        setHoveredSkill(skill.name)
+                                    }
+                                    onMouseLeave={() => setHoveredSkill(null)}
                                 >
                                     {skill.name}
                                 </span>
@@ -219,14 +246,14 @@ const Skills = () => {
 
                 {/* Skill meter - appears when hovering over a skill */}
                 {hoveredSkill && (
-                    <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-dark-900/80 backdrop-blur-md px-6 py-3 rounded-full border border-purple-500/30 shadow-neon z-50 transition-all duration-300 animate-fade-in">
-                        <div className="flex items-center gap-3">
-                            <span className="text-white font-medium">
+                    <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-dark-900/90 backdrop-blur-xl px-8 py-4 rounded-2xl border border-purple-500/40 shadow-neon z-50 transition-all duration-300 animate-fade-in">
+                        <div className="flex items-center gap-4">
+                            <span className="text-white font-medium text-lg">
                                 {hoveredSkill}
                             </span>
-                            <div className="w-48 h-2 bg-dark-700 rounded-full overflow-hidden">
+                            <div className="w-56 h-3 bg-dark-700 rounded-full overflow-hidden shadow-inner">
                                 <div
-                                    className="h-full bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full animate-pulse-slow"
+                                    className="h-full bg-gradient-to-r from-purple-600 via-pink-500 to-cyan-500 rounded-full animate-pulse-slow"
                                     style={{
                                         width: `${
                                             Math.floor(Math.random() * 30) + 70
@@ -234,7 +261,7 @@ const Skills = () => {
                                     }}
                                 ></div>
                             </div>
-                            <span className="text-purple-400 font-mono text-sm">
+                            <span className="text-cyan-400 font-mono text-sm font-bold px-3 py-1 bg-cyan-500/10 rounded-lg border border-cyan-500/30">
                                 Proficient
                             </span>
                         </div>

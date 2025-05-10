@@ -108,30 +108,64 @@ const Hero = () => {
                             >
                                 <a
                                     href="#projects"
-                                    className="px-8 py-3.5 bg-gradient-purple text-white font-medium rounded-full transition-all duration-300 hover:shadow-neon transform hover:-translate-y-1 hover:scale-105"
+                                    className="px-8 py-3.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-medium rounded-full transition-all duration-500 hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden group"
                                 >
-                                    View My Work
+                                    <span className="absolute top-0 left-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></span>
+                                    <span className="relative z-10 flex items-center">
+                                        View My Work
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                            />
+                                        </svg>
+                                    </span>
                                 </a>
                                 <a
                                     href="#contact"
-                                    className="px-8 py-3.5 bg-transparent border border-purple-500 text-white font-medium rounded-full transition-all duration-300 hover:border-purple-400 hover:bg-purple-500/10 transform hover:-translate-y-1"
+                                    className="px-8 py-3.5 bg-transparent border border-purple-500 text-white font-medium rounded-full transition-all duration-500 hover:border-purple-400 hover:bg-purple-500/10 transform hover:-translate-y-1 group"
                                 >
-                                    Contact Me
+                                    <span className="flex items-center">
+                                        Contact Me
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                            />
+                                        </svg>
+                                    </span>
                                 </a>
                             </div>
 
                             {/* Social links */}
                             <div
-                                className="flex gap-4 mt-8 animate-slide-up"
+                                className="flex gap-5 mt-10 animate-slide-up"
                                 style={{ animationDelay: "1s" }}
                             >
                                 <a
                                     href="#"
-                                    className="w-10 h-10 rounded-full flex items-center justify-center border border-gray-700 text-gray-400 hover:text-purple-400 hover:border-purple-500 transition-all duration-300 hover:-translate-y-1"
+                                    className="group relative w-12 h-12 rounded-lg flex items-center justify-center bg-dark-800 border border-purple-500/30 text-gray-400 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
                                 >
+                                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5"
+                                        className="h-5 w-5 relative z-10"
                                         fill="currentColor"
                                         viewBox="0 0 24 24"
                                     >
@@ -140,11 +174,12 @@ const Hero = () => {
                                 </a>
                                 <a
                                     href="#"
-                                    className="w-10 h-10 rounded-full flex items-center justify-center border border-gray-700 text-gray-400 hover:text-purple-400 hover:border-purple-500 transition-all duration-300 hover:-translate-y-1"
+                                    className="group relative w-12 h-12 rounded-lg flex items-center justify-center bg-dark-800 border border-cyan-500/30 text-gray-400 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
                                 >
+                                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-600 to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5"
+                                        className="h-5 w-5 relative z-10"
                                         fill="currentColor"
                                         viewBox="0 0 24 24"
                                     >
@@ -153,11 +188,12 @@ const Hero = () => {
                                 </a>
                                 <a
                                     href="#"
-                                    className="w-10 h-10 rounded-full flex items-center justify-center border border-gray-700 text-gray-400 hover:text-purple-400 hover:border-purple-500 transition-all duration-300 hover:-translate-y-1"
+                                    className="group relative w-12 h-12 rounded-lg flex items-center justify-center bg-dark-800 border border-pink-500/30 text-gray-400 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
                                 >
+                                    <div className="absolute inset-0 bg-gradient-to-br from-pink-600 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5"
+                                        className="h-5 w-5 relative z-10"
                                         fill="currentColor"
                                         viewBox="0 0 24 24"
                                     >
