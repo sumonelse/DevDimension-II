@@ -97,7 +97,7 @@ const Projects = () => {
     return (
         <section
             id="projects"
-            className="py-24 bg-dark-900 relative overflow-hidden"
+            className="pt-12 pb-24 bg-dark-900 relative overflow-hidden"
         >
             {/* Background decorations */}
             <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-purple-500/5 rounded-bl-full blur-3xl"></div>
@@ -105,12 +105,14 @@ const Projects = () => {
 
             <div className="container mx-auto px-4 md:px-6 relative z-10">
                 {/* Section header */}
-                <div className="text-center mb-16 reveal">
+                <div className="text-center mb-16 reveal animate-slide-up">
                     <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">
                         My{" "}
-                        <span className="text-gradient-purple">Projects</span>
+                        <span className="text-gradient-purple animate-subtle-pulse inline-block">
+                            Projects
+                        </span>
                     </h2>
-                    <div className="w-24 h-1.5 bg-gradient-purple mx-auto rounded-full mb-6"></div>
+                    <div className="w-24 h-1.5 bg-gradient-purple mx-auto rounded-full mb-6 animate-glow"></div>
                     <p className="text-gray-400 max-w-2xl mx-auto">
                         Here are some of the projects I've worked on. Each
                         project represents different skills and technologies
@@ -119,17 +121,19 @@ const Projects = () => {
                 </div>
 
                 {/* Filter buttons */}
-                <div className="flex flex-wrap justify-center gap-4 mb-12 reveal">
+                <div className="flex flex-wrap justify-center gap-4 mb-12 reveal animate-slide-up">
                     {filters.map((filter, index) => (
                         <button
                             key={filter.id}
                             onClick={() => setActiveFilter(filter.id)}
                             className={`px-5 py-2.5 rounded-full transition-all duration-300 font-medium ${
                                 activeFilter === filter.id
-                                    ? `bg-gradient-to-r from-${filter.color}-600 to-${filter.color}-500 text-white shadow-lg shadow-${filter.color}-500/30`
-                                    : `bg-dark-800 text-gray-300 hover:bg-${filter.color}-500/10 hover:text-${filter.color}-400`
+                                    ? `neumorph-inset text-${filter.color}-400 border border-${filter.color}-500/30`
+                                    : `neumorph text-gray-300 hover:text-${filter.color}-400`
                             }`}
-                            style={{ animationDelay: `${index * 0.1}s` }}
+                            style={{
+                                animationDelay: `${index * 0.1}s`,
+                            }}
                         >
                             {filter.label}
                         </button>
@@ -147,127 +151,137 @@ const Projects = () => {
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
                             <div
-                                className={`group bg-dark-800 rounded-xl overflow-hidden border border-${project.color}-500/20 hover:border-${project.color}-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg h-full flex flex-col`}
+                                className={`group tilt-card frosted rounded-xl overflow-hidden border border-${project.color}-500/20 hover:border-${project.color}-500/50 transition-all duration-500 h-full flex flex-col animate-slide-up`}
+                                style={{
+                                    animationDelay: `${index * 150}ms`,
+                                    transform: "translateZ(0)",
+                                    willChange: "transform, box-shadow",
+                                }}
                             >
                                 {/* Project header with decorative elements */}
-                                <div className="relative h-48 overflow-hidden">
-                                    {/* Modern gradient background */}
-                                    <div
-                                        className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-${project.color}-900/20 to-${project.color}-800/30 flex items-center justify-center overflow-hidden`}
-                                    >
-                                        {/* Decorative elements */}
+                                {/* Shine effect overlay */}
+                                <div className="tilt-card-shine"></div>
+                                <div className="tilt-card-inner">
+                                    <div className="relative h-48 overflow-hidden tilt-card-content">
+                                        {/* Modern gradient background */}
                                         <div
-                                            className={`absolute -top-10 -right-10 w-40 h-40 bg-${project.color}-500/10 rounded-full blur-xl transform rotate-45 group-hover:scale-110 transition-transform duration-700`}
-                                        ></div>
-                                        <div
-                                            className={`absolute -bottom-10 -left-10 w-40 h-40 bg-${project.color}-500/10 rounded-full blur-xl transform -rotate-45 group-hover:scale-110 transition-transform duration-700`}
-                                        ></div>
-
-                                        {/* Project icon/symbol */}
-                                        <div
-                                            className={`relative z-10 w-16 h-16 flex items-center justify-center bg-${project.color}-500/20 rounded-xl border border-${project.color}-500/30 group-hover:scale-110 transition-transform duration-500`}
+                                            className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-${project.color}-900/20 to-${project.color}-800/30 flex items-center justify-center overflow-hidden`}
                                         >
-                                            <span
-                                                className={`text-${project.color}-400 text-2xl font-bold`}
+                                            {/* Decorative elements */}
+                                            <div
+                                                className={`absolute -top-10 -right-10 w-40 h-40 bg-${project.color}-500/10 rounded-full blur-xl transform rotate-45 group-hover:scale-110 transition-transform duration-700`}
+                                            ></div>
+                                            <div
+                                                className={`absolute -bottom-10 -left-10 w-40 h-40 bg-${project.color}-500/10 rounded-full blur-xl transform -rotate-45 group-hover:scale-110 transition-transform duration-700`}
+                                            ></div>
+
+                                            {/* Project icon/symbol */}
+                                            <div
+                                                className={`relative z-10 w-16 h-16 flex items-center justify-center bg-${project.color}-500/20 rounded-xl border border-${project.color}-500/30 group-hover:scale-110 transition-transform duration-500`}
                                             >
-                                                {project.title.charAt(0)}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Hover overlay with project info */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-dark-900/95 via-dark-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
-                                        <div className="text-white text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                            <h4
-                                                className={`text-xl font-bold mb-2 text-${project.color}-400`}
-                                            >
-                                                {project.title}
-                                            </h4>
-                                            <p className="text-sm text-gray-300">
-                                                {project.category
-                                                    .charAt(0)
-                                                    .toUpperCase() +
-                                                    project.category.slice(
-                                                        1
-                                                    )}{" "}
-                                                Project
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="p-6 flex-grow flex flex-col">
-                                    <h3
-                                        className={`text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-${project.color}-400 to-${project.color}-300`}
-                                    >
-                                        {project.title}
-                                    </h3>
-                                    <p className="text-gray-300 mb-5 flex-grow leading-relaxed">
-                                        {project.description}
-                                    </p>
-
-                                    <div className="flex flex-wrap gap-2 mb-6">
-                                        {project.technologies.map(
-                                            (tech, techIndex) => (
                                                 <span
-                                                    key={techIndex}
-                                                    className={`px-3 py-1.5 bg-dark-900 text-${project.color}-400 rounded-lg text-xs font-medium border border-${project.color}-500/20 hover:border-${project.color}-500/40 transition-colors duration-300`}
+                                                    className={`text-${project.color}-400 text-2xl font-bold`}
                                                 >
-                                                    {tech}
+                                                    {project.title.charAt(0)}
                                                 </span>
-                                            )
-                                        )}
+                                            </div>
+                                        </div>
+
+                                        {/* Hover overlay with project info */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-dark-900/95 via-dark-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
+                                            <div className="text-white text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                                <h4
+                                                    className={`text-xl font-bold mb-2 text-${project.color}-400`}
+                                                >
+                                                    {project.title}
+                                                </h4>
+                                                <p className="text-sm text-gray-300">
+                                                    {project.category
+                                                        .charAt(0)
+                                                        .toUpperCase() +
+                                                        project.category.slice(
+                                                            1
+                                                        )}{" "}
+                                                    Project
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div className="flex gap-3">
-                                        <a
-                                            href={project.demoLink}
-                                            className={`px-5 py-2.5 bg-gradient-to-r from-${project.color}-600 to-${project.color}-500 hover:from-${project.color}-500 hover:to-${project.color}-400 text-white rounded-lg text-sm font-medium transition-all duration-300 flex items-center shadow-md shadow-${project.color}-500/20 hover:shadow-lg hover:shadow-${project.color}-500/30`}
+                                    <div className="p-6 flex-grow flex flex-col tilt-card-content">
+                                        <h3
+                                            className={`text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-${project.color}-400 to-${project.color}-300`}
                                         >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 mr-2"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
+                                            {project.title}
+                                        </h3>
+                                        <p className="text-gray-300 mb-5 flex-grow leading-relaxed">
+                                            {project.description}
+                                        </p>
+
+                                        <div className="flex flex-wrap gap-2 mb-6">
+                                            {project.technologies.map(
+                                                (tech, techIndex) => (
+                                                    <span
+                                                        key={techIndex}
+                                                        className={`px-3 py-1.5 bg-dark-900 text-${project.color}-400 rounded-lg text-xs font-medium border border-${project.color}-500/20 hover:border-${project.color}-500/40 transition-colors duration-300`}
+                                                    >
+                                                        {tech}
+                                                    </span>
+                                                )
+                                            )}
+                                        </div>
+
+                                        <div className="flex gap-3">
+                                            <a
+                                                href={project.demoLink}
+                                                className={`px-5 py-2.5 bg-gradient-to-r from-${project.color}-600 to-${project.color}-500 hover:from-${project.color}-500 hover:to-${project.color}-400 text-white rounded-lg text-sm font-medium transition-all duration-300 flex items-center shadow-md shadow-${project.color}-500/20 hover:shadow-lg hover:shadow-${project.color}-500/30`}
                                             >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                                />
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                                />
-                                            </svg>
-                                            Live Demo
-                                        </a>
-                                        <a
-                                            href={project.codeLink}
-                                            className={`px-5 py-2.5 bg-dark-900 border border-${project.color}-500/30 hover:border-${project.color}-500/60 text-white hover:text-${project.color}-400 rounded-lg text-sm font-medium transition-all duration-300 flex items-center`}
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-4 w-4 mr-2"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-4 w-4 mr-2"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                                    />
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                                    />
+                                                </svg>
+                                                Live Demo
+                                            </a>
+                                            <a
+                                                href={project.codeLink}
+                                                className={`px-5 py-2.5 bg-dark-900 border border-${project.color}-500/30 hover:border-${project.color}-500/60 text-white hover:text-${project.color}-400 rounded-lg text-sm font-medium transition-all duration-300 flex items-center`}
                                             >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                                                />
-                                            </svg>
-                                            View Code
-                                        </a>
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-4 w-4 mr-2"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                                                    />
+                                                </svg>
+                                                View Code
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
+                                </div>{" "}
+                                {/* Close tilt-card-inner */}
                             </div>
                         </div>
                     ))}

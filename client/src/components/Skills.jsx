@@ -1,7 +1,7 @@
-import React, { useState } from "react"
+import React from "react"
 
 const Skills = () => {
-    const [hoveredSkill, setHoveredSkill] = useState(null)
+    // Hover state removed as requested
 
     const skillCategories = [
         {
@@ -115,18 +115,21 @@ const Skills = () => {
     return (
         <section
             id="skills"
-            className="py-24 bg-dark-800 relative overflow-hidden"
+            className="pt-24 pb-12 bg-dark-800 relative overflow-hidden"
         >
             {/* Background decorations */}
             <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMDIwMjAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djJoLTJ2LTJoMnptMC00aDJ2MmgtMnYtMnptLTQgMHYyaC0ydi0yaDJ6bTIgMGgydjJoLTJ2LTJ6bS02IDBoMnYyaC0ydi0yem0yLTRoMnYyaC0ydi0yem0yIDBIMzZ2Mmgtc3YtMnptMC00aDJ2MmgtMnYtMnptMiAwaDJ2MmgtMnYtMnptMi00aDJ2MmgtMnYtMnptMCAwaDJ2MmgtMnYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-5"></div>
 
             <div className="container mx-auto px-4 md:px-6 relative z-10">
                 {/* Section header */}
-                <div className="text-center mb-16 reveal">
+                <div className="text-center mb-16 reveal animate-slide-up">
                     <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">
-                        Tech <span className="text-gradient-cyan">Stack</span>
+                        Tech{" "}
+                        <span className="text-gradient-cyan animate-subtle-pulse inline-block">
+                            Stack
+                        </span>
                     </h2>
-                    <div className="w-24 h-1.5 bg-gradient-cyan mx-auto rounded-full mb-6"></div>
+                    <div className="w-24 h-1.5 bg-gradient-cyan mx-auto rounded-full mb-6 animate-glow"></div>
                     <p className="text-gray-400 max-w-2xl mx-auto">
                         My technical toolkit includes a diverse range of
                         languages, frameworks, and technologies that enable me
@@ -143,7 +146,12 @@ const Skills = () => {
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
                             <div
-                                className={`h-full bg-dark-900 rounded-xl p-8 border border-${category.color}-500/20 hover:border-${category.color}-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-lg group relative overflow-hidden`}
+                                className={`h-full tilt-card clay bg-dark-900 rounded-xl p-8 border border-${category.color}-500/20 hover:border-${category.color}-500/50 transition-all duration-500 group relative overflow-hidden animate-slide-up`}
+                                style={{
+                                    transform: "translateZ(0)",
+                                    willChange: "transform, box-shadow",
+                                    animationDelay: `${index * 150}ms`,
+                                }}
                             >
                                 {/* Background decoration */}
                                 <div
@@ -152,45 +160,56 @@ const Skills = () => {
                                 <div
                                     className={`absolute -bottom-10 -left-10 w-40 h-40 bg-${category.color}-500/5 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-700`}
                                 ></div>
-
-                                {/* Header */}
-                                <div className="flex items-center mb-8 relative z-10">
-                                    <div
-                                        className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${category.color}-600 to-${category.color}-400 flex items-center justify-center mr-4 text-white shadow-lg shadow-${category.color}-500/20 group-hover:shadow-${category.color}-500/40 transition-all duration-300 group-hover:scale-110`}
-                                    >
-                                        {category.icon}
+                                {/* Shine effect overlay */}
+                                <div className="tilt-card-shine"></div>
+                                {/* 3D tilt inner container */}
+                                <div className="tilt-card-inner relative z-10">
+                                    {/* Header */}
+                                    <div className="flex items-center mb-8 tilt-card-content">
+                                        <div
+                                            className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${category.color}-600 to-${category.color}-400 flex items-center justify-center mr-4 text-white shadow-lg shadow-${category.color}-500/20 group-hover:shadow-${category.color}-500/40 transition-all duration-300 group-hover:scale-110 animate-subtle-pulse`}
+                                            style={{
+                                                animationDelay: `${
+                                                    index * 200
+                                                }ms`,
+                                            }}
+                                        >
+                                            {category.icon}
+                                        </div>
+                                        <h3
+                                            className={`text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-${category.color}-400 to-white`}
+                                        >
+                                            {category.title}
+                                        </h3>
                                     </div>
-                                    <h3
-                                        className={`text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-${category.color}-400 to-white`}
-                                    >
-                                        {category.title}
-                                    </h3>
-                                </div>
 
-                                {/* Skills */}
-                                <div className="flex flex-wrap gap-3 relative z-10">
-                                    {category.skills.map(
-                                        (skill, skillIndex) => (
-                                            <span
-                                                key={skillIndex}
-                                                className={`px-4 py-2 bg-dark-800 text-${category.color}-400 rounded-lg text-sm font-medium border border-${category.color}-500/20 transition-all duration-300 hover:bg-${category.color}-500/10 hover:border-${category.color}-500/40 hover:scale-105 hover:shadow-sm cursor-default`}
-                                                onMouseEnter={() =>
-                                                    setHoveredSkill(skill)
-                                                }
-                                                onMouseLeave={() =>
-                                                    setHoveredSkill(null)
-                                                }
-                                                style={{
-                                                    animationDelay: `${
-                                                        skillIndex * 0.1
-                                                    }s`,
-                                                }}
-                                            >
-                                                {skill}
-                                            </span>
-                                        )
-                                    )}
-                                </div>
+                                    {/* Skills */}
+                                    <div className="flex flex-wrap gap-3 tilt-card-content">
+                                        {category.skills.map(
+                                            (skill, skillIndex) => (
+                                                <span
+                                                    key={skillIndex}
+                                                    className={`px-4 py-2 neumorph-inset text-${category.color}-400 rounded-lg text-sm font-medium border border-${category.color}-500/20 transition-all duration-300 hover:border-${category.color}-500/40 cursor-default animate-slide-up`}
+                                                    style={{
+                                                        transform:
+                                                            "translateZ(0)",
+                                                        willChange:
+                                                            "transform, box-shadow",
+                                                        animationDelay: `${
+                                                            index * 150 +
+                                                            skillIndex * 50 +
+                                                            300
+                                                        }ms`,
+                                                    }}
+                                                    /* Hover state removed as requested */
+                                                >
+                                                    {skill}
+                                                </span>
+                                            )
+                                        )}
+                                    </div>
+                                </div>{" "}
+                                {/* Close tilt-card-inner */}
                             </div>
                         </div>
                     ))}
@@ -198,75 +217,65 @@ const Skills = () => {
 
                 {/* Additional skills */}
                 <div className="reveal">
-                    <div className="glass-dark rounded-xl p-10 border border-purple-500/30 hover:border-purple-500/50 transition-all duration-500 shadow-lg relative overflow-hidden">
+                    <div
+                        className="frosted tilt-card rounded-xl p-10 border border-purple-500/30 hover:border-purple-500/50 transition-all duration-500 relative overflow-hidden animate-slide-up mesh-gradient-purple"
+                        style={{
+                            transform: "translateZ(0)",
+                            willChange: "transform, box-shadow",
+                            animationDelay: "600ms",
+                        }}
+                    >
                         {/* Background decorations */}
                         <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-purple-500/10 rounded-bl-full blur-3xl"></div>
                         <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-cyan-500/10 rounded-tr-full blur-3xl"></div>
-
-                        <h3 className="text-2xl font-bold mb-10 text-center relative z-10">
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 relative inline-block">
-                                Additional Skills
-                                <span className="absolute -bottom-3 left-0 w-full h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500"></span>
-                            </span>
-                        </h3>
-
-                        <div className="flex flex-wrap justify-center gap-4 relative z-10">
-                            {additionalSkills.map((skill, index) => (
-                                <span
-                                    key={index}
-                                    className={`px-5 py-2.5 bg-dark-900/80 backdrop-blur-sm text-${
-                                        skill.color
-                                    }-400 rounded-xl text-sm font-medium border border-${
-                                        skill.color
-                                    }-500/30 transition-all duration-500 hover:bg-${
-                                        skill.color
-                                    }-500/20 hover:border-${
-                                        skill.color
-                                    }-500/60 hover:scale-110 hover:shadow-${
-                                        skill.color === "purple"
-                                            ? "neon"
-                                            : skill.color === "cyan"
-                                            ? "neon-cyan"
-                                            : "neon-pink"
-                                    } cursor-default transform hover:-translate-y-1`}
-                                    style={{
-                                        transitionDelay: `${index * 30}ms`,
-                                    }}
-                                    onMouseEnter={() =>
-                                        setHoveredSkill(skill.name)
-                                    }
-                                    onMouseLeave={() => setHoveredSkill(null)}
-                                >
-                                    {skill.name}
+                        {/* Shine effect overlay */}
+                        <div className="tilt-card-shine"></div>
+                        <div className="tilt-card-inner">
+                            <h3 className="text-2xl font-bold mb-10 text-center tilt-card-content">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 relative inline-block animate-subtle-pulse">
+                                    Additional Skills
+                                    <span className="absolute -bottom-3 left-0 w-full h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 animate-glow"></span>
                                 </span>
-                            ))}
-                        </div>
+                            </h3>
+
+                            <div className="flex flex-wrap justify-center gap-4 tilt-card-content">
+                                {additionalSkills.map((skill, index) => (
+                                    <span
+                                        key={index}
+                                        className={`px-5 py-2.5 frosted text-${
+                                            skill.color
+                                        }-400 rounded-xl text-sm font-medium border border-${
+                                            skill.color
+                                        }-500/30 transition-all duration-500 hover:border-${
+                                            skill.color
+                                        }-500/60 hover:shadow-${
+                                            skill.color === "purple"
+                                                ? "neon"
+                                                : skill.color === "cyan"
+                                                ? "neon-cyan"
+                                                : "neon-pink"
+                                        } cursor-default animate-slide-up`}
+                                        style={{
+                                            transform: "translateZ(20px)",
+                                            willChange: "transform, box-shadow",
+                                            marginBottom:
+                                                "4px" /* Prevent layout shift */,
+                                            animationDelay: `${
+                                                800 + index * 50
+                                            }ms`,
+                                        }}
+                                        /* Hover state removed as requested */
+                                    >
+                                        {skill.name}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>{" "}
+                        {/* Close tilt-card-inner */}
                     </div>
                 </div>
 
-                {/* Skill meter - appears when hovering over a skill */}
-                {hoveredSkill && (
-                    <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-dark-900/90 backdrop-blur-xl px-8 py-4 rounded-2xl border border-purple-500/40 shadow-neon z-50 transition-all duration-300 animate-fade-in">
-                        <div className="flex items-center gap-4">
-                            <span className="text-white font-medium text-lg">
-                                {hoveredSkill}
-                            </span>
-                            <div className="w-56 h-3 bg-dark-700 rounded-full overflow-hidden shadow-inner">
-                                <div
-                                    className="h-full bg-gradient-to-r from-purple-600 via-pink-500 to-cyan-500 rounded-full animate-pulse-slow"
-                                    style={{
-                                        width: `${
-                                            Math.floor(Math.random() * 30) + 70
-                                        }%`,
-                                    }}
-                                ></div>
-                            </div>
-                            <span className="text-cyan-400 font-mono text-sm font-bold px-3 py-1 bg-cyan-500/10 rounded-lg border border-cyan-500/30">
-                                Proficient
-                            </span>
-                        </div>
-                    </div>
-                )}
+                {/* Progress indicator removed as requested */}
             </div>
         </section>
     )
