@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import ProjectModal from "./ProjectModal"
+import SpiderverseProjectModal from "./SpiderverseProjectModal"
 
 const SpiderverseProjects = () => {
     const [activeFilter, setActiveFilter] = useState("all")
@@ -370,7 +370,7 @@ const SpiderverseProjects = () => {
 
             {/* Project modal */}
             {isModalOpen && selectedProject && (
-                <ProjectModal
+                <SpiderverseProjectModal
                     project={selectedProject}
                     isOpen={isModalOpen}
                     onClose={closeProjectModal}
