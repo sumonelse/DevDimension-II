@@ -4,35 +4,47 @@ export default {
     theme: {
         extend: {
             colors: {
-                // Rich dark background with purple undertones
+                // Enhanced dark theme with deeper blue undertones
                 dark: {
-                    950: "#0A0118",
-                    900: "#120823",
-                    800: "#1A0D33",
-                    700: "#231244",
-                    600: "#2D1755",
-                    500: "#371C66",
+                    950: "#080C1F", // Deeper blue-black
+                    900: "#0F1631", // Deep navy
+                    800: "#151C3D", // Rich indigo
+                    700: "#1E2A4F", // Midnight blue
+                    600: "#2A3A6A", // Royal blue-purple
+                    500: "#364785", // Slate blue
                 },
-                // Vibrant purple accent
+                // Vibrant violet-indigo accent
                 purple: {
-                    600: "#7928CA",
-                    500: "#8A3FFC",
-                    400: "#9B51E0",
-                    300: "#AC63FF",
+                    700: "#5B21B6", // Deep violet
+                    600: "#7C3AED", // Vivid purple
+                    500: "#8B5CF6", // Bright violet
+                    400: "#A78BFA", // Light violet
+                    300: "#C4B5FD", // Soft lavender
                 },
-                // Bright cyan accent for contrast
+                // Teal-cyan accent for fresh contrast
                 cyan: {
-                    600: "#0BC5EA",
-                    500: "#00D4FF",
-                    400: "#33DEFF",
-                    300: "#66E7FF",
+                    700: "#0E7490", // Deep teal
+                    600: "#0891B2", // Vibrant teal
+                    500: "#06B6D4", // Bright cyan
+                    400: "#22D3EE", // Light cyan
+                    300: "#67E8F9", // Soft cyan
                 },
-                // Soft pink accent for highlights
+                // Vibrant coral-pink accent for highlights
                 pink: {
-                    600: "#D53F8C",
-                    500: "#F72585",
-                    400: "#FF4D9E",
-                    300: "#FF70B8",
+                    700: "#BE185D", // Deep magenta
+                    600: "#DB2777", // Vibrant pink
+                    500: "#EC4899", // Bright pink
+                    400: "#F472B6", // Light pink
+                    300: "#F9A8D4", // Soft pink
+                },
+                // New accent colors
+                amber: {
+                    500: "#F59E0B", // Warm amber
+                    400: "#FBBF24", // Light amber
+                },
+                emerald: {
+                    500: "#10B981", // Vibrant emerald
+                    400: "#34D399", // Light emerald
                 },
             },
             fontFamily: {

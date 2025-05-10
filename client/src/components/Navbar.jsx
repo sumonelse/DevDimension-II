@@ -4,11 +4,22 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [activeSection, setActiveSection] = useState("hero")
+    const [isVisible, setIsVisible] = useState(true)
+    const [lastScrollY, setLastScrollY] = useState(0)
 
     useEffect(() => {
         const handleScroll = () => {
+            const currentScrollY = window.scrollY
+
+            // Hide navbar on scroll down, show on scroll up
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                setIsVisible(false)
+            } else {
+                setIsVisible(true)
+            }
+
             // Update navbar background
-            if (window.scrollY > 50) {
+            if (currentScrollY > 50) {
                 setIsScrolled(true)
             } else {
                 setIsScrolled(false)
@@ -16,7 +27,7 @@ const Navbar = () => {
 
             // Update active section
             const sections = ["hero", "about", "skills", "projects", "contact"]
-            const scrollPosition = window.scrollY + 100
+            const scrollPosition = currentScrollY + 100
 
             for (const section of sections) {
                 const element = document.getElementById(section)
@@ -33,11 +44,13 @@ const Navbar = () => {
                     }
                 }
             }
+
+            setLastScrollY(currentScrollY)
         }
 
         window.addEventListener("scroll", handleScroll)
         return () => window.removeEventListener("scroll", handleScroll)
-    }, [])
+    }, [lastScrollY])
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -54,7 +67,7 @@ const Navbar = () => {
         <nav
             className={`fixed w-full z-50 transition-all duration-500 ${
                 isScrolled ? "glass-dark py-3 shadow-lg" : "bg-transparent py-5"
-            }`}
+            } ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
         >
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex justify-between items-center">
@@ -62,7 +75,7 @@ const Navbar = () => {
                         href="#hero"
                         className="text-2xl font-bold font-heading flex items-center group"
                     >
-                        <span className="text-white transition-all duration-300 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-purple">
+                        <span className="text-gradient-purple transition-all duration-300 group-hover:text-gradient-cyan">
                             SM
                         </span>
                         <span className="text-purple-400 group-hover:text-cyan-400 transition-colors duration-300">
@@ -72,25 +85,25 @@ const Navbar = () => {
 
                     {/* Mobile menu button */}
                     <button
-                        className="md:hidden text-white focus:outline-none transition-transform duration-300 hover:scale-110"
+                        className="md:hidden focus:outline-none transition-transform duration-300 hover:scale-110"
                         onClick={toggleMenu}
                         aria-label="Toggle menu"
                     >
                         <div className="relative w-6 h-6">
                             <span
-                                className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ${
+                                className={`absolute h-0.5 w-6 bg-purple-500 transform transition-all duration-300 ${
                                     isMenuOpen
                                         ? "rotate-45 top-3"
                                         : "rotate-0 top-1"
                                 }`}
                             ></span>
                             <span
-                                className={`absolute h-0.5 w-6 bg-white top-3 transition-all duration-300 ${
+                                className={`absolute h-0.5 w-6 bg-cyan-500 top-3 transition-all duration-300 ${
                                     isMenuOpen ? "opacity-0" : "opacity-100"
                                 }`}
                             ></span>
                             <span
-                                className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ${
+                                className={`absolute h-0.5 w-6 bg-pink-500 transform transition-all duration-300 ${
                                     isMenuOpen
                                         ? "-rotate-45 top-3"
                                         : "rotate-0 top-5"
@@ -105,10 +118,10 @@ const Navbar = () => {
                             <a
                                 key={index}
                                 href={link.href}
-                                className={`relative px-2 py-1 font-medium transition-all duration-300 ${
+                                className={`relative px-2 py-1 font-medium transition-all duration-300 group ${
                                     activeSection === link.href.substring(1)
                                         ? "text-purple-400"
-                                        : "text-white hover:text-purple-300"
+                                        : "hover:text-purple-400"
                                 }`}
                             >
                                 {link.label}
@@ -123,9 +136,25 @@ const Navbar = () => {
                         ))}
                         <a
                             href="#contact"
-                            className="px-4 py-1.5 bg-gradient-purple text-white rounded-full hover:shadow-neon transition-all duration-300 hover:-translate-y-0.5"
+                            className="px-5 py-2 bg-gradient-purple text-white rounded-full hover:shadow-neon transition-all duration-300 hover:-translate-y-0.5 hover:scale-105"
                         >
-                            Let's Talk
+                            <span className="flex items-center">
+                                Let's Talk
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-4 w-4 ml-1.5 transition-transform duration-300 group-hover:translate-x-1"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                    />
+                                </svg>
+                            </span>
                         </a>
                     </div>
                 </div>
@@ -147,7 +176,7 @@ const Navbar = () => {
                                     className={`text-lg font-medium transition-colors duration-300 ${
                                         activeSection === link.href.substring(1)
                                             ? "text-purple-400"
-                                            : "text-white hover:text-purple-300"
+                                            : "hover:text-purple-400"
                                     }`}
                                     onClick={toggleMenu}
                                 >
@@ -156,7 +185,7 @@ const Navbar = () => {
                             ))}
                             <a
                                 href="#contact"
-                                className="text-center py-2 bg-gradient-purple text-white rounded-lg hover:shadow-neon transition-all duration-300"
+                                className="text-center py-2.5 bg-gradient-purple text-white rounded-lg hover:shadow-neon transition-all duration-300 hover:scale-105"
                                 onClick={toggleMenu}
                             >
                                 Let's Talk

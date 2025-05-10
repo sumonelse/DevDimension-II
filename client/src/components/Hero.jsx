@@ -1,38 +1,77 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 const Hero = () => {
     const typingTextRef = useRef(null)
+    const [currentTextIndex, setCurrentTextIndex] = useState(0)
+    const titles = [
+        "Full-Stack Developer",
+        "Problem Solver",
+        "UI/UX Enthusiast",
+        "Tech Explorer",
+    ]
 
     useEffect(() => {
-        // Typing animation
-        const text = "Full-Stack Developer"
+        // Enhanced typing animation with multiple titles
         const typingElement = typingTextRef.current
-        let i = 0
+        let charIndex = 0
+        let isDeleting = false
+        let textTimeout
 
         if (typingElement) {
             typingElement.textContent = ""
 
-            const typeWriter = () => {
-                if (i < text.length) {
-                    typingElement.textContent += text.charAt(i)
-                    i++
-                    setTimeout(typeWriter, 100)
+            const typeEffect = () => {
+                const currentText = titles[currentTextIndex]
+
+                if (isDeleting) {
+                    // Deleting text
+                    typingElement.textContent = currentText.substring(
+                        0,
+                        charIndex - 1
+                    )
+                    charIndex--
+
+                    if (charIndex === 0) {
+                        isDeleting = false
+                        setCurrentTextIndex(
+                            (prevIndex) => (prevIndex + 1) % titles.length
+                        )
+                        textTimeout = setTimeout(typeEffect, 500) // Pause before typing next title
+                    } else {
+                        textTimeout = setTimeout(typeEffect, 50) // Faster deletion
+                    }
+                } else {
+                    // Typing text
+                    typingElement.textContent = currentText.substring(
+                        0,
+                        charIndex + 1
+                    )
+                    charIndex++
+
+                    if (charIndex === currentText.length) {
+                        isDeleting = true
+                        textTimeout = setTimeout(typeEffect, 1500) // Pause at full text
+                    } else {
+                        textTimeout = setTimeout(typeEffect, 100) // Normal typing speed
+                    }
                 }
             }
 
-            setTimeout(() => {
-                typeWriter()
-            }, 1000)
+            // Start typing effect
+            textTimeout = setTimeout(typeEffect, 1000)
+
+            // Cleanup
+            return () => clearTimeout(textTimeout)
         }
-    }, [])
+    }, [currentTextIndex])
 
     return (
         <section
             id="hero"
-            className="min-h-screen flex items-center bg-dark-950 relative overflow-hidden"
+            className="min-h-screen flex items-center relative overflow-hidden transition-colors duration-500"
         >
             {/* Background gradient */}
-            <div className="absolute inset-0 bg-gradient-radial"></div>
+            <div className="absolute inset-0 bg-gradient-radial transition-colors duration-500"></div>
 
             {/* Grid pattern overlay */}
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMDIwMjAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djJoLTJ2LTJoMnptMC00aDJ2MmgtMnYtMnptLTQgMHYyaC0ydi0yaDJ6bTIgMGgydjJoLTJ2LTJ6bS02IDBoMnYyaC0ydi0yem0yLTRoMnYyaC0ydi0yem0yIDBIMzZ2Mmgtc3YtMnptMC00aDJ2MmgtMnYtMnptMiAwaDJ2MmgtMnYtMnptMi00aDJ2MmgtMnYtMnptMCAwaDJ2MmgtMnYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-10"></div>
@@ -41,61 +80,64 @@ const Hero = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
                     {/* Content column */}
                     <div className="lg:col-span-3 max-w-3xl">
-                        <div className="space-y-6">
+                        <div className="space-y-8">
                             <div className="inline-block animate-fade-in">
-                                <span className="px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 font-medium">
+                                <span className="px-4 py-1.5 rounded-full glass border border-purple-500/20 text-purple-500 font-medium">
                                     Hello, I'm
                                 </span>
                             </div>
 
                             <h1
-                                className="text-5xl md:text-7xl font-bold font-heading text-white mb-2 animate-slide-up"
+                                className="text-5xl md:text-7xl font-bold font-heading mb-2 animate-slide-up"
                                 style={{ animationDelay: "0.2s" }}
                             >
                                 <span className="text-gradient-purple">
                                     Sumit
                                 </span>{" "}
-                                Maurya
+                                <span className="relative">
+                                    Maurya
+                                    <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-amber rounded-full transform origin-left"></span>
+                                </span>
                             </h1>
 
                             <h2
-                                className="text-2xl md:text-3xl font-semibold text-white mb-4 flex items-center animate-slide-up"
+                                className="text-2xl md:text-3xl font-semibold mb-4 flex items-center animate-slide-up h-10"
                                 style={{ animationDelay: "0.4s" }}
                             >
                                 <span
                                     ref={typingTextRef}
                                     className="mr-1"
                                 ></span>
-                                <span className="w-1 h-8 bg-purple-500 animate-blink"></span>
+                                <span className="w-1 h-8 bg-gradient-cyan animate-blink"></span>
                             </h2>
 
                             <p
-                                className="text-gray-300 text-lg md:text-xl mb-8 leading-relaxed max-w-2xl animate-slide-up"
+                                className="text-lg md:text-xl mb-8 leading-relaxed max-w-2xl animate-slide-up"
                                 style={{ animationDelay: "0.6s" }}
                             >
                                 I build exceptional digital experiences with a
                                 passion for
-                                <span className="text-purple-400 font-medium">
+                                <span className="text-purple-500 font-medium">
                                     {" "}
                                     competitive programming
                                 </span>
                                 ,
-                                <span className="text-cyan-400 font-medium">
+                                <span className="text-cyan-500 font-medium">
                                     {" "}
                                     real-world applications
                                 </span>
                                 ,
-                                <span className="text-pink-400 font-medium">
+                                <span className="text-pink-500 font-medium">
                                     {" "}
                                     problem-solving
                                 </span>
                                 ,
-                                <span className="text-purple-400 font-medium">
+                                <span className="text-amber-500 font-medium">
                                     {" "}
                                     teamwork
                                 </span>
                                 , and
-                                <span className="text-cyan-400 font-medium">
+                                <span className="text-emerald-500 font-medium">
                                     {" "}
                                     lifelong learning
                                 </span>
@@ -103,12 +145,12 @@ const Hero = () => {
                             </p>
 
                             <div
-                                className="flex flex-wrap gap-4 animate-slide-up"
+                                className="flex flex-wrap gap-5 animate-slide-up"
                                 style={{ animationDelay: "0.8s" }}
                             >
                                 <a
                                     href="#projects"
-                                    className="px-8 py-3.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-medium rounded-full transition-all duration-500 hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden group"
+                                    className="group px-8 py-3.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-medium rounded-full transition-all duration-500 hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
                                 >
                                     <span className="absolute top-0 left-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></span>
                                     <span className="relative z-10 flex items-center">
@@ -131,7 +173,7 @@ const Hero = () => {
                                 </a>
                                 <a
                                     href="#contact"
-                                    className="px-8 py-3.5 bg-transparent border border-purple-500 text-white font-medium rounded-full transition-all duration-500 hover:border-purple-400 hover:bg-purple-500/10 transform hover:-translate-y-1 group"
+                                    className="group px-8 py-3.5 glass border border-purple-500/30 font-medium rounded-full transition-all duration-500 hover:border-purple-400 hover:bg-purple-500/10 transform hover:-translate-y-1 hover:scale-105"
                                 >
                                     <span className="flex items-center">
                                         Contact Me
@@ -160,7 +202,8 @@ const Hero = () => {
                             >
                                 <a
                                     href="#"
-                                    className="group relative w-12 h-12 rounded-lg flex items-center justify-center bg-dark-800 border border-purple-500/30 text-gray-400 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
+                                    className="group relative w-12 h-12 rounded-lg flex items-center justify-center glass border border-purple-500/30 text-purple-500 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
+                                    aria-label="GitHub"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <svg
@@ -174,7 +217,8 @@ const Hero = () => {
                                 </a>
                                 <a
                                     href="#"
-                                    className="group relative w-12 h-12 rounded-lg flex items-center justify-center bg-dark-800 border border-cyan-500/30 text-gray-400 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
+                                    className="group relative w-12 h-12 rounded-lg flex items-center justify-center glass border border-cyan-500/30 text-cyan-500 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
+                                    aria-label="LinkedIn"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-cyan-600 to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <svg
@@ -188,7 +232,8 @@ const Hero = () => {
                                 </a>
                                 <a
                                     href="#"
-                                    className="group relative w-12 h-12 rounded-lg flex items-center justify-center bg-dark-800 border border-pink-500/30 text-gray-400 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
+                                    className="group relative w-12 h-12 rounded-lg flex items-center justify-center glass border border-pink-500/30 text-pink-500 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
+                                    aria-label="Twitter"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-pink-600 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <svg
@@ -215,19 +260,19 @@ const Hero = () => {
                             ></div>
 
                             {/* Code blocks */}
-                            <div className="absolute -top-10 -left-20 w-40 h-24 glass rounded-lg p-3 transform rotate-6 animate-float shadow-lg">
-                                <div className="text-xs font-mono text-purple-300">
-                                    <span className="text-pink-400">
+                            <div className="absolute -top-10 -left-20 w-40 h-24 glass rounded-lg p-3 transform rotate-6 animate-float shadow-lg hover:shadow-purple-500/20 hover:scale-105 transition-all duration-300">
+                                <div className="text-xs font-mono">
+                                    <span className="text-pink-500">
                                         function
                                     </span>{" "}
-                                    <span className="text-cyan-400">solve</span>
+                                    <span className="text-cyan-500">solve</span>
                                     () {"{"}
                                     <br />
                                     &nbsp;&nbsp;
-                                    <span className="text-pink-400">
+                                    <span className="text-pink-500">
                                         return
                                     </span>{" "}
-                                    <span className="text-cyan-400">
+                                    <span className="text-cyan-500">
                                         success
                                     </span>
                                     ;
@@ -237,24 +282,24 @@ const Hero = () => {
                             </div>
 
                             <div
-                                className="absolute -bottom-5 -right-10 w-48 h-28 glass rounded-lg p-3 transform -rotate-3 animate-float shadow-lg"
+                                className="absolute -bottom-5 -right-10 w-48 h-28 glass rounded-lg p-3 transform -rotate-3 animate-float shadow-lg hover:shadow-cyan-500/20 hover:scale-105 transition-all duration-300"
                                 style={{ animationDelay: "1.5s" }}
                             >
-                                <div className="text-xs font-mono text-purple-300">
-                                    <span className="text-pink-400">const</span>{" "}
-                                    <span className="text-cyan-400">
+                                <div className="text-xs font-mono">
+                                    <span className="text-pink-500">const</span>{" "}
+                                    <span className="text-cyan-500">
                                         developer
                                     </span>{" "}
                                     = {"{"}
                                     <br />
                                     &nbsp;&nbsp;name:{" "}
-                                    <span className="text-purple-300">
+                                    <span className="text-purple-500">
                                         "Sumit"
                                     </span>
                                     ,
                                     <br />
                                     &nbsp;&nbsp;skills: [
-                                    <span className="text-purple-300">
+                                    <span className="text-purple-500">
                                         "Full-Stack"
                                     </span>
                                     ]
@@ -264,8 +309,8 @@ const Hero = () => {
                             </div>
 
                             {/* Central element */}
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full bg-gradient-to-br from-purple-500/30 to-cyan-500/30 flex items-center justify-center animate-spin-slow">
-                                <div className="w-32 h-32 rounded-full bg-dark-900 flex items-center justify-center">
+                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full bg-gradient-to-br from-purple-500/30 to-cyan-500/30 flex items-center justify-center animate-spin-slow hover:from-purple-500/40 hover:to-cyan-500/40 transition-colors duration-300">
+                                <div className="w-32 h-32 rounded-full glass flex items-center justify-center">
                                     <span className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-purple">
                                         &lt;/&gt;
                                     </span>
@@ -282,8 +327,8 @@ const Hero = () => {
                 style={{ animationDelay: "1.5s" }}
             >
                 <span className="text-gray-400 text-sm mb-2">Scroll Down</span>
-                <div className="w-6 h-10 border-2 border-purple-500/50 rounded-full flex justify-center p-1">
-                    <div className="w-1.5 h-3 bg-purple-500 rounded-full animate-bounce"></div>
+                <div className="w-6 h-10 border-2 border-purple-500/50 rounded-full flex justify-center p-1 hover:border-purple-500 transition-colors duration-300">
+                    <div className="w-1.5 h-3 bg-gradient-purple rounded-full animate-bounce"></div>
                 </div>
             </div>
         </section>
