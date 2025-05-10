@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react"
 import { useDimension } from "../context/DimensionContext"
 
 const SpiderverseAudio = () => {
-    const { isSpiderVerse, isTransitioning } = useDimension()
+    const { isSpiderVerse, isTransitioning, isAudioMuted } = useDimension()
     const audioRefs = useRef({
         transition: null,
         background: null,
@@ -65,20 +65,27 @@ const SpiderverseAudio = () => {
 
     // Handle dimension transition sound
     useEffect(() => {
-        if (isTransitioning && audioRefs.current.transition) {
+        if (isTransitioning && audioRefs.current.transition && !isAudioMuted) {
             audioRefs.current.transition.currentTime = 0
             audioRefs.current.transition
                 .play()
                 .catch((e) => console.log("Audio play failed:", e))
         }
-    }, [isTransitioning])
+    }, [isTransitioning, isAudioMuted])
 
     // Handle background music
     useEffect(() => {
         const bgAudio = audioRefs.current.background
         if (!bgAudio) return
 
-        if (isSpiderVerse) {
+        // Pause if muted or not in Spider-Verse
+        if (isAudioMuted || !isSpiderVerse) {
+            bgAudio.pause()
+            return
+        }
+
+        // Play if in Spider-Verse and not muted
+        if (isSpiderVerse && !isAudioMuted) {
             bgAudio
                 .play()
                 .catch((e) => console.log("Background audio play failed:", e))
@@ -112,14 +119,12 @@ const SpiderverseAudio = () => {
                 // Clean up fade out interval
                 setTimeout(() => clearInterval(fadeOut), 2000)
             }
-        } else {
-            bgAudio.pause()
         }
-    }, [isSpiderVerse])
+    }, [isSpiderVerse, isAudioMuted])
 
     // Add event listeners for interactive sounds
     useEffect(() => {
-        if (!isSpiderVerse) return
+        if (!isSpiderVerse || isAudioMuted) return
 
         // Play hover sound on buttons and links
         const handleMouseEnter = (e) => {
@@ -167,7 +172,7 @@ const SpiderverseAudio = () => {
             document.removeEventListener("mouseenter", handleMouseEnter, true)
             document.removeEventListener("click", handleClick, true)
         }
-    }, [isSpiderVerse])
+    }, [isSpiderVerse, isAudioMuted])
 
     // Expose audio API to window for other components to use
     useEffect(() => {
@@ -175,7 +180,7 @@ const SpiderverseAudio = () => {
 
         window.spiderverseAudio = {
             playWebShoot: () => {
-                if (audioRefs.current.webShoot) {
+                if (audioRefs.current.webShoot && !isAudioMuted) {
                     audioRefs.current.webShoot.currentTime = 0
                     audioRefs.current.webShoot
                         .play()
@@ -185,7 +190,7 @@ const SpiderverseAudio = () => {
                 }
             },
             playClick: () => {
-                if (audioRefs.current.click) {
+                if (audioRefs.current.click && !isAudioMuted) {
                     audioRefs.current.click.currentTime = 0
                     audioRefs.current.click
                         .play()
@@ -195,7 +200,7 @@ const SpiderverseAudio = () => {
                 }
             },
             playHover: () => {
-                if (audioRefs.current.hover) {
+                if (audioRefs.current.hover && !isAudioMuted) {
                     audioRefs.current.hover.currentTime = 0
                     audioRefs.current.hover
                         .play()
@@ -204,12 +209,13 @@ const SpiderverseAudio = () => {
                         )
                 }
             },
+            isMuted: () => isAudioMuted,
         }
 
         return () => {
             delete window.spiderverseAudio
         }
-    }, [isSpiderVerse])
+    }, [isSpiderVerse, isAudioMuted])
 
     return null // This component doesn't render anything
 }

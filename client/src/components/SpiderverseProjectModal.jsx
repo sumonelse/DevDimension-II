@@ -8,6 +8,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
     const { activateSpiderSense } = useDimension()
     const [currentPanel, setCurrentPanel] = useState(0)
     const [isAnimating, setIsAnimating] = useState(false)
+    const [isMuted, setIsMuted] = useState(false)
 
     // Define comic panels for the project
     const comicPanels = [
@@ -31,8 +32,8 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
             // Prevent scrolling when modal is open
             document.body.style.overflow = "hidden"
 
-            // Play sound effect
-            if (window.spiderverseAudio) {
+            // Play sound effect if not muted
+            if (!isMuted && window.spiderverseAudio) {
                 window.spiderverseAudio.playWebShoot()
             }
         }
@@ -60,6 +61,37 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
         }
     }, [isOpen, onClose])
 
+    // Toggle mute state
+    const toggleMute = () => {
+        setIsMuted((prev) => !prev)
+
+        // If we're unmuting, play a sound to confirm audio is working
+        if (isMuted && window.spiderverseAudio) {
+            setTimeout(() => {
+                window.spiderverseAudio.playClick()
+            }, 100)
+        }
+    }
+
+    // Play sound if not muted
+    const playSound = (soundType) => {
+        if (isMuted || !window.spiderverseAudio) return
+
+        switch (soundType) {
+            case "click":
+                window.spiderverseAudio.playClick()
+                break
+            case "hover":
+                window.spiderverseAudio.playHover()
+                break
+            case "webshoot":
+                window.spiderverseAudio.playWebShoot()
+                break
+            default:
+                window.spiderverseAudio.playClick()
+        }
+    }
+
     // Navigate to next panel
     const nextPanel = () => {
         if (isAnimating) return
@@ -73,9 +105,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
         }, 300)
 
         // Play sound effect
-        if (window.spiderverseAudio) {
-            window.spiderverseAudio.playClick()
-        }
+        playSound("click")
     }
 
     // Navigate to previous panel
@@ -89,9 +119,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
         }, 300)
 
         // Play sound effect
-        if (window.spiderverseAudio) {
-            window.spiderverseAudio.playClick()
-        }
+        playSound("click")
     }
 
     if (!isOpen || !project) return null
@@ -138,33 +166,69 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                         />
                     </h2>
 
-                    {/* Close button */}
-                    <button
-                        onClick={onClose}
-                        className="relative z-10 w-10 h-10 rounded-full bg-white text-spiderverse-red flex items-center justify-center border-2 border-black transform transition-transform hover:scale-110"
-                        aria-label="Close modal"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={3}
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-2 relative z-10">
+                        {/* Mute/Unmute button */}
+                        <button
+                            onClick={toggleMute}
+                            className="relative z-10 w-10 h-10 rounded-full bg-white text-spiderverse-blue flex items-center justify-center border-2 border-black transform transition-transform hover:scale-110"
+                            aria-label={
+                                isMuted ? "Unmute sounds" : "Mute sounds"
+                            }
+                            title={isMuted ? "Unmute sounds" : "Mute sounds"}
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18L18 6M6 6l12 12"
-                            />
-                        </svg>
-                    </button>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                            >
+                                {isMuted ? (
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
+                                    />
+                                ) : (
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a9.99 9.99 0 011.414 1.414M12 6a7.975 7.975 0 00-5.657 2.343m0 0a9.99 9.99 0 00-1.414 1.414M12 6c-2.583 0-4.824 1.22-6.243 3.122m0 0A9.925 9.925 0 004 12c0 .998.146 1.962.418 2.878M12 6a9.925 9.925 0 00-6.243 5.878M12 6c2.583 0 4.824 1.22 6.243 3.122m0 0A9.925 9.925 0 0120 12c0 .998-.146 1.962-.418 2.878m-6.243-3.122a9.925 9.925 0 00-6.243 5.878M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                                    />
+                                )}
+                            </svg>
+                        </button>
+
+                        {/* Close button */}
+                        <button
+                            onClick={onClose}
+                            className="relative z-10 w-10 h-10 rounded-full bg-white text-spiderverse-red flex items-center justify-center border-2 border-black transform transition-transform hover:scale-110"
+                            aria-label="Close modal"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={3}
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 {/* Comic book content */}
                 <div className="p-6 bg-white flex-1 overflow-y-auto comic-scrollbar">
-                    {/* Comic panels navigation - sticky and scrollable */}
-                    <div className="sticky top-0 z-10 bg-white border-b-2 border-black pb-2 mb-6">
+                    {/* Comic panels navigation - scrollable */}
+                    <div className="border-b-2 border-black pb-2 mb-6">
                         {/* Tabs container */}
                         <div className="overflow-x-auto scrollbar-hide md:comic-scrollbar relative">
                             {/* Scroll indicator for mobile */}

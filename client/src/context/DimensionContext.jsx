@@ -23,6 +23,9 @@ export const DimensionProvider = ({ children }) => {
     // State for multiverse awareness (easter egg)
     const [multiverseAwareness, setMultiverseAwareness] = useState(0)
 
+    // State for audio mute
+    const [isAudioMuted, setIsAudioMuted] = useState(false)
+
     // Function to toggle between dimensions with transition effect
     const toggleDimension = () => {
         if (isTransitioning) return // Prevent multiple transitions
@@ -102,7 +105,22 @@ export const DimensionProvider = ({ children }) => {
         }, 5000)
     }
 
-    // Check for saved dimension preference
+    // Toggle audio mute
+    const toggleAudioMute = () => {
+        setIsAudioMuted((prev) => !prev)
+
+        // Store preference in localStorage
+        localStorage.setItem("spiderverse-audio-muted", !isAudioMuted)
+
+        // If we're unmuting, play a sound to confirm audio is working
+        if (isAudioMuted && window.spiderverseAudio) {
+            setTimeout(() => {
+                window.spiderverseAudio.playClick()
+            }, 100)
+        }
+    }
+
+    // Check for saved preferences
     useEffect(() => {
         const savedDimension = localStorage.getItem("spiderverse-dimension")
         if (savedDimension) {
@@ -113,6 +131,12 @@ export const DimensionProvider = ({ children }) => {
         const savedAwareness = localStorage.getItem("multiverse-awareness")
         if (savedAwareness) {
             setMultiverseAwareness(parseInt(savedAwareness, 10))
+        }
+
+        // Check for saved audio preference
+        const savedAudioMuted = localStorage.getItem("spiderverse-audio-muted")
+        if (savedAudioMuted !== null) {
+            setIsAudioMuted(savedAudioMuted === "true")
         }
     }, [])
 
@@ -135,6 +159,8 @@ export const DimensionProvider = ({ children }) => {
         spiderSenseActive,
         activateSpiderSense,
         multiverseAwareness,
+        isAudioMuted,
+        toggleAudioMute,
     }
 
     return (
