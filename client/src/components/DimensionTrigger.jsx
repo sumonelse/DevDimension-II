@@ -75,16 +75,16 @@ const DimensionTrigger = () => {
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-6 w-6"
-                        fill="none"
                         viewBox="0 0 24 24"
+                        fill="none"
                         stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                     >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                        />
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M8 12h8" />
+                        <path d="M12 8v8" />
                     </svg>
                 ) : (
                     // Enter Spider-Verse icon (spider web)
@@ -92,9 +92,14 @@ const DimensionTrigger = () => {
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-6 w-6"
                         viewBox="0 0 24 24"
-                        fill="currentColor"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
                     >
-                        <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-6 17c1.513-6.587 7-7.778 7-7.778v-2.222l5 5-5 5v-2.222s-5.448-.97-7 2.222z" />
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 2v20M2 12h20M2.63 2.63l18.74 18.74M21.37 2.63L2.63 21.37" />
+                        <circle cx="12" cy="12" r="6" />
+                        <circle cx="12" cy="12" r="2" />
                     </svg>
                 )}
 

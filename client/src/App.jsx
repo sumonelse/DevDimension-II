@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react"
 import Navbar from "./components/Navbar"
+import SpiderverseNavbar from "./components/SpiderverseNavbar"
 import Hero from "./components/Hero"
 import SpiderverseHero from "./components/SpiderverseHero"
 import About from "./components/About"
+import SpiderverseAbout from "./components/SpiderverseAbout"
 import Skills from "./components/Skills"
+import SpiderverseSkills from "./components/SpiderverseSkills"
 import Projects from "./components/Projects"
 import SpiderverseProjects from "./components/SpiderverseProjects"
 import Contact from "./components/Contact"
@@ -88,14 +91,14 @@ const App = () => {
                     isLoaded ? "opacity-100" : "opacity-0"
                 }`}
             >
-                <Navbar />
+                {isSpiderVerse ? <SpiderverseNavbar /> : <Navbar />}
 
                 {/* Conditional rendering based on dimension */}
                 {isSpiderVerse ? (
                     <>
                         <SpiderverseHero />
-                        <About />
-                        <Skills />
+                        <SpiderverseAbout />
+                        <SpiderverseSkills />
                         <SpiderverseProjects />
                         <SpiderverseContact />
                         <SpiderverseFooter />

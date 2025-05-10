@@ -11,6 +11,8 @@ const DimensionTransition = () => {
         "ENTERING SPIDER-VERSE...",
         "REALITY SHIFTING...",
         "MULTIVERSE BREACH IMMINENT",
+        "SPIDER-SENSE TINGLING...",
+        "COMIC BOOK PHYSICS ACTIVATED",
     ]
 
     const exitingMessages = [
@@ -18,6 +20,8 @@ const DimensionTransition = () => {
         "REALITY STABILIZING...",
         "CLOSING DIMENSIONAL RIFT",
         "MULTIVERSE BREACH CONTAINED",
+        "RESTORING NORMAL PHYSICS...",
+        "SPIDER-SENSE FADING",
     ]
 
     // Change messages during transition
@@ -48,6 +52,12 @@ const DimensionTransition = () => {
             {/* Glitch overlay */}
             <div className="absolute inset-0 bg-black opacity-80 z-0"></div>
 
+            {/* Spider webs in corners */}
+            <div className="spider-web spider-web-corner absolute top-0 left-0 transform rotate-0 opacity-30"></div>
+            <div className="spider-web spider-web-corner absolute top-0 right-0 transform rotate-90 opacity-30"></div>
+            <div className="spider-web spider-web-corner absolute bottom-0 left-0 transform -rotate-90 opacity-30"></div>
+            <div className="spider-web spider-web-corner absolute bottom-0 right-0 transform rotate-180 opacity-30"></div>
+
             {/* Glitch lines */}
             <div className="absolute inset-0 overflow-hidden z-10">
                 {Array.from({ length: 20 }).map((_, i) => (
@@ -70,27 +80,48 @@ const DimensionTransition = () => {
             </div>
 
             {/* Color distortion overlays */}
-            <div className="absolute inset-0 bg-red-500 mix-blend-screen opacity-20 z-10"></div>
+            <div className="absolute inset-0 bg-spiderverse-red mix-blend-screen opacity-20 z-10"></div>
             <div
-                className="absolute inset-0 bg-blue-500 mix-blend-screen opacity-20 z-10"
+                className="absolute inset-0 bg-spiderverse-blue mix-blend-screen opacity-20 z-10"
                 style={{ transform: "translateX(-5px)" }}
             ></div>
+
+            {/* Comic book action words */}
+            <div className="action-word absolute top-[20%] left-[10%] opacity-30">
+                WHOOSH!
+            </div>
+            <div className="action-word absolute bottom-[20%] right-[10%] opacity-30">
+                CRACK!
+            </div>
 
             {/* Warning message */}
             <div className="relative z-20 text-center p-8 max-w-2xl">
                 <div
-                    className="glitch-text text-white text-4xl md:text-6xl font-bold mb-6"
+                    className="dimension-glitch text-white text-4xl md:text-6xl font-bold mb-6 font-['Bangers']"
                     data-text={message}
                 >
                     {message}
                 </div>
 
-                <div className="text-white text-xl animate-pulse">
+                <div className="text-white text-xl animate-pulse font-['Comic_Neue']">
                     {isSpiderVerse
                         ? "Closing dimensional portal..."
                         : "Opening dimensional portal..."}
                 </div>
+
+                {/* Spider-Man style divider */}
+                <div className="spidey-divider my-6"></div>
+
+                {/* Warning text */}
+                <div className="warning-text text-lg mt-4">
+                    {isSpiderVerse
+                        ? "CAUTION: RETURNING TO NORMAL DIMENSION"
+                        : "WARNING: ENTERING SPIDER-VERSE DIMENSION"}
+                </div>
             </div>
+
+            {/* Portal effect */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border-8 border-white opacity-10 portal-open"></div>
         </div>
     )
 }
