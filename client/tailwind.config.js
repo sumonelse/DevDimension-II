@@ -78,6 +78,13 @@ export default {
                 "slide-in-left": "slideInLeft 0.5s ease-out forwards",
                 "fade-in": "fadeIn 0.5s ease-out forwards",
                 "scale-up": "scaleUp 0.5s ease-out forwards",
+                // Spider-Verse animations
+                "bounce-slow": "bounce 3s infinite",
+                "spider-sense": "spiderSense 1s ease-in-out infinite",
+                "web-swing": "webSwing 2s ease-in-out infinite",
+                "spider-crawl": "spiderCrawl 3s ease-in-out infinite",
+                "comic-flip": "comicFlip 0.5s ease-in-out forwards",
+                "dimension-shift": "dimensionShift 5s ease infinite",
             },
             keyframes: {
                 bounce: {
@@ -124,6 +131,65 @@ export default {
                 scaleUp: {
                     "0%": { transform: "scale(0.8)", opacity: 0 },
                     "100%": { transform: "scale(1)", opacity: 1 },
+                },
+                // Spider-Verse keyframes
+                spiderSense: {
+                    "0%": { boxShadow: "0 0 0 0 rgba(255, 204, 0, 0.7)" },
+                    "70%": { boxShadow: "0 0 0 15px rgba(255, 204, 0, 0)" },
+                    "100%": { boxShadow: "0 0 0 0 rgba(255, 204, 0, 0)" },
+                },
+                webSwing: {
+                    "0%": { transform: "rotate(15deg) translateY(0)" },
+                    "50%": { transform: "rotate(-15deg) translateY(-20px)" },
+                    "100%": { transform: "rotate(15deg) translateY(0)" },
+                },
+                spiderCrawl: {
+                    "0%": {
+                        transform: "translateX(0) translateY(0) rotate(0deg)",
+                    },
+                    "25%": {
+                        transform:
+                            "translateX(10px) translateY(-5px) rotate(5deg)",
+                    },
+                    "50%": {
+                        transform:
+                            "translateX(0) translateY(-10px) rotate(0deg)",
+                    },
+                    "75%": {
+                        transform:
+                            "translateX(-10px) translateY(-5px) rotate(-5deg)",
+                    },
+                    "100%": {
+                        transform: "translateX(0) translateY(0) rotate(0deg)",
+                    },
+                },
+                comicFlip: {
+                    "0%": { transform: "perspective(1200px) rotateY(0)" },
+                    "100%": {
+                        transform: "perspective(1200px) rotateY(180deg)",
+                    },
+                },
+                dimensionShift: {
+                    "0%": {
+                        transform: "translateX(0) scale(1)",
+                        filter: "hue-rotate(0deg)",
+                    },
+                    "25%": {
+                        transform: "translateX(5px) scale(1.02)",
+                        filter: "hue-rotate(45deg)",
+                    },
+                    "50%": {
+                        transform: "translateX(-3px) scale(0.98)",
+                        filter: "hue-rotate(90deg)",
+                    },
+                    "75%": {
+                        transform: "translateX(2px) scale(1.01)",
+                        filter: "hue-rotate(45deg)",
+                    },
+                    "100%": {
+                        transform: "translateX(0) scale(1)",
+                        filter: "hue-rotate(0deg)",
+                    },
                 },
             },
             backgroundImage: {

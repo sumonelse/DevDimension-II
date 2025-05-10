@@ -14,8 +14,19 @@ export const DimensionProvider = ({ children }) => {
     // State to track if transition is happening
     const [isTransitioning, setIsTransitioning] = useState(false)
 
+    // State for dimension glitches
+    const [dimensionGlitches, setDimensionGlitches] = useState([])
+
+    // State for spider-sense
+    const [spiderSenseActive, setSpiderSenseActive] = useState(false)
+
+    // State for multiverse awareness (easter egg)
+    const [multiverseAwareness, setMultiverseAwareness] = useState(0)
+
     // Function to toggle between dimensions with transition effect
     const toggleDimension = () => {
+        if (isTransitioning) return // Prevent multiple transitions
+
         // Start transition
         setIsTransitioning(true)
 
@@ -37,6 +48,58 @@ export const DimensionProvider = ({ children }) => {
                 setIsTransitioning(false)
             }, 1000)
         }, 1500)
+
+        // Increase multiverse awareness
+        setMultiverseAwareness((prev) => Math.min(prev + 1, 10))
+    }
+
+    // Random dimension glitches
+    useEffect(() => {
+        if (!isSpiderVerse) return
+
+        // Create random glitches in the Spider-Verse dimension
+        const glitchInterval = setInterval(() => {
+            // 5% chance of a glitch
+            if (Math.random() > 0.95) {
+                // Create a new glitch
+                const newGlitch = {
+                    id: Date.now(),
+                    x: Math.random() * 100, // Random position (0-100%)
+                    y: Math.random() * 100, // Random position (0-100%)
+                    duration: Math.random() * 2 + 0.5, // Random duration (0.5-2.5s)
+                    size: Math.random() * 100 + 50, // Random size (50-150px)
+                    type: Math.random() > 0.5 ? "visual" : "audio", // Random type
+                }
+
+                setDimensionGlitches((prev) => [...prev, newGlitch])
+
+                // Remove glitch after it's done
+                setTimeout(() => {
+                    setDimensionGlitches((prev) =>
+                        prev.filter((glitch) => glitch.id !== newGlitch.id)
+                    )
+                }, newGlitch.duration * 1000)
+
+                // Play glitch sound if it's an audio glitch
+                if (newGlitch.type === "audio" && window.spiderverseAudio) {
+                    window.spiderverseAudio.playClick()
+                }
+            }
+        }, 5000) // Check every 5 seconds
+
+        return () => clearInterval(glitchInterval)
+    }, [isSpiderVerse])
+
+    // Spider-sense feature
+    const activateSpiderSense = () => {
+        if (!isSpiderVerse || spiderSenseActive) return
+
+        setSpiderSenseActive(true)
+
+        // Deactivate after 5 seconds
+        setTimeout(() => {
+            setSpiderSenseActive(false)
+        }, 5000)
     }
 
     // Check for saved dimension preference
@@ -45,6 +108,12 @@ export const DimensionProvider = ({ children }) => {
         if (savedDimension) {
             setIsSpiderVerse(savedDimension === "true")
         }
+
+        // Check for saved multiverse awareness
+        const savedAwareness = localStorage.getItem("multiverse-awareness")
+        if (savedAwareness) {
+            setMultiverseAwareness(parseInt(savedAwareness, 10))
+        }
     }, [])
 
     // Save dimension preference when it changes
@@ -52,16 +121,51 @@ export const DimensionProvider = ({ children }) => {
         localStorage.setItem("spiderverse-dimension", isSpiderVerse)
     }, [isSpiderVerse])
 
+    // Save multiverse awareness when it changes
+    useEffect(() => {
+        localStorage.setItem("multiverse-awareness", multiverseAwareness)
+    }, [multiverseAwareness])
+
     // Context value
     const value = {
         isSpiderVerse,
         isTransitioning,
         toggleDimension,
+        dimensionGlitches,
+        spiderSenseActive,
+        activateSpiderSense,
+        multiverseAwareness,
     }
 
     return (
         <DimensionContext.Provider value={value}>
             {children}
+
+            {/* Render dimension glitches */}
+            {dimensionGlitches.map((glitch) => (
+                <div
+                    key={glitch.id}
+                    className="fixed pointer-events-none z-50"
+                    style={{
+                        left: `${glitch.x}%`,
+                        top: `${glitch.y}%`,
+                        width: `${glitch.size}px`,
+                        height: `${glitch.size}px`,
+                        animation: `dimensionGlitch ${glitch.duration}s ease-in-out`,
+                    }}
+                >
+                    {glitch.type === "visual" && (
+                        <div className="w-full h-full bg-white mix-blend-difference"></div>
+                    )}
+                </div>
+            ))}
+
+            {/* Spider-sense overlay */}
+            {spiderSenseActive && (
+                <div className="fixed inset-0 pointer-events-none z-40 bg-yellow-500/20 animate-pulse">
+                    <div className="absolute inset-0 spider-web spider-web-full opacity-20"></div>
+                </div>
+            )}
         </DimensionContext.Provider>
     )
 }
