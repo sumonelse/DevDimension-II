@@ -60,7 +60,7 @@
 .light-theme .bg-dark-950,
 .light-theme .bg-dark-900,
 .light-theme .bg-dark-800 {
-    background-color: transparent !important;
+    background-color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .light-theme .border-dark-800 {
@@ -81,8 +81,55 @@
     border: 1px solid rgba(124, 58, 237, 0.2) !important;
 }
 
+.light-theme .bg-dark-900\/80 {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
 .light-theme .project-card {
     background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Fix for skill tags in light mode */
+.light-theme [class*="bg-dark-800"] {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Fix for skill tag hover states in light mode */
+.light-theme [class*="hover:bg-purple-500/10"]:hover,
+.light-theme [class*="hover:bg-cyan-500/10"]:hover,
+.light-theme [class*="hover:bg-pink-500/10"]:hover {
+    background-color: rgba(124, 58, 237, 0.1) !important;
+}
+
+/* Fix for skill meter in light mode */
+.light-theme .bg-dark-900\/90 {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.light-theme .bg-dark-700 {
+    background-color: rgba(226, 232, 240, 0.8) !important;
+}
+
+/* Fix for project cards in light mode */
+.light-theme .from-dark-900 {
+    --tw-gradient-from: rgba(255, 255, 255, 0.8) !important;
+}
+
+.light-theme .via-purple-900\/20,
+.light-theme .via-cyan-900\/20,
+.light-theme .via-pink-900\/20 {
+    --tw-gradient-stops: var(--tw-gradient-from), rgba(124, 58, 237, 0.1) !important;
+}
+
+.light-theme .to-purple-800\/30,
+.light-theme .to-cyan-800\/30,
+.light-theme .to-pink-800\/30 {
+    --tw-gradient-to: rgba(124, 58, 237, 0.05) !important;
+}
+
+/* Fix for project card buttons in light mode */
+.light-theme .group:hover .bg-dark-900 {
+    background-color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .light-theme .contact-form input,
