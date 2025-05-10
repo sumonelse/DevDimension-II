@@ -9,6 +9,7 @@ import Footer from "./components/Footer"
 import ThemeToggle from "./components/ThemeToggle"
 import ScrollToTop from "./components/ScrollToTop"
 import AnimatedBackground from "./components/AnimatedBackground"
+import CompetitiveProgramming from "./components/CompetitiveProgramming"
 
 const App = () => {
     const [isLoaded, setIsLoaded] = useState(false)
@@ -74,6 +75,7 @@ const App = () => {
                 <Hero />
                 <About />
                 <Skills />
+                {/* <CompetitiveProgramming /> */}
                 <Projects />
                 <Contact />
                 <Footer />

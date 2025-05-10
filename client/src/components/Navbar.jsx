@@ -91,6 +91,7 @@ const Navbar = () => {
     const navLinks = [
         { href: "#about", label: "About" },
         { href: "#skills", label: "Skills" },
+        // { href: "#competitive-programming", label: "CP Skills" },
         { href: "#projects", label: "Projects" },
         { href: "#contact", label: "Contact" },
     ]

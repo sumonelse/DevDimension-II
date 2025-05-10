@@ -135,43 +135,66 @@ const Hero = () => {
                                 ,
                                 <span className="text-cyan-500 font-medium hover:text-cyan-400 transition-colors duration-300 relative group">
                                     {" "}
-                                    real-world applications
+                                    algorithmic thinking
                                     <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-cyan-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                                 </span>
                                 ,
                                 <span className="text-pink-500 font-medium hover:text-pink-400 transition-colors duration-300 relative group">
                                     {" "}
-                                    problem-solving
+                                    efficient problem-solving
                                     <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-pink-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                                 </span>
                                 ,
                                 <span className="text-amber-500 font-medium hover:text-amber-400 transition-colors duration-300 relative group">
                                     {" "}
-                                    teamwork
+                                    optimized solutions
                                     <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-amber-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                                 </span>
                                 , and
                                 <span className="text-emerald-500 font-medium hover:text-emerald-400 transition-colors duration-300 relative group">
                                     {" "}
-                                    lifelong learning
+                                    real-world applications
                                     <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-emerald-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                                 </span>
                                 .
                             </p>
 
-                            {/* Simplified CTA buttons */}
+                            {/* Enhanced CTA buttons with CP highlight */}
                             <div
                                 className="flex flex-wrap gap-4 justify-center animate-slide-up"
                                 style={{ animationDelay: "0.8s" }}
                             >
-                                <a
-                                    href="#projects"
+                                {/* <a
+                                    href="#competitive-programming"
                                     className="group px-7 py-3.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-medium rounded-full transition-all duration-500 hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
                                 >
                                     <span className="absolute top-0 left-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></span>
                                     <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-600 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></span>
                                     <span className="relative z-10 flex items-center">
-                                        View My Work
+                                        Competitive Programming
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M13 10V3L4 14h7v7l9-11h-7z"
+                                            />
+                                        </svg>
+                                    </span>
+                                </a> */}
+                                <a
+                                    href="#projects"
+                                    className="group px-7 py-3.5 glass border border-pink-500/30 font-medium rounded-full transition-all duration-500 hover:border-pink-400 hover:bg-pink-500/10 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
+                                >
+                                    <span className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-500/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
+                                    <span className="relative z-10 flex items-center text-pink-400">
+                                        View My Projects
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
