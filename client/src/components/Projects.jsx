@@ -1,75 +1,169 @@
 import React, { useState, useEffect } from "react"
+import ProjectModal from "./ProjectModal"
 
 const Projects = () => {
     const [activeFilter, setActiveFilter] = useState("all")
     const [animatedItems, setAnimatedItems] = useState([])
+    const [selectedProject, setSelectedProject] = useState(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const openProjectModal = (project) => {
+        setSelectedProject(project)
+        setIsModalOpen(true)
+    }
+
+    const closeProjectModal = () => {
+        setIsModalOpen(false)
+        // Clear selected project after animation completes
+        setTimeout(() => {
+            setSelectedProject(null)
+        }, 300)
+    }
 
     const projects = [
         {
-            title: "E-Commerce Platform",
+            title: "ShopEase E-Commerce",
             description:
-                "A full-stack e-commerce application with user authentication, product management, and payment integration.",
-            technologies: ["React", "Node.js", "MongoDB", "Express"],
+                "A comprehensive e-commerce platform with advanced features including user authentication, product filtering, cart management, payment processing with Stripe, and order tracking. Implemented admin dashboard for inventory and order management.",
+            technologies: [
+                "React",
+                "Node.js",
+                "MongoDB",
+                "Express",
+                "Redux",
+                "Stripe API",
+            ],
             category: "fullstack",
             color: "purple",
-            demoLink: "#",
-            codeLink: "#",
+            demoLink: "https://shopease-demo.example.com",
+            codeLink: "https://github.com/sumitmaurya/shopease",
             image: "ecommerce-placeholder.jpg",
+            highlights: [
+                "Implemented JWT authentication with refresh tokens",
+                "Built responsive UI with Material UI components",
+                "Integrated real-time inventory updates with Socket.io",
+                "Achieved 95% Lighthouse performance score",
+            ],
         },
         {
-            title: "Task Management System",
+            title: "TaskCollab Pro",
             description:
-                "A collaborative task management tool with real-time updates and team collaboration features.",
-            technologies: ["Next.js", "Socket.io", "MongoDB", "Express"],
+                "A collaborative task management application with real-time updates, team workspaces, and progress tracking. Features include drag-and-drop task organization, deadline notifications, file attachments, and detailed analytics dashboard.",
+            technologies: [
+                "Next.js",
+                "Socket.io",
+                "MongoDB",
+                "Express",
+                "Chart.js",
+                "AWS S3",
+            ],
             category: "fullstack",
             color: "cyan",
-            demoLink: "#",
-            codeLink: "#",
+            demoLink: "https://taskcollab.example.com",
+            codeLink: "https://github.com/sumitmaurya/taskcollab",
             image: "task-manager-placeholder.jpg",
+            highlights: [
+                "Implemented real-time collaboration with Socket.io",
+                "Built custom drag-and-drop kanban board",
+                "Integrated AWS S3 for file storage",
+                "Optimized with Next.js SSR for improved SEO",
+            ],
         },
         {
-            title: "Weather Dashboard",
+            title: "WeatherNow Dashboard",
             description:
-                "A responsive weather application that provides real-time weather data and forecasts.",
-            technologies: ["React", "Weather API", "CSS"],
+                "An interactive weather application providing real-time weather data, 7-day forecasts, and historical weather patterns. Features include location-based weather, interactive maps, severe weather alerts, and customizable dashboard widgets.",
+            technologies: [
+                "React",
+                "OpenWeather API",
+                "Mapbox",
+                "CSS Modules",
+                "PWA",
+            ],
             category: "frontend",
             color: "pink",
-            demoLink: "#",
-            codeLink: "#",
+            demoLink: "https://weathernow.example.com",
+            codeLink: "https://github.com/sumitmaurya/weathernow",
             image: "weather-placeholder.jpg",
+            highlights: [
+                "Implemented as Progressive Web App with offline capabilities",
+                "Built interactive weather maps with Mapbox",
+                "Optimized API calls with caching strategies",
+                "Added dark mode and accessibility features",
+            ],
         },
         {
-            title: "Microservice Architecture",
+            title: "MicroServe Architecture",
             description:
-                "A system of microservices for handling different aspects of a business application.",
-            technologies: ["Docker", "Node.js", "RabbitMQ", "MongoDB"],
+                "A scalable microservice architecture for a content delivery platform. Implemented service discovery, API gateway, load balancing, circuit breaking, and distributed logging. Containerized with Docker and orchestrated with Kubernetes.",
+            technologies: [
+                "Docker",
+                "Kubernetes",
+                "Node.js",
+                "RabbitMQ",
+                "MongoDB",
+                "Redis",
+                "ELK Stack",
+            ],
             category: "backend",
             color: "purple",
-            demoLink: "#",
-            codeLink: "#",
+            demoLink: "https://microserve-docs.example.com",
+            codeLink: "https://github.com/sumitmaurya/microserve",
             image: "microservice-placeholder.jpg",
+            highlights: [
+                "Implemented event-driven architecture with RabbitMQ",
+                "Built centralized logging with ELK stack",
+                "Designed CI/CD pipeline with GitHub Actions",
+                "Achieved 99.9% service uptime with auto-scaling",
+            ],
         },
         {
-            title: "Portfolio Website",
+            title: "DevPortfolio",
             description:
-                "A modern, responsive portfolio website showcasing skills and projects.",
-            technologies: ["React", "Tailwind CSS", "Vite"],
+                "A modern, responsive portfolio website with interactive UI elements, animations, and dark/light mode. Features include dynamic content loading, contact form with validation, and optimized performance metrics.",
+            technologies: [
+                "React",
+                "Tailwind CSS",
+                "Vite",
+                "Framer Motion",
+                "EmailJS",
+            ],
             category: "frontend",
             color: "cyan",
-            demoLink: "#",
-            codeLink: "#",
+            demoLink: "https://sumitmaurya.dev",
+            codeLink: "https://github.com/sumitmaurya/portfolio",
             image: "portfolio-placeholder.jpg",
+            highlights: [
+                "Implemented smooth animations with Framer Motion",
+                "Built custom theme system with Tailwind CSS",
+                "Optimized for performance with 100% Lighthouse score",
+                "Added SEO optimizations and meta tags",
+            ],
         },
         {
-            title: "RESTful API Service",
+            title: "SecureAPI Service",
             description:
-                "A comprehensive API service with authentication, rate limiting, and data validation.",
-            technologies: ["Node.js", "Express", "MongoDB", "JWT"],
+                "A production-ready RESTful API service with comprehensive security features including OAuth2 authentication, role-based access control, rate limiting, request validation, and detailed API documentation with Swagger.",
+            technologies: [
+                "Node.js",
+                "Express",
+                "MongoDB",
+                "JWT",
+                "OAuth2",
+                "Swagger",
+                "Jest",
+            ],
             category: "backend",
             color: "pink",
-            demoLink: "#",
-            codeLink: "#",
+            demoLink: "https://api-docs.example.com",
+            codeLink: "https://github.com/sumitmaurya/secureapi",
             image: "api-placeholder.jpg",
+            highlights: [
+                "Implemented OAuth2 authentication flow",
+                "Built comprehensive test suite with Jest",
+                "Added rate limiting and request validation",
+                "Created detailed API documentation with Swagger",
+            ],
         },
     ]
 
@@ -214,71 +308,62 @@ const Projects = () => {
                                         >
                                             {project.title}
                                         </h3>
-                                        <p className="text-gray-300 mb-5 flex-grow leading-relaxed">
+                                        <p className="text-gray-300 mb-4 flex-grow leading-relaxed line-clamp-3">
                                             {project.description}
                                         </p>
 
                                         <div className="flex flex-wrap gap-2 mb-6">
-                                            {project.technologies.map(
-                                                (tech, techIndex) => (
+                                            {project.technologies
+                                                .slice(0, 3)
+                                                .map((tech, techIndex) => (
                                                     <span
                                                         key={techIndex}
                                                         className={`px-3 py-1.5 bg-dark-900 text-${project.color}-400 rounded-lg text-xs font-medium border border-${project.color}-500/20 hover:border-${project.color}-500/40 transition-colors duration-300`}
                                                     >
                                                         {tech}
                                                     </span>
-                                                )
+                                                ))}
+                                            {project.technologies.length >
+                                                3 && (
+                                                <span
+                                                    className={`px-3 py-1.5 bg-dark-900 text-${project.color}-400 rounded-lg text-xs font-medium border border-${project.color}-500/20 transition-colors duration-300`}
+                                                >
+                                                    +
+                                                    {project.technologies
+                                                        .length - 3}
+                                                </span>
                                             )}
                                         </div>
 
-                                        <div className="flex gap-3">
-                                            <a
-                                                href={project.demoLink}
-                                                className={`px-5 py-2.5 bg-gradient-to-r from-${project.color}-600 to-${project.color}-500 hover:from-${project.color}-500 hover:to-${project.color}-400 text-white rounded-lg text-sm font-medium transition-all duration-300 flex items-center shadow-md shadow-${project.color}-500/20 hover:shadow-lg hover:shadow-${project.color}-500/30`}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                openProjectModal(project)
+                                            }}
+                                            className={`w-full px-5 py-2.5 bg-gradient-to-r from-${project.color}-600 to-${project.color}-500 hover:from-${project.color}-500 hover:to-${project.color}-400 text-white rounded-lg text-sm font-medium transition-all duration-300 flex items-center justify-center shadow-md shadow-${project.color}-500/20 hover:shadow-lg hover:shadow-${project.color}-500/30`}
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-4 w-4 mr-2"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
                                             >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-4 w-4 mr-2"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                                    />
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                                    />
-                                                </svg>
-                                                Live Demo
-                                            </a>
-                                            <a
-                                                href={project.codeLink}
-                                                className={`px-5 py-2.5 bg-dark-900 border border-${project.color}-500/30 hover:border-${project.color}-500/60 text-white hover:text-${project.color}-400 rounded-lg text-sm font-medium transition-all duration-300 flex items-center`}
-                                            >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-4 w-4 mr-2"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                                                    />
-                                                </svg>
-                                                View Code
-                                            </a>
-                                        </div>
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                                />
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                                />
+                                            </svg>
+                                            View Project Details
+                                        </button>
                                     </div>
                                 </div>{" "}
                                 {/* Close tilt-card-inner */}
@@ -319,6 +404,13 @@ const Projects = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Project Modal */}
+            <ProjectModal
+                project={selectedProject}
+                isOpen={isModalOpen}
+                onClose={closeProjectModal}
+            />
         </section>
     )
 }

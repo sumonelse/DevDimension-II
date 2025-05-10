@@ -161,12 +161,12 @@ const Hero = () => {
 
                             {/* Enhanced CTA buttons with better hover effects */}
                             <div
-                                className="flex flex-wrap gap-5 justify-center animate-slide-up"
+                                className="flex flex-wrap gap-4 justify-center animate-slide-up"
                                 style={{ animationDelay: "0.8s" }}
                             >
                                 <a
                                     href="#projects"
-                                    className="group px-8 py-3.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-medium rounded-full transition-all duration-500 hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
+                                    className="group px-7 py-3.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-medium rounded-full transition-all duration-500 hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
                                 >
                                     <span className="absolute top-0 left-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></span>
                                     <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-600 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></span>
@@ -190,7 +190,7 @@ const Hero = () => {
                                 </a>
                                 <a
                                     href="#contact"
-                                    className="group px-8 py-3.5 glass border border-purple-500/30 font-medium rounded-full transition-all duration-500 hover:border-purple-400 hover:bg-purple-500/10 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
+                                    className="group px-7 py-3.5 glass border border-purple-500/30 font-medium rounded-full transition-all duration-500 hover:border-purple-400 hover:bg-purple-500/10 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
                                 >
                                     <span className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
                                     <span className="relative z-10 flex items-center">
@@ -207,6 +207,31 @@ const Hero = () => {
                                                 strokeLinejoin="round"
                                                 strokeWidth={2}
                                                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                            />
+                                        </svg>
+                                    </span>
+                                </a>
+                                <a
+                                    href="/resume.pdf"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group px-7 py-3.5 glass border border-cyan-500/30 font-medium rounded-full transition-all duration-500 hover:border-cyan-400 hover:bg-cyan-500/10 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
+                                >
+                                    <span className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
+                                    <span className="relative z-10 flex items-center text-cyan-400">
+                                        Download Resume
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 ml-2 group-hover:translate-y-1 transition-transform duration-300"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                             />
                                         </svg>
                                     </span>

@@ -420,6 +420,15 @@ pre {
     }
 }
 
+@keyframes progressAnimation {
+    0% {
+        transform: scaleX(0);
+    }
+    100% {
+        transform: scaleX(1);
+    }
+}
+
 .bg-gradient-radial {
     background-image: radial-gradient(
         circle at center,

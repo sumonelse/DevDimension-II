@@ -1,9 +1,10 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
 const Contact = () => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
+        subject: "",
         message: "",
     })
 
@@ -13,15 +14,96 @@ const Contact = () => {
         info: { error: false, msg: null },
     })
 
+    const [errors, setErrors] = useState({
+        name: "",
+        email: "",
+        message: "",
+    })
+
+    const [touched, setTouched] = useState({
+        name: false,
+        email: false,
+        message: false,
+    })
+
+    // Validate form on data change
+    useEffect(() => {
+        if (touched.name) validateName(formData.name)
+        if (touched.email) validateEmail(formData.email)
+        if (touched.message) validateMessage(formData.message)
+    }, [formData, touched])
+
+    const validateName = (name) => {
+        let error = ""
+        if (!name.trim()) {
+            error = "Name is required"
+        } else if (name.trim().length < 2) {
+            error = "Name must be at least 2 characters"
+        }
+        setErrors((prev) => ({ ...prev, name: error }))
+        return error === ""
+    }
+
+    const validateEmail = (email) => {
+        let error = ""
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!email.trim()) {
+            error = "Email is required"
+        } else if (!emailRegex.test(email)) {
+            error = "Please enter a valid email address"
+        }
+        setErrors((prev) => ({ ...prev, email: error }))
+        return error === ""
+    }
+
+    const validateMessage = (message) => {
+        let error = ""
+        if (!message.trim()) {
+            error = "Message is required"
+        } else if (message.trim().length < 10) {
+            error = "Message must be at least 10 characters"
+        }
+        setErrors((prev) => ({ ...prev, message: error }))
+        return error === ""
+    }
+
     const handleChange = (e) => {
+        const { id, value } = e.target
         setFormData({
             ...formData,
-            [e.target.id]: e.target.value,
+            [id]: value,
         })
+    }
+
+    const handleBlur = (e) => {
+        const { id } = e.target
+        setTouched((prev) => ({
+            ...prev,
+            [id]: true,
+        }))
+    }
+
+    const isFormValid = () => {
+        const nameValid = validateName(formData.name)
+        const emailValid = validateEmail(formData.email)
+        const messageValid = validateMessage(formData.message)
+        return nameValid && emailValid && messageValid
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
+
+        // Set all fields as touched to show validation errors
+        setTouched({
+            name: true,
+            email: true,
+            message: true,
+        })
+
+        if (!isFormValid()) {
+            return
+        }
+
         setFormStatus({
             submitting: true,
             submitted: false,
@@ -43,7 +125,15 @@ const Contact = () => {
             setFormData({
                 name: "",
                 email: "",
+                subject: "",
                 message: "",
+            })
+
+            // Reset touched state
+            setTouched({
+                name: false,
+                email: false,
+                message: false,
             })
 
             // Clear success message after 5 seconds
@@ -263,7 +353,11 @@ const Contact = () => {
                                 <div className="group">
                                     <label
                                         htmlFor="name"
-                                        className="block text-gray-400 mb-2 group-focus-within:text-cyan-400 transition-colors duration-300"
+                                        className={`block mb-2 transition-colors duration-300 ${
+                                            errors.name && touched.name
+                                                ? "text-pink-400"
+                                                : "text-gray-400 group-focus-within:text-cyan-400"
+                                        }`}
                                     >
                                         Name
                                     </label>
@@ -272,16 +366,29 @@ const Contact = () => {
                                         id="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full bg-dark-900 border border-dark-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
+                                        onBlur={handleBlur}
+                                        className={`w-full bg-dark-900 border rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 transition-all duration-300 ${
+                                            errors.name && touched.name
+                                                ? "border-pink-500/50 focus:ring-pink-500"
+                                                : "border-dark-600 focus:ring-cyan-500 focus:border-transparent"
+                                        }`}
                                         placeholder="Your name"
-                                        required
                                     />
+                                    {errors.name && touched.name && (
+                                        <p className="mt-1 text-pink-400 text-sm">
+                                            {errors.name}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="group">
                                     <label
                                         htmlFor="email"
-                                        className="block text-gray-400 mb-2 group-focus-within:text-cyan-400 transition-colors duration-300"
+                                        className={`block mb-2 transition-colors duration-300 ${
+                                            errors.email && touched.email
+                                                ? "text-pink-400"
+                                                : "text-gray-400 group-focus-within:text-cyan-400"
+                                        }`}
                                     >
                                         Email
                                     </label>
@@ -290,16 +397,46 @@ const Contact = () => {
                                         id="email"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className="w-full bg-dark-900 border border-dark-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
+                                        onBlur={handleBlur}
+                                        className={`w-full bg-dark-900 border rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 transition-all duration-300 ${
+                                            errors.email && touched.email
+                                                ? "border-pink-500/50 focus:ring-pink-500"
+                                                : "border-dark-600 focus:ring-cyan-500 focus:border-transparent"
+                                        }`}
                                         placeholder="Your email"
-                                        required
+                                    />
+                                    {errors.email && touched.email && (
+                                        <p className="mt-1 text-pink-400 text-sm">
+                                            {errors.email}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="group">
+                                    <label
+                                        htmlFor="subject"
+                                        className="block text-gray-400 mb-2 group-focus-within:text-cyan-400 transition-colors duration-300"
+                                    >
+                                        Subject (Optional)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="subject"
+                                        value={formData.subject}
+                                        onChange={handleChange}
+                                        className="w-full bg-dark-900 border border-dark-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
+                                        placeholder="Subject of your message"
                                     />
                                 </div>
 
                                 <div className="group">
                                     <label
                                         htmlFor="message"
-                                        className="block text-gray-400 mb-2 group-focus-within:text-cyan-400 transition-colors duration-300"
+                                        className={`block mb-2 transition-colors duration-300 ${
+                                            errors.message && touched.message
+                                                ? "text-pink-400"
+                                                : "text-gray-400 group-focus-within:text-cyan-400"
+                                        }`}
                                     >
                                         Message
                                     </label>
@@ -308,16 +445,49 @@ const Contact = () => {
                                         rows="5"
                                         value={formData.message}
                                         onChange={handleChange}
-                                        className="w-full bg-dark-900 border border-dark-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
+                                        onBlur={handleBlur}
+                                        className={`w-full bg-dark-900 border rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 transition-all duration-300 ${
+                                            errors.message && touched.message
+                                                ? "border-pink-500/50 focus:ring-pink-500"
+                                                : "border-dark-600 focus:ring-cyan-500 focus:border-transparent"
+                                        }`}
                                         placeholder="Your message"
-                                        required
                                     ></textarea>
+                                    {errors.message && touched.message && (
+                                        <p className="mt-1 text-pink-400 text-sm">
+                                            {errors.message}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <button
                                     type="submit"
-                                    className="w-full bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-medium py-4 px-8 rounded-lg transition-all duration-500 hover:shadow-lg hover:shadow-cyan-500/30 transform hover:-translate-y-1 flex items-center justify-center relative overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none disabled:hover:shadow-none"
-                                    disabled={formStatus.submitting}
+                                    className={`w-full text-white font-medium py-4 px-8 rounded-lg transition-all duration-500 flex items-center justify-center relative overflow-hidden group ${
+                                        formStatus.submitting ||
+                                        (touched.name &&
+                                            touched.email &&
+                                            touched.message &&
+                                            (!formData.name ||
+                                                !formData.email ||
+                                                !formData.message ||
+                                                errors.name ||
+                                                errors.email ||
+                                                errors.message))
+                                            ? "bg-gray-600 opacity-70 cursor-not-allowed transform-none hover:shadow-none"
+                                            : "bg-gradient-to-r from-cyan-600 to-cyan-500 hover:shadow-lg hover:shadow-cyan-500/30 transform hover:-translate-y-1"
+                                    }`}
+                                    disabled={
+                                        formStatus.submitting ||
+                                        (touched.name &&
+                                            touched.email &&
+                                            touched.message &&
+                                            (!formData.name ||
+                                                !formData.email ||
+                                                !formData.message ||
+                                                errors.name ||
+                                                errors.email ||
+                                                errors.message))
+                                    }
                                 >
                                     <span className="absolute top-0 left-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></span>
 
@@ -379,6 +549,36 @@ const Contact = () => {
                                         </span>
                                     )}
                                 </button>
+
+                                {/* Form validation guidance */}
+                                {(errors.name ||
+                                    errors.email ||
+                                    errors.message) &&
+                                    (touched.name ||
+                                        touched.email ||
+                                        touched.message) && (
+                                        <div className="text-gray-400 text-sm mt-4 flex items-start p-3 bg-dark-900/50 rounded-lg border border-cyan-500/20">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-5 w-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                            </svg>
+                                            <span>
+                                                Please fill out all required
+                                                fields correctly before
+                                                submitting the form.
+                                            </span>
+                                        </div>
+                                    )}
                             </form>
                         </div>
                     </div>

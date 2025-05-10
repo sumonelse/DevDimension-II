@@ -2,10 +2,42 @@ import React from "react"
 
 const About = () => {
     const qualities = [
-        { label: "Problem Solver", color: "purple" },
-        { label: "Team Player", color: "cyan" },
-        { label: "Competitive Programmer", color: "pink" },
-        { label: "Lifelong Learner", color: "purple" },
+        {
+            label: "Problem Solver",
+            color: "purple",
+            description:
+                "I approach challenges methodically, breaking down complex problems into manageable components to find efficient solutions.",
+        },
+        {
+            label: "Team Player",
+            color: "cyan",
+            description:
+                "I thrive in collaborative environments, valuing open communication and the diverse perspectives that team members bring.",
+        },
+        {
+            label: "Competitive Programmer",
+            color: "pink",
+            description:
+                "My background in competitive coding has sharpened my algorithmic thinking and ability to write optimized, efficient code.",
+        },
+        {
+            label: "Lifelong Learner",
+            color: "amber",
+            description:
+                "I'm constantly expanding my knowledge, staying current with emerging technologies and best practices in software development.",
+        },
+        {
+            label: "Detail-Oriented",
+            color: "purple",
+            description:
+                "I pay close attention to the finer points of development, from code quality to user experience details that make a difference.",
+        },
+        {
+            label: "Adaptable",
+            color: "cyan",
+            description:
+                "I quickly adjust to new technologies, workflows, and requirements, embracing change as an opportunity for growth.",
+        },
     ]
 
     return (
@@ -75,36 +107,65 @@ const About = () => {
                                         passionate full-stack developer
                                         <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-purple-400 to-transparent"></span>
                                     </span>{" "}
-                                    with a strong foundation in both front-end
-                                    and back-end technologies. My journey in
-                                    software development is driven by a genuine
-                                    love for creating solutions that make a
-                                    difference.
+                                    with over 5 years of experience building web
+                                    applications and digital experiences. My
+                                    expertise spans the entire development
+                                    stack, from crafting intuitive user
+                                    interfaces with modern frontend frameworks
+                                    to designing robust backend systems and
+                                    APIs.
                                 </p>
 
                                 <p className="leading-relaxed text-lg">
-                                    What sets me apart is my background in{" "}
+                                    My journey began with a degree in Computer
+                                    Science, where I developed a strong
+                                    foundation in data structures, algorithms,
+                                    and software engineering principles. This
+                                    academic background, combined with my
+                                    passion for{" "}
                                     <span className="text-cyan-400 font-medium relative">
                                         competitive programming
                                         <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-cyan-400 to-transparent"></span>
                                     </span>
-                                    , which has honed my problem-solving skills
-                                    and ability to write efficient, optimized
-                                    code. I thrive in collaborative environments
-                                    and believe that the best applications are
-                                    built by teams that communicate effectively
-                                    and share knowledge.
+                                    , has honed my problem-solving skills and
+                                    ability to write efficient, optimized code.
+                                    I've participated in numerous coding
+                                    competitions, including CodeForces, LeetCode
+                                    contests, and hackathons, consistently
+                                    ranking in top percentiles.
                                 </p>
 
                                 <p className="leading-relaxed text-lg">
-                                    I'm committed to{" "}
+                                    In my professional work, I specialize in the
+                                    JavaScript ecosystem, with expertise in
+                                    React, Node.js, and related technologies.
+                                    I'm passionate about creating{" "}
                                     <span className="text-pink-400 font-medium relative">
-                                        continuous learning
+                                        performant, accessible, and
+                                        user-friendly
                                         <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-pink-400 to-transparent"></span>
                                     </span>{" "}
+                                    applications that solve real-world problems.
+                                    I thrive in collaborative environments and
+                                    believe that the best applications are built
+                                    by teams that communicate effectively and
+                                    share knowledge.
+                                </p>
+
+                                <p className="leading-relaxed text-lg">
+                                    Beyond coding, I'm committed to{" "}
+                                    <span className="text-amber-400 font-medium relative">
+                                        continuous learning
+                                        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-amber-400 to-transparent"></span>
+                                    </span>{" "}
                                     and staying updated with the latest
-                                    technologies and best practices in the
-                                    ever-evolving field of software development.
+                                    technologies and best practices. I enjoy
+                                    sharing my knowledge through technical blog
+                                    posts, contributing to open-source projects,
+                                    and mentoring junior developers. When I'm
+                                    not coding, you'll find me exploring new
+                                    technologies, reading tech blogs, or
+                                    participating in developer communities.
                                 </p>
                             </div>
                         </div>
@@ -136,20 +197,25 @@ const About = () => {
                                 {qualities.map((quality, index) => (
                                     <div
                                         key={index}
-                                        className={`flex items-center p-5 rounded-xl bg-dark-900/80 border border-${quality.color}-500/20 hover:border-${quality.color}-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group`}
+                                        className={`p-5 rounded-xl bg-dark-900/80 border border-${quality.color}-500/20 hover:border-${quality.color}-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group`}
                                     >
-                                        <div
-                                            className={`w-12 h-12 flex items-center justify-center bg-${quality.color}-500/10 rounded-lg mr-4 group-hover:bg-${quality.color}-500/20 transition-colors duration-300`}
-                                        >
+                                        <div className="flex items-center mb-3">
                                             <div
-                                                className={`w-4 h-4 bg-${quality.color}-500 rounded-full group-hover:scale-110 transition-transform duration-300`}
-                                            ></div>
+                                                className={`w-12 h-12 flex items-center justify-center bg-${quality.color}-500/10 rounded-lg mr-4 group-hover:bg-${quality.color}-500/20 transition-colors duration-300`}
+                                            >
+                                                <div
+                                                    className={`w-4 h-4 bg-${quality.color}-500 rounded-full group-hover:scale-110 transition-transform duration-300`}
+                                                ></div>
+                                            </div>
+                                            <span
+                                                className={`text-white font-medium text-lg group-hover:text-${quality.color}-400 transition-colors duration-300`}
+                                            >
+                                                {quality.label}
+                                            </span>
                                         </div>
-                                        <span
-                                            className={`text-white font-medium text-lg group-hover:text-${quality.color}-400 transition-colors duration-300`}
-                                        >
-                                            {quality.label}
-                                        </span>
+                                        <p className="text-gray-400 pl-16 text-sm leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
+                                            {quality.description}
+                                        </p>
                                     </div>
                                 ))}
                             </div>

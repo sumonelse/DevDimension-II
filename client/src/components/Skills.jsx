@@ -23,7 +23,14 @@ const Skills = () => {
                 </svg>
             ),
             color: "purple",
-            skills: ["C++", "Java", "Python", "JavaScript"],
+            skills: [
+                "C++",
+                "Java",
+                "Python",
+                "JavaScript",
+                "TypeScript",
+                "Golang",
+            ],
         },
         {
             title: "Frontend",
@@ -44,7 +51,15 @@ const Skills = () => {
                 </svg>
             ),
             color: "pink",
-            skills: ["HTML", "CSS", "React", "Next.js"],
+            skills: [
+                "HTML/CSS",
+                "React",
+                "Next.js",
+                "Tailwind CSS",
+                "Redux",
+                "Vue.js",
+                "Angular",
+            ],
         },
         {
             title: "Backend",
@@ -65,7 +80,15 @@ const Skills = () => {
                 </svg>
             ),
             color: "cyan",
-            skills: ["Node.js", "Express", "SQL", "MongoDB"],
+            skills: [
+                "Node.js",
+                "Express",
+                "MongoDB",
+                "SQL",
+                "GraphQL",
+                "Firebase",
+                "REST APIs",
+            ],
         },
         {
             title: "DevOps & Tools",
@@ -92,7 +115,43 @@ const Skills = () => {
                 </svg>
             ),
             color: "purple",
-            skills: ["Docker", "Redis", "RabbitMQ", "Microservices"],
+            skills: [
+                "Git/GitHub",
+                "Docker",
+                "AWS",
+                "CI/CD",
+                "Jest/Testing",
+                "Kubernetes",
+                "Nginx",
+            ],
+        },
+        {
+            title: "Mobile Development",
+            icon: (
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
+                </svg>
+            ),
+            color: "amber",
+            skills: [
+                "React Native",
+                "Flutter",
+                "WebSockets",
+                "WebRTC",
+                "PWA",
+                "Responsive Design",
+            ],
         },
     ]
 
@@ -183,13 +242,13 @@ const Skills = () => {
                                         </h3>
                                     </div>
 
-                                    {/* Skills */}
+                                    {/* Skills with clean badges */}
                                     <div className="flex flex-wrap gap-3 tilt-card-content">
                                         {category.skills.map(
                                             (skill, skillIndex) => (
-                                                <span
+                                                <div
                                                     key={skillIndex}
-                                                    className={`px-4 py-2 neumorph-inset text-${category.color}-400 rounded-lg text-sm font-medium border border-${category.color}-500/20 transition-all duration-300 hover:border-${category.color}-500/40 cursor-default animate-slide-up`}
+                                                    className={`px-4 py-2.5 rounded-lg bg-dark-900/80 border border-${category.color}-500/20 text-${category.color}-400 font-medium text-sm transition-all duration-300 hover:border-${category.color}-500/40 hover:shadow-sm hover:translate-y-[-2px] animate-slide-up`}
                                                     style={{
                                                         transform:
                                                             "translateZ(0)",
@@ -201,10 +260,14 @@ const Skills = () => {
                                                             300
                                                         }ms`,
                                                     }}
-                                                    /* Hover state removed as requested */
                                                 >
-                                                    {skill}
-                                                </span>
+                                                    <div className="flex items-center">
+                                                        {/* <span
+                                                            className={`w-2 h-2 rounded-full bg-${category.color}-500 mr-2`}
+                                                        ></span> */}
+                                                        {skill}
+                                                    </div>
+                                                </div>
                                             )
                                         )}
                                     </div>
@@ -233,10 +296,14 @@ const Skills = () => {
                         <div className="tilt-card-inner">
                             <h3 className="text-2xl font-bold mb-10 text-center tilt-card-content">
                                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 relative inline-block animate-subtle-pulse">
-                                    Additional Skills
+                                    Quick Skills Overview
                                     <span className="absolute -bottom-3 left-0 w-full h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 animate-glow"></span>
                                 </span>
                             </h3>
+                            <p className="text-gray-300 text-center mb-8">
+                                A simplified list of my core technical
+                                competencies
+                            </p>
 
                             <div className="flex flex-wrap justify-center gap-4 tilt-card-content">
                                 {additionalSkills.map((skill, index) => (

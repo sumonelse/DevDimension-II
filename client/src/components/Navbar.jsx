@@ -93,6 +93,7 @@ const Navbar = () => {
         { href: "#skills", label: "Skills" },
         { href: "#projects", label: "Projects" },
         { href: "#contact", label: "Contact" },
+        { href: "/resume.pdf", label: "Resume", isExternal: true },
     ]
 
     return (
@@ -167,15 +168,24 @@ const Navbar = () => {
                     </button>
 
                     {/* Cinematic Desktop menu */}
-                    <div className="hidden md:flex space-x-8">
+                    <div className="hidden md:flex space-x-6">
                         {navLinks.map((link, index) => (
                             <a
                                 key={index}
                                 href={link.href}
+                                target={link.isExternal ? "_blank" : undefined}
+                                rel={
+                                    link.isExternal
+                                        ? "noopener noreferrer"
+                                        : undefined
+                                }
                                 className={`relative px-3 py-2 font-medium transition-all duration-500 group overflow-hidden ${
+                                    !link.isExternal &&
                                     activeSection === link.href.substring(1)
                                         ? "text-purple-400"
                                         : "hover:text-purple-400"
+                                } ${
+                                    link.isExternal ? "flex items-center" : ""
                                 }`}
                                 style={{
                                     animationDelay: `${index * 100 + 200}ms`,
@@ -198,9 +208,28 @@ const Navbar = () => {
                                     {link.label}
                                 </span>
 
+                                {/* External link icon */}
+                                {link.isExternal && (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-3.5 w-3.5 ml-1 relative z-10 transition-transform duration-300 group-hover:translate-y-[-2px] group-hover:translate-x-[2px]"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                        />
+                                    </svg>
+                                )}
+
                                 {/* Animated underline */}
                                 <span
                                     className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-purple transform origin-left transition-transform duration-500 ${
+                                        !link.isExternal &&
                                         activeSection === link.href.substring(1)
                                             ? "scale-x-100"
                                             : "scale-x-0 group-hover:scale-x-100"
