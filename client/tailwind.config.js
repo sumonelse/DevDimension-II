@@ -46,6 +46,18 @@ export default {
                     500: "#10B981", // Vibrant emerald
                     400: "#34D399", // Light emerald
                 },
+                // Spider-Verse inspired colors
+                spiderverse: {
+                    red: "#FF1744",
+                    blue: "#304FFE",
+                    yellow: "#FFEA00",
+                    pink: "#FF4081",
+                    cyan: "#00E5FF",
+                    purple: "#AA00FF",
+                    green: "#00E676",
+                    dark: "#0A0A1A",
+                    darker: "#050510",
+                },
             },
             fontFamily: {
                 sans: ["Poppins", "system-ui", "sans-serif"],
