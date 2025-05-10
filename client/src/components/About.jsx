@@ -21,22 +21,10 @@ const About = () => {
                 "My background in competitive coding has sharpened my algorithmic thinking and ability to write optimized, efficient code.",
         },
         {
-            label: "Lifelong Learner",
+            label: "Continuous Learner",
             color: "amber",
             description:
                 "I'm constantly expanding my knowledge, staying current with emerging technologies and best practices in software development.",
-        },
-        {
-            label: "Detail-Oriented",
-            color: "purple",
-            description:
-                "I pay close attention to the finer points of development, from code quality to user experience details that make a difference.",
-        },
-        {
-            label: "Adaptable",
-            color: "cyan",
-            description:
-                "I quickly adjust to new technologies, workflows, and requirements, embracing change as an opportunity for growth.",
         },
     ]
 

@@ -159,7 +159,7 @@ const Hero = () => {
                                 .
                             </p>
 
-                            {/* Enhanced CTA buttons with better hover effects */}
+                            {/* Simplified CTA buttons */}
                             <div
                                 className="flex flex-wrap gap-4 justify-center animate-slide-up"
                                 style={{ animationDelay: "0.8s" }}
@@ -190,11 +190,11 @@ const Hero = () => {
                                 </a>
                                 <a
                                     href="#contact"
-                                    className="group px-7 py-3.5 glass border border-purple-500/30 font-medium rounded-full transition-all duration-500 hover:border-purple-400 hover:bg-purple-500/10 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
+                                    className="group px-7 py-3.5 glass border border-cyan-500/30 font-medium rounded-full transition-all duration-500 hover:border-cyan-400 hover:bg-cyan-500/10 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
                                 >
-                                    <span className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
-                                    <span className="relative z-10 flex items-center">
-                                        Contact Me
+                                    <span className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
+                                    <span className="relative z-10 flex items-center text-cyan-400">
+                                        Get In Touch
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
@@ -207,31 +207,6 @@ const Hero = () => {
                                                 strokeLinejoin="round"
                                                 strokeWidth={2}
                                                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                                            />
-                                        </svg>
-                                    </span>
-                                </a>
-                                <a
-                                    href="/resume.pdf"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group px-7 py-3.5 glass border border-cyan-500/30 font-medium rounded-full transition-all duration-500 hover:border-cyan-400 hover:bg-cyan-500/10 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
-                                >
-                                    <span className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
-                                    <span className="relative z-10 flex items-center text-cyan-400">
-                                        Download Resume
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5 ml-2 group-hover:translate-y-1 transition-transform duration-300"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                             />
                                         </svg>
                                     </span>
@@ -291,20 +266,6 @@ const Hero = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            {/* Enhanced scroll indicator with better animation */}
-            <div
-                className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-fade-in"
-                style={{ animationDelay: "1.5s" }}
-            >
-                <span className="text-gray-400 text-sm mb-2 hover:text-gray-300 transition-colors duration-300">
-                    Scroll Down
-                </span>
-                <div className="w-6 h-10 border-2 border-purple-500/50 rounded-full flex justify-center p-1 hover:border-purple-500 transition-colors duration-300 relative group">
-                    <div className="w-1.5 h-3 bg-gradient-purple rounded-full animate-bounce group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 transition-all duration-300"></div>
-                    <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 translate-y-full w-10 h-5 bg-gradient-to-t from-purple-500/20 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></span>
                 </div>
             </div>
         </section>

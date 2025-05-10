@@ -93,7 +93,6 @@ const Navbar = () => {
         { href: "#skills", label: "Skills" },
         { href: "#projects", label: "Projects" },
         { href: "#contact", label: "Contact" },
-        { href: "/resume.pdf", label: "Resume", isExternal: true },
     ]
 
     return (
@@ -241,7 +240,9 @@ const Navbar = () => {
                             </a>
                         ))}
                         <a
-                            href="#contact"
+                            href="/resume.pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className={`px-5 py-2 bg-gradient-purple text-white rounded-full shadow-sm hover:shadow-neon transition-all duration-500 hover:-translate-y-1 hover:scale-105 group relative overflow-hidden ${
                                 isLoaded ? "animate-fade-in" : "opacity-0"
                             }`}
@@ -256,7 +257,7 @@ const Navbar = () => {
                             <span className="absolute inset-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
 
                             <span className="flex items-center relative z-10">
-                                Let's Talk
+                                Resume
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-4 w-4 ml-1.5 transition-transform duration-500 group-hover:translate-x-2"
@@ -268,7 +269,7 @@ const Navbar = () => {
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         strokeWidth={2}
-                                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                     />
                                 </svg>
                             </span>
@@ -323,7 +324,9 @@ const Navbar = () => {
                                 </a>
                             ))}
                             <a
-                                href="#contact"
+                                href="/resume.pdf"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="mt-6 px-10 py-4 bg-gradient-purple text-white rounded-lg shadow-neon transition-all duration-500 hover:scale-110 transform opacity-0 animate-slide-up group"
                                 style={{
                                     animationDelay: `${
@@ -334,7 +337,7 @@ const Navbar = () => {
                                 onClick={toggleMenu}
                             >
                                 <span className="flex items-center text-lg">
-                                    Let's Talk
+                                    Resume
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="h-5 w-5 ml-2 transition-transform duration-500 group-hover:translate-x-2"
@@ -346,7 +349,7 @@ const Navbar = () => {
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
                                             strokeWidth={2}
-                                            d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                         />
                                     </svg>
                                 </span>
