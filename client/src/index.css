@@ -523,6 +523,16 @@ pre {
     }
 }
 
+@keyframes pulse-glow {
+    0%,
+    100% {
+        box-shadow: 0 0 5px rgba(124, 58, 237, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(124, 58, 237, 0.8);
+    }
+}
+
 /* Particle effect */
 .particles {
     position: absolute;
