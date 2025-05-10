@@ -1,34 +1,12 @@
-import { useState, useEffect } from "react"
+import { useTheme } from "../context/ThemeContext"
 
 const ThemeToggle = () => {
-    const [isDarkMode, setIsDarkMode] = useState(true)
-
-    useEffect(() => {
-        // Check for saved theme preference or use dark mode as default
-        const savedTheme = localStorage.getItem("theme")
-        if (savedTheme === "light") {
-            setIsDarkMode(false)
-            document.documentElement.classList.add("light-theme")
-        }
-    }, [])
-
-    const toggleTheme = () => {
-        if (isDarkMode) {
-            // Switch to light mode
-            document.documentElement.classList.add("light-theme")
-            localStorage.setItem("theme", "light")
-        } else {
-            // Switch to dark mode
-            document.documentElement.classList.remove("light-theme")
-            localStorage.setItem("theme", "dark")
-        }
-        setIsDarkMode(!isDarkMode)
-    }
+    const { isDarkTheme: isDarkMode, toggleTheme } = useTheme()
 
     return (
         <button
             onClick={toggleTheme}
-            className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full glass-dark flex items-center justify-center transition-all duration-500 hover:scale-110 focus:outline-none"
+            className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full glass-dark flex items-center justify-center transition-all duration-500 hover:scale-110 focus:outline-none shadow-lg"
             aria-label="Toggle theme"
         >
             {isDarkMode ? (
