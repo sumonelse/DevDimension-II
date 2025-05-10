@@ -116,7 +116,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
             {/* Comic book style modal */}
             <div
                 ref={modalRef}
-                className="w-full max-w-5xl max-h-[90vh] overflow-hidden comic-border bg-white relative"
+                className="w-full max-w-5xl max-h-[90vh] flex flex-col comic-border bg-white relative"
                 style={{
                     boxShadow:
                         "0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3)",
@@ -162,31 +162,65 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                 </div>
 
                 {/* Comic book content */}
-                <div className="p-6 bg-white">
-                    {/* Comic panels navigation */}
-                    <div className="flex mb-6 border-b-2 border-black pb-2">
-                        {comicPanels.map((panel, index) => (
-                            <button
-                                key={index}
-                                onClick={() => {
-                                    setCurrentPanel(index)
-                                    if (window.spiderverseAudio)
-                                        window.spiderverseAudio.playClick()
-                                }}
-                                className={`px-4 py-2 font-['Comic_Neue'] font-bold text-lg transition-all ${
-                                    currentPanel === index
-                                        ? `bg-${projectColor} text-white comic-border transform -rotate-1`
-                                        : "text-gray-700 hover:bg-gray-100"
-                                }`}
-                            >
-                                {panel.title}
-                            </button>
-                        ))}
+                <div className="p-6 bg-white flex-1 overflow-y-auto comic-scrollbar">
+                    {/* Comic panels navigation - sticky and scrollable */}
+                    <div className="sticky top-0 z-10 bg-white border-b-2 border-black pb-2 mb-6">
+                        {/* Tabs container */}
+                        <div className="overflow-x-auto scrollbar-hide md:comic-scrollbar relative">
+                            {/* Scroll indicator for mobile */}
+                            <div className="absolute -bottom-6 left-0 right-0 flex justify-center md:hidden">
+                                <div className="text-xs text-gray-500 animate-pulse">
+                                    ← swipe tabs →
+                                </div>
+                            </div>
+
+                            <div className="flex whitespace-nowrap min-w-max">
+                                {comicPanels.map((panel, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => {
+                                            setCurrentPanel(index)
+                                            if (window.spiderverseAudio)
+                                                window.spiderverseAudio.playClick()
+                                        }}
+                                        className={`px-3 sm:px-4 py-2 font-['Comic_Neue'] font-bold text-sm sm:text-lg transition-all mx-1 first:ml-0 last:mr-0 ${
+                                            currentPanel === index
+                                                ? `bg-${projectColor} text-white comic-border transform -rotate-1`
+                                                : "text-gray-700 hover:bg-gray-100"
+                                        }`}
+                                    >
+                                        {panel.title}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Mobile indicator - shows which tab is active */}
+                        <div className="flex justify-center md:hidden mt-2">
+                            <div className="flex items-center space-x-1">
+                                {comicPanels.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => {
+                                            setCurrentPanel(index)
+                                            if (window.spiderverseAudio)
+                                                window.spiderverseAudio.playClick()
+                                        }}
+                                        className={`w-2 h-2 rounded-full transition-all ${
+                                            currentPanel === index
+                                                ? `w-4 bg-${projectColor}`
+                                                : "bg-gray-300 hover:bg-gray-400"
+                                        }`}
+                                        aria-label={`Go to panel ${index + 1}`}
+                                    ></button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
 
                     {/* Panel content with animation */}
                     <div
-                        className={`transition-opacity duration-300 ${
+                        className={`transition-opacity duration-300 pb-16 ${
                             isAnimating ? "opacity-0" : "opacity-100"
                         }`}
                     >
@@ -386,22 +420,22 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
 
                         {/* Panel 5: Links */}
                         {currentPanel === 4 && (
-                            <div className="comic-panel p-6 relative">
-                                <h3 className="font-['Bangers'] text-2xl mb-6 text-center text-black">
+                            <div className="comic-panel p-4 sm:p-6 relative">
+                                <h3 className="font-['Bangers'] text-xl sm:text-2xl mb-4 sm:mb-6 text-center text-black">
                                     Check Out The Project
                                 </h3>
 
-                                <div className="flex flex-col md:flex-row justify-center items-center gap-6">
+                                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
                                     <a
                                         href={project.demoLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="spidey-button bg-spiderverse-red text-white"
+                                        className="spidey-button bg-spiderverse-red text-white w-full sm:w-auto text-center"
                                         onClick={() => activateSpiderSense()}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            className="h-6 w-6 mr-2"
+                                            className="h-5 w-5 mr-1 sm:h-6 sm:w-6 sm:mr-2"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
@@ -419,19 +453,21 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                             />
                                         </svg>
-                                        View Live Demo
+                                        <span className="text-sm sm:text-base">
+                                            View Live Demo
+                                        </span>
                                     </a>
 
                                     <a
                                         href={project.codeLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="spidey-button bg-spiderverse-blue text-white"
+                                        className="spidey-button bg-spiderverse-blue text-white w-full sm:w-auto text-center"
                                         onClick={() => activateSpiderSense()}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            className="h-6 w-6 mr-2"
+                                            className="h-5 w-5 mr-1 sm:h-6 sm:w-6 sm:mr-2"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
@@ -443,7 +479,9 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                                                 d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
                                             />
                                         </svg>
-                                        View Source Code
+                                        <span className="text-sm sm:text-base">
+                                            View Source Code
+                                        </span>
                                     </a>
                                 </div>
 
@@ -459,12 +497,12 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                         )}
                     </div>
 
-                    {/* Navigation buttons */}
-                    <div className="flex justify-between mt-6">
+                    {/* Navigation buttons - sticky at the bottom */}
+                    <div className="sticky bottom-0 bg-white pt-4 pb-2 border-t border-gray-200 flex justify-between items-center mt-6">
                         <button
                             onClick={prevPanel}
                             disabled={currentPanel === 0}
-                            className={`spidey-button ${
+                            className={`spidey-button py-2 px-3 sm:px-4 ${
                                 currentPanel === 0
                                     ? "opacity-50 cursor-not-allowed"
                                     : ""
@@ -472,7 +510,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-6 w-6 mr-2"
+                                className="h-5 w-5 sm:h-6 sm:w-6 mr-1 sm:mr-2"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -484,35 +522,41 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                                     d="M15 19l-7-7 7-7"
                                 />
                             </svg>
-                            Previous
+                            <span className="text-sm sm:text-base">Prev</span>
                         </button>
 
                         <div className="flex items-center">
                             {comicPanels.map((_, index) => (
-                                <div
+                                <button
                                     key={index}
-                                    className={`w-3 h-3 mx-1 rounded-full ${
+                                    onClick={() => {
+                                        setCurrentPanel(index)
+                                        if (window.spiderverseAudio)
+                                            window.spiderverseAudio.playClick()
+                                    }}
+                                    className={`w-2 h-2 sm:w-3 sm:h-3 mx-1 rounded-full transition-all ${
                                         currentPanel === index
-                                            ? `bg-${projectColor}`
-                                            : "bg-gray-300"
+                                            ? `bg-${projectColor} transform scale-125`
+                                            : "bg-gray-300 hover:bg-gray-400"
                                     }`}
-                                ></div>
+                                    aria-label={`Go to panel ${index + 1}`}
+                                ></button>
                             ))}
                         </div>
 
                         <button
                             onClick={nextPanel}
                             disabled={currentPanel === comicPanels.length - 1}
-                            className={`spidey-button ${
+                            className={`spidey-button py-2 px-3 sm:px-4 ${
                                 currentPanel === comicPanels.length - 1
                                     ? "opacity-50 cursor-not-allowed"
                                     : ""
                             }`}
                         >
-                            Next
+                            <span className="text-sm sm:text-base">Next</span>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-6 w-6 ml-2"
+                                className="h-5 w-5 sm:h-6 sm:w-6 ml-1 sm:ml-2"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"

@@ -1057,3 +1057,36 @@
         transform: translateX(0) translateY(0) rotate(0deg);
     }
 }
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Custom scrollbar for comic book style */
+.comic-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--spiderverse-red) #fff;
+}
+
+.comic-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.comic-scrollbar::-webkit-scrollbar-track {
+    background: #fff;
+    border: 1px solid #000;
+}
+
+.comic-scrollbar::-webkit-scrollbar-thumb {
+    background-color: var(--spiderverse-red);
+    border: 1px solid #000;
+    border-radius: 4px;
+}
