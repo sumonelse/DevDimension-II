@@ -13,12 +13,12 @@ const SpiderverseAudio = () => {
 
     // Audio URLs
     const audioSources = {
-        transition: "../../public/audio/mixkit-sci-fi-interface-zoom-890.wav",
+        transition: "/audio/mixkit-sci-fi-interface-zoom-890.wav",
         background:
-            "../../public/audio/mixkit-futuristic-sci-fi-computer-ambience-2507.wav",
-        hover: "../../public/audio/mixkit-fast-small-sweep-transition-166.wav",
-        click: "../../public/audio/mixkit-electronic-retro-block-hit-2185.wav",
-        webShoot: "../../public/audio/mixkit-fast-rocket-whoosh-1714.wav",
+            "/audio/mixkit-futuristic-sci-fi-computer-ambience-2507.wav",
+        hover: "/audio/mixkit-fast-small-sweep-transition-166.wav",
+        click: "/audio/mixkit-electronic-retro-block-hit-2185.wav",
+        webShoot: "/audio/mixkit-fast-rocket-whoosh-1714.wav",
     }
 
     // Initialize audio elements
