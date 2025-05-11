@@ -1,31 +1,41 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, lazy, Suspense } from "react"
 import Navbar from "./components/Navbar"
-import SpiderverseNavbar from "./components/SpiderverseNavbar"
 import Hero from "./components/Hero"
-import SpiderverseHero from "./components/SpiderverseHero"
 import About from "./components/About"
-import SpiderverseAbout from "./components/SpiderverseAbout"
 import Skills from "./components/Skills"
-import SpiderverseSkills from "./components/SpiderverseSkills"
 import Projects from "./components/Projects"
-import SpiderverseProjects from "./components/SpiderverseProjects"
 import Contact from "./components/Contact"
-import SpiderverseContact from "./components/SpiderverseContact"
 import Footer from "./components/Footer"
-import SpiderverseFooter from "./components/SpiderverseFooter"
 import FloatingControls from "./components/FloatingControls"
-import AnimatedBackground from "./components/AnimatedBackground"
-import CompetitiveProgramming from "./components/CompetitiveProgramming"
-import SpiderverseBackground from "./components/SpiderverseBackground"
 import DimensionTransition from "./components/DimensionTransition"
 import SpiderverseLoader from "./components/SpiderverseLoader"
-import SpiderverseCursor from "./components/SpiderverseCursor"
-import PageTurnEffect from "./components/PageTurnEffect"
-import FloatingComicPanels from "./components/FloatingComicPanels"
-import SpiderverseAudio from "./components/SpiderverseAudio"
-import MultiverseEasterEgg from "./components/MultiverseEasterEgg"
 import DimensionTrigger from "./components/DimensionTrigger"
+import SEO from "./components/SEO"
 import { useDimension } from "./context/DimensionContext"
+import useScrollReveal from "./hooks/useScrollReveal"
+
+// Lazy load Spiderverse components
+const SpiderverseNavbar = lazy(() => import("./components/SpiderverseNavbar"))
+const SpiderverseHero = lazy(() => import("./components/SpiderverseHero"))
+const SpiderverseAbout = lazy(() => import("./components/SpiderverseAbout"))
+const SpiderverseSkills = lazy(() => import("./components/SpiderverseSkills"))
+const SpiderverseProjects = lazy(() =>
+    import("./components/SpiderverseProjects")
+)
+const SpiderverseContact = lazy(() => import("./components/SpiderverseContact"))
+const SpiderverseFooter = lazy(() => import("./components/SpiderverseFooter"))
+const SpiderverseBackground = lazy(() =>
+    import("./components/SpiderverseBackground")
+)
+const SpiderverseCursor = lazy(() => import("./components/SpiderverseCursor"))
+const PageTurnEffect = lazy(() => import("./components/PageTurnEffect"))
+const FloatingComicPanels = lazy(() =>
+    import("./components/FloatingComicPanels")
+)
+const SpiderverseAudio = lazy(() => import("./components/SpiderverseAudio"))
+const MultiverseEasterEgg = lazy(() =>
+    import("./components/MultiverseEasterEgg")
+)
 
 const App = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -34,38 +44,42 @@ const App = () => {
 
     // Handle initial loading
     useEffect(() => {
-        // Simulate loading time
+        // Measure actual loading time instead of arbitrary delay
+        const startTime = performance.now()
+
+        // Check if all critical resources are loaded
+        window.addEventListener("load", () => {
+            const loadTime = performance.now() - startTime
+            // Ensure minimum loading time of 1 second for visual feedback
+            // but don't make users wait unnecessarily long
+            const minLoadingTime = 1000
+            const timeToWait = Math.max(0, minLoadingTime - loadTime)
+
+            setTimeout(() => {
+                setIsLoading(false)
+            }, timeToWait)
+        })
+
+        // Fallback in case load event doesn't fire
         setTimeout(() => {
             setIsLoading(false)
-        }, 3000) // Show loader for 3 seconds
+        }, 2000) // Reduced from 3 seconds to 2 seconds
     }, [])
 
-    // Reveal elements on scroll
+    // Use the scroll reveal hook
+
+    // Use the custom hook for scroll animations
+    useScrollReveal({
+        selector: ".reveal",
+        threshold: 150,
+        activeClass: "active",
+    })
+
+    // Set loaded state for initial animations
     useEffect(() => {
-        const handleScroll = () => {
-            const reveals = document.querySelectorAll(".reveal")
-
-            for (let i = 0; i < reveals.length; i++) {
-                const windowHeight = window.innerHeight
-                const elementTop = reveals[i].getBoundingClientRect().top
-                const elementVisible = 150
-
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add("active")
-                }
-            }
-        }
-
-        window.addEventListener("scroll", handleScroll)
-        // Trigger once on load
-        handleScroll()
-
-        // Set loaded state for initial animations
         setTimeout(() => {
             setIsLoaded(true)
         }, 300)
-
-        return () => window.removeEventListener("scroll", handleScroll)
     }, [])
 
     // Dispatch dimension change event when dimension changes
@@ -78,6 +92,17 @@ const App = () => {
 
     return (
         <>
+            {/* SEO Component */}
+            <SEO
+                title={
+                    isSpiderVerse
+                        ? "Sumit Maurya | Spider-Verse Portfolio"
+                        : "Sumit Maurya | Portfolio"
+                }
+                description="Full-Stack Developer with a passion for competitive programming, algorithmic thinking, and efficient problem-solving."
+                keywords="developer, portfolio, full-stack, competitive programming, web development, algorithms, problem-solving"
+            />
+
             {/* Loading screen */}
             <SpiderverseLoader
                 isLoading={isLoading}
@@ -93,10 +118,14 @@ const App = () => {
                 >
                     {/* Background based on current dimension */}
                     {isSpiderVerse ? (
-                        <>
+                        <Suspense
+                            fallback={
+                                <div className="fixed inset-0 z-0 bg-black"></div>
+                            }
+                        >
                             <SpiderverseBackground />
                             <FloatingComicPanels />
-                        </>
+                        </Suspense>
                     ) : (
                         <div className="fixed inset-0 z-0 transition-opacity duration-1000">
                             {/* Animated gradient blobs */}
@@ -120,13 +149,19 @@ const App = () => {
                     <DimensionTransition />
 
                     {/* Page turn effect */}
-                    <PageTurnEffect />
+                    <Suspense fallback={null}>
+                        <PageTurnEffect />
+                    </Suspense>
 
                     {/* Spider-Verse cursor */}
-                    <SpiderverseCursor />
+                    <Suspense fallback={null}>
+                        <SpiderverseCursor />
+                    </Suspense>
 
                     {/* Spider-Verse audio effects */}
-                    <SpiderverseAudio />
+                    <Suspense fallback={null}>
+                        <SpiderverseAudio />
+                    </Suspense>
 
                     {/* Main content with fade-in effect */}
                     <div
@@ -134,18 +169,34 @@ const App = () => {
                             isLoaded ? "opacity-100" : "opacity-0"
                         }`}
                     >
-                        {isSpiderVerse ? <SpiderverseNavbar /> : <Navbar />}
+                        {isSpiderVerse ? (
+                            <Suspense
+                                fallback={
+                                    <div className="h-16 w-full bg-black/50 backdrop-blur-md fixed top-0 left-0 z-50"></div>
+                                }
+                            >
+                                <SpiderverseNavbar />
+                            </Suspense>
+                        ) : (
+                            <Navbar />
+                        )}
 
                         {/* Conditional rendering based on dimension */}
                         {isSpiderVerse ? (
-                            <>
+                            <Suspense
+                                fallback={
+                                    <div className="min-h-screen flex items-center justify-center">
+                                        Loading Spiderverse...
+                                    </div>
+                                }
+                            >
                                 <SpiderverseHero />
                                 <SpiderverseAbout />
                                 <SpiderverseSkills />
                                 <SpiderverseProjects />
                                 <SpiderverseContact />
                                 <SpiderverseFooter />
-                            </>
+                            </Suspense>
                         ) : (
                             <>
                                 <Hero />
@@ -164,7 +215,9 @@ const App = () => {
                     <DimensionTrigger />
 
                     {/* Easter egg */}
-                    <MultiverseEasterEgg />
+                    <Suspense fallback={null}>
+                        <MultiverseEasterEgg />
+                    </Suspense>
                 </div>
             )}
         </>
