@@ -1,30 +1,116 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 const SpiderverseFooter = () => {
     const currentYear = new Date().getFullYear()
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
+    // Track mouse position for parallax effects
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            setMousePosition({ x: e.clientX, y: e.clientY })
+        }
+
+        window.addEventListener("mousemove", handleMouseMove)
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove)
+        }
+    }, [])
+
+    // Calculate parallax transform based on mouse position
+    const getParallaxStyle = (depth) => {
+        const x = (mousePosition.x / window.innerWidth - 0.5) * depth
+        const y = (mousePosition.y / window.innerHeight - 0.5) * depth
+        return {
+            transform: `translate(${x}px, ${y}px)`,
+        }
+    }
 
     return (
-        <footer className="py-8 relative overflow-hidden">
-            {/* Comic book style background */}
-            <div className="absolute inset-0 bg-black z-0">
+        <footer className="py-12 relative overflow-hidden">
+            {/* Spider-Verse style background with multiverse effect */}
+            <div className="absolute inset-0 bg-spiderverse-darker z-0">
                 <div className="halftone-overlay"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-spiderverse-blue/20 via-transparent to-spiderverse-red/20"></div>
+
+                {/* Animated web patterns */}
+                <div className="absolute inset-0 opacity-10">
+                    <svg
+                        width="100%"
+                        height="100%"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <pattern
+                            id="web-pattern"
+                            width="50"
+                            height="50"
+                            patternUnits="userSpaceOnUse"
+                            patternTransform="rotate(45)"
+                        >
+                            <line
+                                x1="0"
+                                y1="0"
+                                x2="50"
+                                y2="50"
+                                stroke="white"
+                                strokeWidth="0.5"
+                            />
+                            <line
+                                x1="50"
+                                y1="0"
+                                x2="0"
+                                y2="50"
+                                stroke="white"
+                                strokeWidth="0.5"
+                            />
+                        </pattern>
+                        <rect
+                            width="100%"
+                            height="100%"
+                            fill="url(#web-pattern)"
+                        />
+                    </svg>
+                </div>
             </div>
+
+            {/* Multiverse portal effects */}
+            <div
+                className="absolute top-0 left-1/4 w-40 h-40 rounded-full bg-gradient-to-r from-spiderverse-purple/30 to-spiderverse-pink/30 blur-xl animate-portal-pulse"
+                style={getParallaxStyle(20)}
+            ></div>
+            <div
+                className="absolute bottom-0 right-1/4 w-32 h-32 rounded-full bg-gradient-to-r from-spiderverse-blue/30 to-spiderverse-cyan/30 blur-xl animate-portal-pulse"
+                style={{ animationDelay: "1s", ...getParallaxStyle(15) }}
+            ></div>
 
             <div className="container mx-auto px-4 md:px-6 relative z-10">
                 <div className="max-w-5xl mx-auto">
                     {/* Comic book style footer content */}
                     <div className="text-center">
-                        <div className="dialogue-box bg-white inline-block mb-6">
-                            <h2 className="comic-title text-2xl text-black">
-                                Thanks for{" "}
-                                <span className="text-spiderverse-red">
-                                    Visiting!
+                        {/* Glitched dialogue box */}
+                        <div className="dialogue-box bg-white inline-block mb-8 relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-r from-spiderverse-red/10 to-spiderverse-blue/10"></div>
+                            <h2 className="comic-title text-3xl text-black relative z-10">
+                                <span>
+                                    Thanks for{" "}
+                                    <span
+                                        className="text-spiderverse-red inline-block"
+                                        style={{
+                                            textShadow:
+                                                "1px 1px 0 rgba(0,0,0,0.3)",
+                                        }}
+                                    >
+                                        Visiting!
+                                    </span>
                                 </span>
                             </h2>
+
+                            {/* Glitch effect lines */}
+                            <div className="absolute top-0 left-0 w-full h-1 bg-spiderverse-red opacity-70"></div>
+                            <div className="absolute bottom-0 left-0 w-full h-1 bg-spiderverse-blue opacity-70"></div>
                         </div>
 
-                        {/* Navigation links with comic styling */}
-                        <div className="flex flex-wrap justify-center gap-4 mb-8">
+                        {/* Navigation links with enhanced comic styling */}
+                        <div className="flex flex-wrap justify-center gap-4 mb-10">
                             {[
                                 "Home",
                                 "About",
@@ -35,28 +121,38 @@ const SpiderverseFooter = () => {
                                 <a
                                     key={index}
                                     href={`#${item.toLowerCase()}`}
-                                    className="spiderverse-button bg-white text-black text-sm py-1 px-3"
+                                    className={`spiderverse-button text-sm py-2 px-4 relative overflow-hidden ${
+                                        index % 2 === 0
+                                            ? "bg-spiderverse-red text-white"
+                                            : "bg-spiderverse-blue text-white"
+                                    }`}
                                     style={{
                                         transform: `rotate(${
                                             index % 2 === 0 ? "-1deg" : "1deg"
                                         })`,
                                     }}
                                 >
-                                    {item}
+                                    {/* Comic book dots overlay */}
+                                    <span className="absolute inset-0 benday-dots opacity-10"></span>
+                                    <span className="relative z-10">
+                                        {item}
+                                    </span>
                                 </a>
                             ))}
                         </div>
 
-                        {/* Social links with comic styling */}
-                        <div className="flex justify-center space-x-4 mb-6">
+                        {/* Social links with enhanced comic styling */}
+                        <div className="flex justify-center space-x-6 mb-8">
                             <a
                                 href="https://github.com/yourusername"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="comic-border bg-white p-2 rounded-full transform hover:rotate-12 transition-transform duration-300"
+                                className="comic-border bg-white p-3 rounded-full transform hover:rotate-12 transition-transform duration-300 relative group"
                             >
+                                {/* Spider-sense animation on hover */}
+                                <div className="absolute inset-0 rounded-full bg-spiderverse-yellow/0 group-hover:bg-spiderverse-yellow/10 group-hover:animate-spider-sense"></div>
                                 <svg
-                                    className="w-5 h-5 text-black"
+                                    className="w-6 h-6 text-black group-hover:text-spiderverse-red transition-colors duration-300"
                                     fill="currentColor"
                                     viewBox="0 0 24 24"
                                     aria-hidden="true"
@@ -72,10 +168,11 @@ const SpiderverseFooter = () => {
                                 href="https://linkedin.com/in/yourusername"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="comic-border bg-white p-2 rounded-full transform hover:-rotate-12 transition-transform duration-300"
+                                className="comic-border bg-white p-3 rounded-full transform hover:-rotate-12 transition-transform duration-300 relative group"
                             >
+                                <div className="absolute inset-0 rounded-full bg-spiderverse-blue/0 group-hover:bg-spiderverse-blue/10 group-hover:animate-spider-sense"></div>
                                 <svg
-                                    className="w-5 h-5 text-black"
+                                    className="w-6 h-6 text-black group-hover:text-spiderverse-blue transition-colors duration-300"
                                     fill="currentColor"
                                     viewBox="0 0 24 24"
                                     aria-hidden="true"
@@ -87,10 +184,11 @@ const SpiderverseFooter = () => {
                                 href="https://twitter.com/yourusername"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="comic-border bg-white p-2 rounded-full transform hover:rotate-12 transition-transform duration-300"
+                                className="comic-border bg-white p-3 rounded-full transform hover:rotate-12 transition-transform duration-300 relative group"
                             >
+                                <div className="absolute inset-0 rounded-full bg-spiderverse-cyan/0 group-hover:bg-spiderverse-cyan/10 group-hover:animate-spider-sense"></div>
                                 <svg
-                                    className="w-5 h-5 text-black"
+                                    className="w-6 h-6 text-black group-hover:text-spiderverse-cyan transition-colors duration-300"
                                     fill="currentColor"
                                     viewBox="0 0 24 24"
                                     aria-hidden="true"
@@ -100,28 +198,112 @@ const SpiderverseFooter = () => {
                             </a>
                         </div>
 
-                        {/* Copyright with comic styling */}
-                        <div className="thought-bubble inline-block">
-                            <p className="text-black text-sm">
+                        {/* Copyright with enhanced comic styling */}
+                        <div className="thought-bubble inline-block relative">
+                            {/* Comic book dots overlay */}
+                            <div className="absolute inset-0 benday-dots opacity-5"></div>
+
+                            <p className="text-black text-sm font-bold relative z-10">
                                 © {currentYear} Sumit Maurya. All rights
                                 reserved.
                             </p>
-                            <p className="text-black text-xs mt-1">
-                                Built with React, Tailwind CSS & Spider-Verse
-                                Inspiration
+                            <p className="text-black text-xs mt-2 relative z-10">
+                                Built with React, Tailwind CSS &
+                                <span className="bg-gradient-to-r from-spiderverse-red via-spiderverse-blue to-spiderverse-purple bg-clip-text text-transparent font-bold animate-color-cycle ml-1">
+                                    Spider-Verse Inspiration
+                                </span>
                             </p>
+
+                            {/* Spider web in corner */}
+                            <div
+                                className="absolute -bottom-2 -right-2 w-10 h-10 opacity-30"
+                                style={getParallaxStyle(5)}
+                            >
+                                <svg
+                                    viewBox="0 0 100 100"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M0,0 L100,100 M0,100 L100,0 M50,0 L50,100 M0,50 L100,50"
+                                        stroke="black"
+                                        strokeWidth="1"
+                                    />
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        r="45"
+                                        fill="none"
+                                        stroke="black"
+                                        strokeWidth="1"
+                                    />
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        r="30"
+                                        fill="none"
+                                        stroke="black"
+                                        strokeWidth="1"
+                                    />
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        r="15"
+                                        fill="none"
+                                        stroke="black"
+                                        strokeWidth="1"
+                                    />
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Comic book style decorative elements */}
+            {/* Enhanced comic book style decorative elements */}
             <div
-                className="absolute bottom-5 left-5 onomatopoeia"
-                style={{ fontSize: "1.5rem", color: "white" }}
+                className="absolute bottom-5 left-5 onomatopoeia animate-action-word-pulse"
+                style={{ fontSize: "2rem", color: "white" }}
             >
                 THE END!
             </div>
+
+            {/* Spider silhouette */}
+            <div
+                className="absolute bottom-10 right-10 w-16 h-16 opacity-70 animate-spider-crawl"
+                style={getParallaxStyle(10)}
+            >
+                <svg
+                    viewBox="0 0 100 100"
+                    fill="white"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path d="M50,15 C55,15 60,20 60,25 C60,30 55,35 50,35 C45,35 40,30 40,25 C40,20 45,15 50,15 Z" />
+                    <path d="M50,35 L50,65" strokeWidth="5" stroke="white" />
+                    <path
+                        d="M30,25 L45,35 M55,35 L70,25"
+                        strokeWidth="3"
+                        stroke="white"
+                    />
+                    <path
+                        d="M20,40 L45,45 M55,45 L80,40"
+                        strokeWidth="3"
+                        stroke="white"
+                    />
+                    <path
+                        d="M15,60 L40,55 M60,55 L85,60"
+                        strokeWidth="3"
+                        stroke="white"
+                    />
+                    <path
+                        d="M25,80 L40,65 M60,65 L75,80"
+                        strokeWidth="3"
+                        stroke="white"
+                    />
+                </svg>
+            </div>
+
+            {/* Comic panel border effect */}
+            <div className="absolute inset-0 border-8 border-black opacity-20 pointer-events-none"></div>
         </footer>
     )
 }

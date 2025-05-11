@@ -890,6 +890,49 @@
     }
 }
 
+@keyframes color-cycle {
+    0% {
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        background-position: 100% 50%;
+        filter: hue-rotate(180deg);
+    }
+    100% {
+        background-position: 0% 50%;
+        filter: hue-rotate(360deg);
+    }
+}
+
+@keyframes dimension-glitch {
+    0% {
+        transform: translate(0);
+        text-shadow: 2px 0 0 var(--spiderverse-red),
+            -2px 0 0 var(--spiderverse-blue);
+    }
+    25% {
+        transform: translate(1px, 1px);
+        text-shadow: -2px 0 0 var(--spiderverse-red),
+            2px 0 0 var(--spiderverse-blue);
+    }
+    50% {
+        transform: translate(-1px, -1px);
+        text-shadow: 2px 0 0 var(--spiderverse-red),
+            -2px 0 0 var(--spiderverse-blue);
+    }
+    75% {
+        transform: translate(1px, -1px);
+        text-shadow: -2px 0 0 var(--spiderverse-red),
+            2px 0 0 var(--spiderverse-blue);
+    }
+    100% {
+        transform: translate(0);
+        text-shadow: 2px 0 0 var(--spiderverse-red),
+            -2px 0 0 var(--spiderverse-blue);
+    }
+}
+
 /* Spider-Man mask overlay */
 .spidey-mask-overlay {
     position: absolute;
