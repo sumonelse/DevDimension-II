@@ -24,6 +24,7 @@ import PageTurnEffect from "./components/PageTurnEffect"
 import FloatingComicPanels from "./components/FloatingComicPanels"
 import SpiderverseAudio from "./components/SpiderverseAudio"
 import MultiverseEasterEgg from "./components/MultiverseEasterEgg"
+import DimensionTrigger from "./components/DimensionTrigger"
 import { useDimension } from "./context/DimensionContext"
 
 const App = () => {
@@ -158,6 +159,9 @@ const App = () => {
 
                         <FloatingControls />
                     </div>
+
+                    {/* Standalone Dimension Trigger Button */}
+                    <DimensionTrigger />
 
                     {/* Easter egg */}
                     <MultiverseEasterEgg />

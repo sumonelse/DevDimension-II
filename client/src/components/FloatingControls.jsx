@@ -11,16 +11,9 @@ const FloatingControls = () => {
     const [isThemeAnimating, setIsThemeAnimating] = useState(false)
     const [isInitialRender, setIsInitialRender] = useState(true)
 
-    // States for DimensionTrigger
-    const {
-        isSpiderVerse,
-        toggleDimension,
-        isTransitioning,
-        isAudioMuted,
-        toggleAudioMute,
-    } = useDimension()
-    const [isHovering, setIsHovering] = useState(false)
-    const [glitchInterval, setGlitchInterval] = useState(null)
+    // States for audio and dimension context
+    const { isSpiderVerse, isTransitioning, isAudioMuted, toggleAudioMute } =
+        useDimension()
 
     // State for controls panel
     const [isExpanded, setIsExpanded] = useState(true)
@@ -81,51 +74,7 @@ const FloatingControls = () => {
         }, 5000)
     }
 
-    // Handle hover effects for dimension trigger
-    useEffect(() => {
-        if (isHovering && !glitchInterval) {
-            // Create random glitch effect on hover
-            const interval = setInterval(() => {
-                const button = document.getElementById("dimension-trigger")
-                if (button) {
-                    // Random glitch effect
-                    const glitchX = Math.random() * 5 - 2.5
-                    const glitchY = Math.random() * 5 - 2.5
-                    const glitchRotate = Math.random() * 2 - 1
-                    const glitchScale = 0.98 + Math.random() * 0.04
-
-                    button.style.transform = `translate(${glitchX}px, ${glitchY}px) rotate(${glitchRotate}deg) scale(${glitchScale})`
-
-                    // Random color shift
-                    if (Math.random() > 0.7) {
-                        button.style.filter = `hue-rotate(${
-                            Math.random() * 360
-                        }deg)`
-                    } else {
-                        button.style.filter = ""
-                    }
-                }
-            }, 150)
-
-            setGlitchInterval(interval)
-        } else if (!isHovering && glitchInterval) {
-            clearInterval(glitchInterval)
-            setGlitchInterval(null)
-
-            // Reset styles
-            const button = document.getElementById("dimension-trigger")
-            if (button) {
-                button.style.transform = ""
-                button.style.filter = ""
-            }
-        }
-
-        return () => {
-            if (glitchInterval) {
-                clearInterval(glitchInterval)
-            }
-        }
-    }, [isHovering, glitchInterval])
+    // Dimension trigger hover effects removed - now using standalone component
 
     // Scroll to top smoothly
     const scrollToTop = () => {
@@ -214,7 +163,7 @@ const FloatingControls = () => {
                         : "translate-y-24 md:translate-y-0"
                 }`}
             >
-                {/* QuickMenu Button */}
+                {/* Magic Box Button */}
                 <button
                     className={`floating-control-button group focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 ${
                         isControlPanelOpen ? "scale-110" : ""
@@ -225,7 +174,7 @@ const FloatingControls = () => {
                             ? "bg-dark-800/90 backdrop-blur-sm border border-purple-500/30 hover:border-purple-500/60"
                             : "bg-white/90 backdrop-blur-sm border border-purple-500/20 hover:border-purple-500/40"
                     }`}
-                    aria-label="QuickMenu"
+                    aria-label="Magic Box"
                     onClick={toggleControlPanel}
                 >
                     <svg
@@ -254,11 +203,11 @@ const FloatingControls = () => {
                     </svg>
 
                     {/* Tooltip */}
-                    <span className="tooltip">QuickMenu</span>
+                    <span className="tooltip">MagicBox</span>
                 </button>
             </div>
 
-            {/* QuickMenu Panel */}
+            {/* Magic Box Panel */}
             {isControlPanelOpen && (
                 <div
                     className={`control-panel ${
@@ -278,7 +227,7 @@ const FloatingControls = () => {
                                 : "text-gray-800"
                         }`}
                     >
-                        QuickMenu
+                        Magic Box
                     </h3>
 
                     <div className="space-y-2">
@@ -414,75 +363,7 @@ const FloatingControls = () => {
                             </button>
                         </div>
 
-                        {/* Dimension Toggle */}
-                        <div className="control-panel-item">
-                            <span
-                                className={`${
-                                    isSpiderVerse
-                                        ? "text-black font-['Comic_Neue']"
-                                        : isDarkTheme
-                                        ? "text-gray-200"
-                                        : "text-gray-700"
-                                }`}
-                            >
-                                Dimension
-                            </span>
-                            <button
-                                onClick={toggleDimension}
-                                disabled={isTransitioning}
-                                className={`control-panel-button ${
-                                    isTransitioning
-                                        ? "opacity-50 cursor-not-allowed"
-                                        : ""
-                                }`}
-                                aria-label={
-                                    isSpiderVerse
-                                        ? "Exit Spider-Verse"
-                                        : "Enter Spider-Verse"
-                                }
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className={`h-5 w-5 ${
-                                        isSpiderVerse
-                                            ? "text-black"
-                                            : "text-purple-600"
-                                    }`}
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                >
-                                    {isSpiderVerse ? (
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M8 12h8M12 8v8"
-                                        />
-                                    ) : (
-                                        <>
-                                            <circle cx="12" cy="12" r="10" />
-                                            <path d="M12 2v20M2 12h20M2.63 2.63l18.74 18.74M21.37 2.63L2.63 21.37" />
-                                            <circle cx="12" cy="12" r="6" />
-                                            <circle cx="12" cy="12" r="2" />
-                                        </>
-                                    )}
-                                </svg>
-                                <span
-                                    className={`text-sm ${
-                                        isSpiderVerse
-                                            ? "text-black"
-                                            : isDarkTheme
-                                            ? "text-gray-200"
-                                            : "text-gray-700"
-                                    }`}
-                                >
-                                    {isSpiderVerse
-                                        ? "Exit Spider-Verse"
-                                        : "Enter Spider-Verse"}
-                                </span>
-                            </button>
-                        </div>
+                        {/* Dimension Toggle removed - now using standalone component */}
 
                         {/* Scroll to Top */}
                         <div className="control-panel-item">
