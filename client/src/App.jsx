@@ -13,12 +13,10 @@ import Contact from "./components/Contact"
 import SpiderverseContact from "./components/SpiderverseContact"
 import Footer from "./components/Footer"
 import SpiderverseFooter from "./components/SpiderverseFooter"
-import ThemeToggle from "./components/ThemeToggle"
-import ScrollToTop from "./components/ScrollToTop"
+import FloatingControls from "./components/FloatingControls"
 import AnimatedBackground from "./components/AnimatedBackground"
 import CompetitiveProgramming from "./components/CompetitiveProgramming"
 import SpiderverseBackground from "./components/SpiderverseBackground"
-import DimensionTrigger from "./components/DimensionTrigger"
 import DimensionTransition from "./components/DimensionTransition"
 import SpiderverseLoader from "./components/SpiderverseLoader"
 import SpiderverseCursor from "./components/SpiderverseCursor"
@@ -158,9 +156,7 @@ const App = () => {
                             </>
                         )}
 
-                        <ThemeToggle />
-                        <ScrollToTop />
-                        <DimensionTrigger />
+                        <FloatingControls />
                     </div>
 
                     {/* Easter egg */}
