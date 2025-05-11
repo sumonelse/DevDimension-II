@@ -24,8 +24,8 @@ const FloatingControls = () => {
 
     // State for controls panel
     const [isExpanded, setIsExpanded] = useState(true)
-    const [isControlPanelOpen, setIsControlPanelOpen] = useState(false)
     const [isControlsVisible, setIsControlsVisible] = useState(true)
+    const [isControlPanelOpen, setIsControlPanelOpen] = useState(false)
     const controlsTimeoutRef = useRef(null)
 
     // Show scroll button when page is scrolled down
@@ -214,201 +214,7 @@ const FloatingControls = () => {
                         : "translate-y-24 md:translate-y-0"
                 }`}
             >
-                {/* Scroll To Top Button */}
-                <button
-                    onClick={scrollToTop}
-                    className={`floating-control-button group focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 ${
-                        isScrollVisible
-                            ? "opacity-100 translate-y-0"
-                            : "opacity-0 translate-y-10 pointer-events-none"
-                    } ${
-                        isSpiderVerse
-                            ? "bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
-                            : "bg-opacity-80 backdrop-blur-sm shadow-lg"
-                    } ${
-                        !isSpiderVerse && isDarkTheme
-                            ? "bg-dark-800/90 border border-purple-500/30 hover:border-purple-500/60"
-                            : !isSpiderVerse
-                            ? "bg-white/90 border border-purple-500/20 hover:border-purple-500/40"
-                            : ""
-                    }`}
-                    aria-label="Scroll to top"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className={`h-6 w-6 transition-transform duration-300 group-hover:-translate-y-1 ${
-                            isSpiderVerse ? "text-black" : "text-purple-500"
-                        }`}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 10l7-7m0 0l7 7m-7-7v18"
-                        />
-                    </svg>
-
-                    {/* Tooltip */}
-                    <span className="tooltip">Scroll to top</span>
-                </button>
-
-                {/* Dimension Trigger Button */}
-                <button
-                    id="dimension-trigger"
-                    onClick={toggleDimension}
-                    disabled={isTransitioning}
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                    className={`floating-control-button group focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 ${
-                        isTransitioning
-                            ? "opacity-50 cursor-not-allowed"
-                            : "opacity-100 cursor-pointer"
-                    } ${
-                        isSpiderVerse
-                            ? "bg-white text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
-                            : "bg-purple-600 text-white shadow-lg hover:bg-purple-700"
-                    }`}
-                    aria-label={
-                        isSpiderVerse
-                            ? "Exit Spider-Verse"
-                            : "Enter Spider-Verse"
-                    }
-                >
-                    <div className="relative">
-                        {isSpiderVerse ? (
-                            // Exit Spider-Verse icon
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-6 w-6"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <circle cx="12" cy="12" r="10" />
-                                <path d="M8 12h8" />
-                                <path d="M12 8v8" />
-                            </svg>
-                        ) : (
-                            // Enter Spider-Verse icon (spider web)
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-6 w-6"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                            >
-                                <circle cx="12" cy="12" r="10" />
-                                <path d="M12 2v20M2 12h20M2.63 2.63l18.74 18.74M21.37 2.63L2.63 21.37" />
-                                <circle cx="12" cy="12" r="6" />
-                                <circle cx="12" cy="12" r="2" />
-                            </svg>
-                        )}
-                    </div>
-
-                    {/* Tooltip */}
-                    <span className="tooltip">
-                        {isSpiderVerse
-                            ? "Exit Spider-Verse"
-                            : "Enter Spider-Verse"}
-                    </span>
-                </button>
-
-                {/* Theme Toggle Button */}
-                <button
-                    onClick={handleThemeToggle}
-                    className={`floating-control-button group focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 shadow-lg ${
-                        isSpiderVerse
-                            ? "bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
-                            : isDarkTheme
-                            ? "bg-dark-800/90 backdrop-blur-sm border border-purple-500/30 hover:border-purple-500/60"
-                            : "bg-white/90 backdrop-blur-sm border border-purple-500/20 hover:border-purple-500/40"
-                    } ${isThemeAnimating ? "scale-110" : ""}`}
-                    aria-label="Toggle theme"
-                    disabled={isThemeAnimating}
-                >
-                    {/* Background glow effect */}
-                    {!isSpiderVerse && (
-                        <div
-                            className={`absolute inset-0 rounded-full transition-opacity duration-500 ${
-                                isDarkTheme
-                                    ? "bg-gradient-to-r from-purple-500/10 to-amber-500/10"
-                                    : "bg-gradient-to-r from-purple-500/5 to-amber-500/5"
-                            }`}
-                        ></div>
-                    )}
-
-                    {/* Sun icon (visible in dark mode) */}
-                    <div
-                        className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
-                            isInitialRender
-                                ? ""
-                                : isDarkTheme
-                                ? "opacity-100 rotate-0"
-                                : "opacity-0 rotate-90"
-                        }`}
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className={`h-6 w-6 ${
-                                isSpiderVerse ? "text-black" : "text-amber-400"
-                            }`}
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                            />
-                        </svg>
-                    </div>
-
-                    {/* Moon icon (visible in light mode) */}
-                    <div
-                        className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
-                            isInitialRender
-                                ? ""
-                                : isDarkTheme
-                                ? "opacity-0 -rotate-90"
-                                : "opacity-100 rotate-0"
-                        }`}
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className={`h-6 w-6 ${
-                                isSpiderVerse ? "text-black" : "text-purple-600"
-                            }`}
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                            />
-                        </svg>
-                    </div>
-
-                    {/* Tooltip */}
-                    <span className="tooltip">
-                        {isDarkTheme
-                            ? "Switch to Light Mode"
-                            : "Switch to Dark Mode"}
-                    </span>
-                </button>
-
-                {/* Control Panel Button */}
+                {/* QuickMenu Button */}
                 <button
                     className={`floating-control-button group focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 ${
                         isControlPanelOpen ? "scale-110" : ""
@@ -419,7 +225,7 @@ const FloatingControls = () => {
                             ? "bg-dark-800/90 backdrop-blur-sm border border-purple-500/30 hover:border-purple-500/60"
                             : "bg-white/90 backdrop-blur-sm border border-purple-500/20 hover:border-purple-500/40"
                     }`}
-                    aria-label="Control Panel"
+                    aria-label="QuickMenu"
                     onClick={toggleControlPanel}
                 >
                     <svg
@@ -448,11 +254,11 @@ const FloatingControls = () => {
                     </svg>
 
                     {/* Tooltip */}
-                    <span className="tooltip">Control Panel</span>
+                    <span className="tooltip">QuickMenu</span>
                 </button>
             </div>
 
-            {/* Control Panel */}
+            {/* QuickMenu Panel */}
             {isControlPanelOpen && (
                 <div
                     className={`control-panel ${
@@ -472,7 +278,7 @@ const FloatingControls = () => {
                                 : "text-gray-800"
                         }`}
                     >
-                        Control Panel
+                        QuickMenu
                     </h3>
 
                     <div className="space-y-2">
