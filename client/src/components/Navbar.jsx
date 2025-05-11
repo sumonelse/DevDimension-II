@@ -99,7 +99,9 @@ const Navbar = () => {
     return (
         <nav
             className={`fixed w-full z-50 transition-all duration-700 ${
-                isScrolled ? "glass-dark py-3 shadow-lg" : "bg-transparent py-5"
+                isScrolled
+                    ? "glass-dark py-2 sm:py-3 shadow-lg"
+                    : "bg-transparent py-3 sm:py-5"
             } ${isVisible ? "translate-y-0" : "-translate-y-full"} ${
                 isMenuOpen ? "h-screen md:h-auto" : ""
             } ${isLoaded ? "opacity-100" : "opacity-0 -translate-y-4"}`}
@@ -108,10 +110,11 @@ const Navbar = () => {
                 <div className="flex justify-between items-center">
                     <a
                         href="#hero"
-                        className={`text-2xl font-bold font-heading flex items-center group relative ${
+                        className={`text-xl sm:text-2xl font-bold font-heading flex items-center group relative ${
                             isLoaded ? "animate-fade-in" : "opacity-0"
                         }`}
                         style={{ animationFillMode: "forwards" }}
+                        aria-label="Home"
                     >
                         {/* Animated glow effect */}
                         <span className="absolute -inset-1 bg-gradient-purple opacity-0 group-hover:opacity-20 rounded-full blur-md transition-opacity duration-500"></span>
@@ -128,7 +131,7 @@ const Navbar = () => {
                         <span className="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-gradient-purple rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:scale-150 group-hover:shadow-neon"></span>
                     </a>
 
-                    {/* Cinematic mobile menu button */}
+                    {/* Enhanced Cinematic mobile menu button */}
                     <button
                         className="md:hidden focus:outline-none transition-all duration-500 hover:scale-110 p-3 rounded-full hover:bg-purple-500/20 relative overflow-hidden group"
                         onClick={toggleMenu}
@@ -144,31 +147,32 @@ const Navbar = () => {
                             } opacity-0 border border-purple-500 scale-0 group-hover:scale-100 group-hover:opacity-30 transition-all duration-500`}
                         ></span>
 
-                        <div className="relative w-6 h-6">
+                        {/* Enhanced hamburger icon with better touch target */}
+                        <div className="relative w-7 h-7">
                             <span
-                                className={`absolute h-0.5 w-6 bg-gradient-purple transform transition-all duration-500 ${
+                                className={`absolute h-0.5 w-7 bg-gradient-purple transform transition-all duration-500 ${
                                     isMenuOpen
-                                        ? "rotate-45 top-3 w-7 shadow-neon"
-                                        : "rotate-0 top-1"
+                                        ? "rotate-45 top-3 shadow-neon"
+                                        : "rotate-0 top-1.5"
                                 }`}
                             ></span>
                             <span
-                                className={`absolute h-0.5 w-6 bg-gradient-cyan top-3 transition-all duration-500 ${
+                                className={`absolute h-0.5 w-7 bg-gradient-cyan top-3 transition-all duration-500 ${
                                     isMenuOpen ? "opacity-0 w-0" : "opacity-100"
                                 }`}
                             ></span>
                             <span
-                                className={`absolute h-0.5 w-6 bg-gradient-purple transform transition-all duration-500 ${
+                                className={`absolute h-0.5 w-7 bg-gradient-purple transform transition-all duration-500 ${
                                     isMenuOpen
-                                        ? "-rotate-45 top-3 w-7 shadow-neon"
-                                        : "rotate-0 top-5"
+                                        ? "-rotate-45 top-3 shadow-neon"
+                                        : "rotate-0 top-4.5"
                                 }`}
                             ></span>
                         </div>
                     </button>
 
-                    {/* Cinematic Desktop menu */}
-                    <div className="hidden md:flex space-x-6">
+                    {/* Enhanced Cinematic Desktop menu */}
+                    <div className="hidden md:flex md:space-x-3 lg:space-x-6">
                         {navLinks.map((link, index) => (
                             <a
                                 key={index}
@@ -179,7 +183,7 @@ const Navbar = () => {
                                         ? "noopener noreferrer"
                                         : undefined
                                 }
-                                className={`relative px-3 py-2 font-medium transition-all duration-500 group overflow-hidden ${
+                                className={`relative px-2 lg:px-3 py-2 font-medium transition-all duration-500 group overflow-hidden ${
                                     !link.isExternal &&
                                     activeSection === link.href.substring(1)
                                         ? "text-purple-400"
@@ -190,6 +194,7 @@ const Navbar = () => {
                                 style={{
                                     animationDelay: `${index * 100 + 200}ms`,
                                 }}
+                                aria-label={link.label}
                             >
                                 {/* Text with staggered entrance animation */}
                                 <span
@@ -216,6 +221,7 @@ const Navbar = () => {
                                         fill="none"
                                         viewBox="0 0 24 24"
                                         stroke="currentColor"
+                                        aria-hidden="true"
                                     >
                                         <path
                                             strokeLinecap="round"
@@ -234,17 +240,31 @@ const Navbar = () => {
                                             ? "scale-x-100"
                                             : "scale-x-0 group-hover:scale-x-100"
                                     }`}
+                                    aria-hidden="true"
                                 ></span>
 
                                 {/* Hover effect background */}
-                                <span className="absolute inset-0 w-full h-full bg-purple-500/10 scale-0 group-hover:scale-100 rounded-lg transition-transform duration-500"></span>
+                                <span
+                                    className="absolute inset-0 w-full h-full bg-purple-500/10 scale-0 group-hover:scale-100 rounded-lg transition-transform duration-500"
+                                    aria-hidden="true"
+                                ></span>
+
+                                {/* Active indicator dot */}
+                                {!link.isExternal &&
+                                    activeSection ===
+                                        link.href.substring(1) && (
+                                        <span
+                                            className="absolute -right-1 -top-1 w-1.5 h-1.5 bg-purple-400 rounded-full"
+                                            aria-hidden="true"
+                                        ></span>
+                                    )}
                             </a>
                         ))}
                         <a
                             href="/resume.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`px-5 py-2 bg-gradient-purple text-white rounded-full shadow-sm hover:shadow-neon transition-all duration-500 hover:-translate-y-1 hover:scale-105 group relative overflow-hidden ${
+                            className={`px-4 lg:px-5 py-2 bg-gradient-purple text-white rounded-full shadow-sm hover:shadow-neon transition-all duration-500 hover:-translate-y-1 hover:scale-105 group relative overflow-hidden ${
                                 isLoaded ? "animate-fade-in" : "opacity-0"
                             }`}
                             style={{
@@ -253,18 +273,28 @@ const Navbar = () => {
                                 }ms`,
                                 animationFillMode: "forwards",
                             }}
+                            aria-label="Download Resume"
                         >
                             {/* Animated glow effect */}
-                            <span className="absolute inset-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
+                            <span
+                                className="absolute inset-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+                                aria-hidden="true"
+                            ></span>
 
                             <span className="flex items-center relative z-10">
-                                Resume
+                                <span className="md:hidden lg:inline">
+                                    Resume
+                                </span>
+                                <span className="hidden md:inline lg:hidden">
+                                    CV
+                                </span>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-4 w-4 ml-1.5 transition-transform duration-500 group-hover:translate-x-2"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
+                                    aria-hidden="true"
                                 >
                                     <path
                                         strokeLinecap="round"
@@ -278,11 +308,11 @@ const Navbar = () => {
                     </div>
                 </div>
 
-                {/* Mobile menu - Cinematic version */}
+                {/* Mobile menu - Enhanced Cinematic version */}
                 <div
-                    className={`md:hidden fixed left-0 right-0 transition-all duration-700 ease-in-out ${
+                    className={`md:hidden fixed left-0 right-0 transition-all duration-500 ease-in-out ${
                         isMenuOpen
-                            ? "opacity-100 top-[72px] h-[calc(100vh-72px)]"
+                            ? "opacity-100 top-[72px] h-[calc(100vh-72px)] z-50"
                             : "opacity-0 top-[72px] h-0 pointer-events-none"
                     }`}
                 >
@@ -294,41 +324,44 @@ const Navbar = () => {
                             <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-500 rounded-full filter blur-3xl animate-float -translate-x-1/2 -translate-y-1/2"></div>
                         </div>
 
-                        {/* Menu items with staggered animation */}
-                        <div className="flex flex-col space-y-10 items-center relative z-10">
+                        {/* Menu items with staggered animation - Enhanced for mobile */}
+                        <div className="flex flex-col space-y-6 items-center relative z-10">
                             {navLinks.map((link, index) => (
                                 <a
                                     key={index}
                                     href={link.href}
-                                    className={`text-2xl font-medium relative group transition-all duration-500 transform ${
+                                    className={`text-xl sm:text-2xl font-medium relative group transition-all duration-500 transform ${
                                         isMenuOpen ? "animate-slide-up" : ""
                                     } opacity-0 ${
                                         activeSection === link.href.substring(1)
                                             ? "text-purple-400"
                                             : "hover:text-purple-400"
-                                    }`}
+                                    } w-full text-center py-3`}
                                     style={{
                                         animationDelay: `${index * 100}ms`,
                                         animationFillMode: "forwards",
                                     }}
                                     onClick={toggleMenu}
+                                    aria-label={link.label}
                                 >
-                                    {link.label}
-                                    <span
-                                        className={`absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-purple transform origin-left transition-transform duration-500 ${
-                                            activeSection ===
-                                            link.href.substring(1)
-                                                ? "scale-x-100"
-                                                : "scale-x-0 group-hover:scale-x-100"
-                                        }`}
-                                    ></span>
+                                    <div className="relative inline-block">
+                                        {link.label}
+                                        <span
+                                            className={`absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-purple transform origin-left transition-transform duration-500 ${
+                                                activeSection ===
+                                                link.href.substring(1)
+                                                    ? "scale-x-100"
+                                                    : "scale-x-0 group-hover:scale-x-100"
+                                            }`}
+                                        ></span>
+                                    </div>
                                 </a>
                             ))}
                             <a
                                 href="/resume.pdf"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="mt-6 px-10 py-4 bg-gradient-purple text-white rounded-lg shadow-neon transition-all duration-500 hover:scale-110 transform opacity-0 animate-slide-up group"
+                                className="mt-4 px-8 py-3 bg-gradient-purple text-white rounded-lg shadow-neon transition-all duration-500 hover:scale-110 transform opacity-0 animate-slide-up group w-4/5 text-center"
                                 style={{
                                     animationDelay: `${
                                         navLinks.length * 100
@@ -336,8 +369,9 @@ const Navbar = () => {
                                     animationFillMode: "forwards",
                                 }}
                                 onClick={toggleMenu}
+                                aria-label="Download Resume"
                             >
-                                <span className="flex items-center text-lg">
+                                <span className="flex items-center justify-center text-lg">
                                     Resume
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"

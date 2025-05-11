@@ -364,7 +364,7 @@ const SpiderverseCursor = () => {
 
                 return (
                     <div
-                        key={point.id}
+                        key={point.id + index}
                         className={`fixed pointer-events-none z-40 rounded-full bg-${point.color}`}
                         style={{
                             left: `${point.x}px`,

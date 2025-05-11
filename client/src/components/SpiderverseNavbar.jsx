@@ -49,25 +49,25 @@ const SpiderverseNavbar = () => {
             className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
                 isScrolled
                     ? "py-2 bg-white text-black shadow-lg"
-                    : "py-4 bg-transparent text-white"
+                    : "py-3 bg-transparent text-white"
             }`}
         >
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex justify-between items-center">
-                    {/* Logo */}
+                    {/* Enhanced Logo with better mobile display */}
                     <a
                         href="#hero"
-                        className="flex items-center space-x-2"
+                        className="flex items-center space-x-2 group"
                         onClick={() => setActiveSection("hero")}
                     >
                         <div
-                            className={`comic-border p-2 rounded-full ${
+                            className={`comic-border p-1.5 sm:p-2 rounded-full transition-all duration-300 ${
                                 isScrolled ? "bg-spiderverse-red" : "bg-white"
-                            }`}
+                            } group-hover:scale-110`}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={`h-6 w-6 ${
+                                className={`h-5 w-5 sm:h-6 sm:w-6 ${
                                     isScrolled ? "text-white" : "text-black"
                                 }`}
                                 viewBox="0 0 24 24"
@@ -82,23 +82,23 @@ const SpiderverseNavbar = () => {
                             </svg>
                         </div>
                         <span
-                            className={`font-['Bangers'] text-2xl ${
+                            className={`font-['Bangers'] text-xl sm:text-2xl transition-all duration-300 ${
                                 isScrolled
                                     ? "text-spiderverse-red"
                                     : "text-white"
-                            }`}
+                            } group-hover:scale-105`}
                         >
                             Sumit Maurya
                         </span>
                     </a>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-1">
+                    {/* Enhanced Desktop Navigation */}
+                    <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
                         {navLinks.map((link, index) => (
                             <a
                                 key={link.name}
                                 href={link.href}
-                                className={`px-4 py-2 font-['Comic_Neue'] font-bold transition-all duration-300 relative ${
+                                className={`px-3 lg:px-4 py-2 font-['Comic_Neue'] font-bold transition-all duration-300 relative group overflow-hidden ${
                                     activeSection === link.href.substring(1)
                                         ? isScrolled
                                             ? "text-spiderverse-red"
@@ -116,111 +116,152 @@ const SpiderverseNavbar = () => {
                                     setActiveSection(link.href.substring(1))
                                 }
                             >
-                                {link.name}
+                                {/* Comic-style hover effect */}
+                                <span className="absolute inset-0 bg-yellow-100 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
+
+                                {/* Link text */}
+                                <span className="relative z-10">
+                                    {link.name}
+                                </span>
+
+                                {/* Active indicator */}
+                                <span
+                                    className={`absolute bottom-0 left-0 w-full h-1 bg-spiderverse-red transform origin-left transition-transform duration-300 ${
+                                        activeSection === link.href.substring(1)
+                                            ? "scale-x-100"
+                                            : "scale-x-0 group-hover:scale-x-100"
+                                    }`}
+                                ></span>
+
+                                {/* Comic-style active indicator */}
                                 {activeSection === link.href.substring(1) && (
-                                    <span className="absolute bottom-0 left-0 w-full h-1 bg-spiderverse-red"></span>
+                                    <span className="absolute -right-1 -top-1 w-2 h-2 bg-spiderverse-red rounded-full"></span>
                                 )}
                             </a>
                         ))}
                     </div>
 
-                    {/* Mobile Menu Button */}
+                    {/* Enhanced Mobile Menu Button */}
                     <button
-                        className="md:hidden text-2xl focus:outline-none"
+                        className="md:hidden focus:outline-none relative p-2 rounded-full transition-all duration-300"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        aria-label={
+                            isMobileMenuOpen ? "Close menu" : "Open menu"
+                        }
+                        style={{
+                            background: isMobileMenuOpen
+                                ? "rgba(237, 29, 36, 0.2)"
+                                : "transparent",
+                        }}
                     >
-                        {isMobileMenuOpen ? (
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className={`h-6 w-6 ${
-                                    isScrolled ? "text-black" : "text-white"
-                                }`}
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
-                            </svg>
-                        ) : (
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className={`h-6 w-6 ${
-                                    isScrolled ? "text-black" : "text-white"
-                                }`}
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M4 6h16M4 12h16M4 18h16"
-                                />
-                            </svg>
-                        )}
+                        <div
+                            className={`comic-border p-1 rounded-full ${
+                                isMobileMenuOpen ? "bg-spiderverse-red/20" : ""
+                            }`}
+                            style={{ transform: "rotate(-3deg)" }}
+                        >
+                            {isMobileMenuOpen ? (
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className={`h-7 w-7 ${
+                                        isScrolled ? "text-black" : "text-white"
+                                    }`}
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2.5}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            ) : (
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className={`h-7 w-7 ${
+                                        isScrolled ? "text-black" : "text-white"
+                                    }`}
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2.5}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                </svg>
+                            )}
+                        </div>
                     </button>
                 </div>
 
-                {/* Mobile Navigation */}
+                {/* Enhanced Mobile Navigation */}
                 <div
-                    className={`md:hidden transition-all duration-300 overflow-hidden ${
-                        isMobileMenuOpen ? "max-h-60 mt-4" : "max-h-0"
+                    className={`md:hidden fixed inset-x-0 transition-all duration-500 overflow-hidden z-40 ${
+                        isMobileMenuOpen
+                            ? "opacity-100 max-h-[80vh] mt-4"
+                            : "opacity-0 max-h-0 pointer-events-none"
                     }`}
+                    style={{
+                        top: isMobileMenuOpen ? "70px" : "60px",
+                        backdropFilter: "blur(8px)",
+                    }}
                 >
-                    <div className="comic-panel bg-white p-4 flex flex-col space-y-2">
-                        {navLinks.map((link) => (
-                            <a
-                                key={link.name}
-                                href={link.href}
-                                className={`px-4 py-2 font-['Comic_Neue'] font-bold ${
-                                    activeSection === link.href.substring(1)
-                                        ? "text-spiderverse-red"
-                                        : "text-black hover:text-spiderverse-red"
-                                }`}
-                                onClick={() => {
-                                    setActiveSection(link.href.substring(1))
-                                    setIsMobileMenuOpen(false)
-                                }}
-                            >
-                                {link.name}
-                            </a>
-                        ))}
+                    <div className="comic-panel bg-white p-6 flex flex-col space-y-4 mx-4 shadow-lg relative">
+                        {/* Comic-style decorative elements */}
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-yellow-100 rounded-full opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+                        <div className="absolute bottom-0 left-0 w-16 h-16 bg-spiderverse-red rounded-full opacity-10 translate-y-1/3 -translate-x-1/3"></div>
 
-                        {/* Audio Mute Toggle for Mobile */}
-                        <button
-                            onClick={toggleAudioMute}
-                            className="flex items-center px-4 py-2 font-['Comic_Neue'] font-bold text-black hover:text-spiderverse-red"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5 mr-2"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                            >
-                                {isAudioMuted ? (
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
-                                    />
-                                ) : (
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a9.99 9.99 0 011.414 1.414M12 6a7.975 7.975 0 00-5.657 2.343m0 0a9.99 9.99 0 00-1.414 1.414M12 6c-2.583 0-4.824 1.22-6.243 3.122m0 0A9.925 9.925 0 004 12c0 .998.146 1.962.418 2.878M12 6a9.925 9.925 0 00-6.243 5.878M12 6c2.583 0 4.824 1.22 6.243 3.122m0 0A9.925 9.925 0 0120 12c0 .998-.146 1.962-.418 2.878m-6.243-3.122a9.925 9.925 0 00-6.243 5.878M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-                                    />
-                                )}
-                            </svg>
-                            {isAudioMuted ? "Unmute Sounds" : "Mute Sounds"}
-                        </button>
+                        {/* Spider web in corner */}
+                        <div className="spider-web absolute top-0 left-0 w-16 h-16 opacity-10 transform -translate-x-1/4 -translate-y-1/4"></div>
+
+                        {/* Navigation links with comic-style hover effects */}
+                        <div className="relative z-10">
+                            {navLinks.map((link, index) => (
+                                <a
+                                    key={link.name}
+                                    href={link.href}
+                                    className={`block px-4 py-3 font-['Comic_Neue'] font-bold text-lg relative transition-all duration-300 ${
+                                        activeSection === link.href.substring(1)
+                                            ? "text-spiderverse-red transform scale-105"
+                                            : "text-black hover:text-spiderverse-red hover:translate-x-1"
+                                    }`}
+                                    style={{
+                                        transform: `rotate(${
+                                            index % 2 === 0 ? "-0.5" : "0.5"
+                                        }deg)`,
+                                    }}
+                                    onClick={() => {
+                                        setActiveSection(link.href.substring(1))
+                                        setIsMobileMenuOpen(false)
+                                    }}
+                                >
+                                    {/* Comic-style active indicator */}
+                                    {activeSection ===
+                                        link.href.substring(1) && (
+                                        <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-spiderverse-red rounded-full"></span>
+                                    )}
+
+                                    <span className="inline-block">
+                                        {link.name}
+                                    </span>
+
+                                    {/* Underline effect */}
+                                    <span
+                                        className={`block h-0.5 bg-spiderverse-red mt-1 transition-all duration-300 ${
+                                            activeSection ===
+                                            link.href.substring(1)
+                                                ? "w-full"
+                                                : "w-0 group-hover:w-full"
+                                        }`}
+                                    ></span>
+                                </a>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
