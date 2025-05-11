@@ -1,6 +1,50 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+    safelist: [
+        // Color variants for dynamic classes
+        "from-purple-400",
+        "to-purple-600",
+        "from-purple-500",
+        "to-purple-700",
+        "border-purple-500/20",
+        "hover:border-purple-500/50",
+        "text-purple-400",
+        "bg-purple-500/5",
+        "from-pink-400",
+        "to-pink-600",
+        "from-pink-500",
+        "to-pink-700",
+        "border-pink-500/20",
+        "hover:border-pink-500/50",
+        "text-pink-400",
+        "bg-pink-500/5",
+        "from-cyan-400",
+        "to-cyan-600",
+        "from-cyan-500",
+        "to-cyan-700",
+        "border-cyan-500/20",
+        "hover:border-cyan-500/50",
+        "text-cyan-400",
+        "bg-cyan-500/5",
+        "from-amber-400",
+        "to-amber-600",
+        "from-amber-500",
+        "to-amber-700",
+        "border-amber-500/20",
+        "hover:border-amber-500/50",
+        "text-amber-400",
+        "bg-amber-500/5",
+        "from-emerald-400",
+        "to-emerald-600",
+        "from-emerald-500",
+        "to-emerald-700",
+        "border-emerald-500/20",
+        "hover:border-emerald-500/50",
+        "text-emerald-400",
+        "bg-emerald-500/5",
+        // Add more colors as needed
+    ],
     theme: {
         extend: {
             colors: {
@@ -98,6 +142,8 @@ export default {
                 "comic-panel-float": "comicPanelFloat 15s ease-in-out infinite",
                 "dimension-glitch": "dimensionGlitch 0.5s infinite",
                 "color-cycle": "colorCycle 10s infinite",
+                "float-up-slow": "floatUpSlow 4s ease-out forwards",
+                "float-down": "floatDown 4s ease-out forwards",
             },
             keyframes: {
                 bounce: {
@@ -350,6 +396,16 @@ export default {
                 colorCycle: {
                     "0%": { filter: "hue-rotate(0deg)" },
                     "100%": { filter: "hue-rotate(360deg)" },
+                },
+                floatUpSlow: {
+                    "0%": { transform: "translateY(0)", opacity: 0.7 },
+                    "100%": { transform: "translateY(-100px)", opacity: 0 },
+                },
+                floatDown: {
+                    "0%": { transform: "translateY(-20px)", opacity: 0 },
+                    "20%": { opacity: 0.7 },
+                    "80%": { opacity: 0.7 },
+                    "100%": { transform: "translateY(100px)", opacity: 0 },
                 },
             },
             backgroundImage: {

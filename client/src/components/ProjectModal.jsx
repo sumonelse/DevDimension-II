@@ -51,33 +51,7 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                 {/* Modal header with close button */}
                 <div className="sticky top-0 z-10 glass-dark backdrop-blur-md border-b border-purple-500/20 px-6 py-4 flex justify-between items-center">
                     <h3
-                        className={`text-2xl font-bold bg-clip-text text-transparent 
-                            ${
-                                project.color === "purple"
-                                    ? "bg-gradient-to-r from-purple-500 to-purple-700"
-                                    : ""
-                            }
-                            ${
-                                project.color === "pink"
-                                    ? "bg-gradient-to-r from-pink-500 to-pink-700"
-                                    : ""
-                            }
-                            ${
-                                project.color === "cyan"
-                                    ? "bg-gradient-to-r from-cyan-500 to-cyan-700"
-                                    : ""
-                            }
-                            ${
-                                project.color === "amber"
-                                    ? "bg-gradient-to-r from-amber-500 to-amber-700"
-                                    : ""
-                            }
-                            ${
-                                project.color === "emerald"
-                                    ? "bg-gradient-to-r from-emerald-500 to-emerald-700"
-                                    : ""
-                            }
-                        `}
+                        className={`text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-${project.color}-500 to-${project.color}-700`}
                     >
                         {project.title}
                     </h3>
