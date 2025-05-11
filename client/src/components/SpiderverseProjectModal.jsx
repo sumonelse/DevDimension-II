@@ -151,27 +151,28 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                 }}
             >
                 {/* Comic book header */}
-                <div className="bg-gradient-to-r from-spiderverse-red via-spiderverse-blue to-spiderverse-red text-white p-4 flex justify-between items-center comic-border-bottom relative overflow-hidden">
+                <div className="bg-gradient-to-r from-spiderverse-red via-spiderverse-blue to-spiderverse-red text-white p-2 sm:p-3 md:p-4 flex justify-between items-center comic-border-bottom relative overflow-hidden">
                     {/* Ben-Day dots overlay */}
                     <div className="absolute inset-0 benday-dots opacity-30"></div>
 
                     {/* Title with comic font */}
-                    <h2 className="text-3xl font-['Bangers'] tracking-wider relative z-10 flex items-center">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-['Bangers'] tracking-wider relative z-10 flex items-center">
                         <span className="mr-2">{project.title}</span>
                         <SoundEffect
                             text="WOW!"
                             color="yellow"
                             size="small"
                             rotation={-5}
+                            className="hidden sm:block"
                         />
                     </h2>
 
                     {/* Action buttons */}
-                    <div className="flex items-center gap-2 relative z-10">
+                    <div className="flex items-center gap-1 sm:gap-2 relative z-10">
                         {/* Mute/Unmute button */}
                         <button
                             onClick={toggleMute}
-                            className="relative z-10 w-10 h-10 rounded-full bg-white text-spiderverse-blue flex items-center justify-center border-2 border-black transform transition-transform hover:scale-110"
+                            className="relative z-10 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-white text-spiderverse-blue flex items-center justify-center border-2 border-black transform transition-transform hover:scale-110"
                             aria-label={
                                 isMuted ? "Unmute sounds" : "Mute sounds"
                             }
@@ -179,7 +180,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-6 w-6"
+                                className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -204,12 +205,12 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                         {/* Close button */}
                         <button
                             onClick={onClose}
-                            className="relative z-10 w-10 h-10 rounded-full bg-white text-spiderverse-red flex items-center justify-center border-2 border-black transform transition-transform hover:scale-110"
+                            className="relative z-10 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-white text-spiderverse-red flex items-center justify-center border-2 border-black transform transition-transform hover:scale-110"
                             aria-label="Close modal"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-6 w-6"
+                                className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -226,7 +227,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                 </div>
 
                 {/* Comic book content */}
-                <div className="p-6 bg-white flex-1 overflow-y-auto comic-scrollbar">
+                <div className="p-3 sm:p-4 md:p-6 bg-white flex-1 overflow-y-auto comic-scrollbar">
                     {/* Comic panels navigation - scrollable */}
                     <div className="border-b-2 border-black pb-2 mb-6">
                         {/* Tabs container */}

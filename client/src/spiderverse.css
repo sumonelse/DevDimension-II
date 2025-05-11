@@ -60,41 +60,95 @@
 
 .comic-panel-grid {
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(12, 1fr);
     gap: 15px;
     position: relative;
 }
 
-/* Panel sizes */
-.panel-small {
-    grid-column: span 4;
-    grid-row: span 4;
-    --panel-rotation: -1deg;
+/* Mobile layout - Stack panels for better readability */
+@media (max-width: 639px) {
+    .comic-panel-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .panel-small,
+    .panel-medium,
+    .panel-large,
+    .panel-wide,
+    .panel-tall {
+        grid-column: span 4;
+        grid-row: auto;
+    }
 }
 
-.panel-medium {
-    grid-column: span 6;
-    grid-row: span 6;
-    --panel-rotation: 1deg;
+/* Tablet layout - Partial comic layout */
+@media (min-width: 640px) and (max-width: 1023px) {
+    .comic-panel-grid {
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: auto;
+    }
+
+    .panel-small {
+        grid-column: span 4;
+        grid-row: span 1;
+    }
+
+    .panel-medium {
+        grid-column: span 4;
+        grid-row: span 1;
+    }
+
+    .panel-large {
+        grid-column: span 8;
+        grid-row: span 1;
+    }
+
+    .panel-wide {
+        grid-column: span 8;
+        grid-row: span 1;
+    }
+
+    .panel-tall {
+        grid-column: span 4;
+        grid-row: span 2;
+    }
 }
 
-.panel-large {
-    grid-column: span 8;
-    grid-row: span 8;
-    --panel-rotation: -0.5deg;
-}
+/* Desktop layout - Full comic panel layout (original) */
+@media (min-width: 1024px) {
+    .comic-panel-grid {
+        grid-template-columns: repeat(12, 1fr);
+        grid-template-rows: repeat(12, 1fr);
+    }
 
-.panel-wide {
-    grid-column: span 12;
-    grid-row: span 4;
-    --panel-rotation: 0.5deg;
-}
+    .panel-small {
+        grid-column: span 4;
+        grid-row: span 4;
+        --panel-rotation: -1deg;
+    }
 
-.panel-tall {
-    grid-column: span 4;
-    grid-row: span 12;
-    --panel-rotation: -1.5deg;
+    .panel-medium {
+        grid-column: span 6;
+        grid-row: span 6;
+        --panel-rotation: 1deg;
+    }
+
+    .panel-large {
+        grid-column: span 8;
+        grid-row: span 8;
+        --panel-rotation: -0.5deg;
+    }
+
+    .panel-wide {
+        grid-column: span 12;
+        grid-row: span 4;
+        --panel-rotation: 0.5deg;
+    }
+
+    .panel-tall {
+        grid-column: span 4;
+        grid-row: span 12;
+        --panel-rotation: -1.5deg;
+    }
 }
 
 /* Ben-Day Dots & Halftones */
