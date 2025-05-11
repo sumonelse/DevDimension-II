@@ -205,7 +205,28 @@ const Skills = () => {
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
                             <div
-                                className={`h-full tilt-card clay bg-dark-900 rounded-xl p-8 border border-${category.color}-500/20 hover:border-${category.color}-500/50 transition-all duration-500 group relative overflow-hidden animate-slide-up`}
+                                className={`h-full tilt-card clay bg-dark-900 rounded-xl p-8 transition-all duration-500 group relative overflow-hidden animate-slide-up
+                                    ${
+                                        category.color === "purple"
+                                            ? "border border-purple-500/20 hover:border-purple-500/50"
+                                            : ""
+                                    }
+                                    ${
+                                        category.color === "pink"
+                                            ? "border border-pink-500/20 hover:border-pink-500/50"
+                                            : ""
+                                    }
+                                    ${
+                                        category.color === "cyan"
+                                            ? "border border-cyan-500/20 hover:border-cyan-500/50"
+                                            : ""
+                                    }
+                                    ${
+                                        category.color === "amber"
+                                            ? "border border-amber-500/20 hover:border-amber-500/50"
+                                            : ""
+                                    }
+                                `}
                                 style={{
                                     transform: "translateZ(0)",
                                     willChange: "transform, box-shadow",
@@ -214,10 +235,52 @@ const Skills = () => {
                             >
                                 {/* Background decoration */}
                                 <div
-                                    className={`absolute -top-10 -right-10 w-40 h-40 bg-${category.color}-500/5 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-700`}
+                                    className={`absolute -top-10 -right-10 w-40 h-40 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-700
+                                        ${
+                                            category.color === "purple"
+                                                ? "bg-purple-500/5"
+                                                : ""
+                                        }
+                                        ${
+                                            category.color === "pink"
+                                                ? "bg-pink-500/5"
+                                                : ""
+                                        }
+                                        ${
+                                            category.color === "cyan"
+                                                ? "bg-cyan-500/5"
+                                                : ""
+                                        }
+                                        ${
+                                            category.color === "amber"
+                                                ? "bg-amber-500/5"
+                                                : ""
+                                        }
+                                    `}
                                 ></div>
                                 <div
-                                    className={`absolute -bottom-10 -left-10 w-40 h-40 bg-${category.color}-500/5 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-700`}
+                                    className={`absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-700
+                                        ${
+                                            category.color === "purple"
+                                                ? "bg-purple-500/5"
+                                                : ""
+                                        }
+                                        ${
+                                            category.color === "pink"
+                                                ? "bg-pink-500/5"
+                                                : ""
+                                        }
+                                        ${
+                                            category.color === "cyan"
+                                                ? "bg-cyan-500/5"
+                                                : ""
+                                        }
+                                        ${
+                                            category.color === "amber"
+                                                ? "bg-amber-500/5"
+                                                : ""
+                                        }
+                                    `}
                                 ></div>
                                 {/* Shine effect overlay */}
                                 <div className="tilt-card-shine"></div>
@@ -226,7 +289,28 @@ const Skills = () => {
                                     {/* Header */}
                                     <div className="flex items-center mb-8 tilt-card-content">
                                         <div
-                                            className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${category.color}-600 to-${category.color}-400 flex items-center justify-center mr-4 text-white shadow-lg shadow-${category.color}-500/20 group-hover:shadow-${category.color}-500/40 transition-all duration-300 group-hover:scale-110 animate-subtle-pulse`}
+                                            className={`w-12 h-12 rounded-xl flex items-center justify-center mr-4 text-white transition-all duration-300 group-hover:scale-110 animate-subtle-pulse
+                                                ${
+                                                    category.color === "purple"
+                                                        ? "bg-gradient-to-br from-purple-600 to-purple-400 shadow-lg shadow-purple-500/20 group-hover:shadow-purple-500/40"
+                                                        : ""
+                                                }
+                                                ${
+                                                    category.color === "pink"
+                                                        ? "bg-gradient-to-br from-pink-600 to-pink-400 shadow-lg shadow-pink-500/20 group-hover:shadow-pink-500/40"
+                                                        : ""
+                                                }
+                                                ${
+                                                    category.color === "cyan"
+                                                        ? "bg-gradient-to-br from-cyan-600 to-cyan-400 shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40"
+                                                        : ""
+                                                }
+                                                ${
+                                                    category.color === "amber"
+                                                        ? "bg-gradient-to-br from-amber-600 to-amber-400 shadow-lg shadow-amber-500/20 group-hover:shadow-amber-500/40"
+                                                        : ""
+                                                }
+                                            `}
                                             style={{
                                                 animationDelay: `${
                                                     index * 200
@@ -235,10 +319,27 @@ const Skills = () => {
                                         >
                                             {category.icon}
                                         </div>
-                                        <h3
-                                            className={`text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-${category.color}-400 to-white`}
-                                        >
-                                            {category.title}
+                                        <h3 className="text-xl font-bold">
+                                            {category.color === "purple" && (
+                                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-purple-600">
+                                                    {category.title}
+                                                </span>
+                                            )}
+                                            {category.color === "pink" && (
+                                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-pink-600">
+                                                    {category.title}
+                                                </span>
+                                            )}
+                                            {category.color === "cyan" && (
+                                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-cyan-600">
+                                                    {category.title}
+                                                </span>
+                                            )}
+                                            {category.color === "amber" && (
+                                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-amber-600">
+                                                    {category.title}
+                                                </span>
+                                            )}
                                         </h3>
                                     </div>
 
@@ -248,7 +349,32 @@ const Skills = () => {
                                             (skill, skillIndex) => (
                                                 <div
                                                     key={skillIndex}
-                                                    className={`px-4 py-2.5 rounded-lg bg-dark-900/80 border border-${category.color}-500/20 text-${category.color}-400 font-medium text-sm transition-all duration-300 hover:border-${category.color}-500/40 hover:shadow-sm hover:translate-y-[-2px] animate-slide-up`}
+                                                    className={`px-4 py-2.5 rounded-lg bg-dark-900/80 font-medium text-sm transition-all duration-300 hover:shadow-sm hover:translate-y-[-2px] animate-slide-up
+                                                        ${
+                                                            category.color ===
+                                                            "purple"
+                                                                ? "border border-purple-500/20 text-purple-400 hover:border-purple-500/40"
+                                                                : ""
+                                                        }
+                                                        ${
+                                                            category.color ===
+                                                            "pink"
+                                                                ? "border border-pink-500/20 text-pink-400 hover:border-pink-500/40"
+                                                                : ""
+                                                        }
+                                                        ${
+                                                            category.color ===
+                                                            "cyan"
+                                                                ? "border border-cyan-500/20 text-cyan-400 hover:border-cyan-500/40"
+                                                                : ""
+                                                        }
+                                                        ${
+                                                            category.color ===
+                                                            "amber"
+                                                                ? "border border-amber-500/20 text-amber-400 hover:border-amber-500/40"
+                                                                : ""
+                                                        }
+                                                    `}
                                                     style={{
                                                         transform:
                                                             "translateZ(0)",
@@ -295,7 +421,7 @@ const Skills = () => {
                         <div className="tilt-card-shine"></div>
                         <div className="tilt-card-inner">
                             <h3 className="text-2xl font-bold mb-10 text-center tilt-card-content">
-                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 relative inline-block animate-subtle-pulse">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 relative inline-block animate-subtle-pulse">
                                     Quick Skills Overview
                                     <span className="absolute -bottom-3 left-0 w-full h-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 animate-glow"></span>
                                 </span>
