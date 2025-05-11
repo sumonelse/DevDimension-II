@@ -115,42 +115,6 @@ const FloatingControls = () => {
             onMouseEnter={() => resetControlsTimeout()}
             onMouseMove={() => resetControlsTimeout()}
         >
-            {/* Toggle button for controls visibility on mobile */}
-            <button
-                onClick={toggleExpansion}
-                className={`floating-control-button md:hidden ${
-                    isSpiderVerse
-                        ? "bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                        : isDarkTheme
-                        ? "bg-dark-800/90 backdrop-blur-sm border border-purple-500/30"
-                        : "bg-white/90 backdrop-blur-sm border border-purple-500/20"
-                }`}
-                aria-label={
-                    isExpanded ? "Collapse controls" : "Expand controls"
-                }
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className={`h-6 w-6 transition-transform duration-300 ${
-                        isExpanded ? "rotate-180" : "rotate-0"
-                    } ${isSpiderVerse ? "text-black" : "text-purple-500"}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d={isExpanded ? "M19 9l-7 7-7-7" : "M5 15l7-7 7 7"}
-                    />
-                </svg>
-
-                <span className="tooltip">
-                    {isExpanded ? "Collapse controls" : "Expand controls"}
-                </span>
-            </button>
-
             {/* Floating Controls Container */}
             <div
                 className={`flex flex-col items-end space-y-3 transition-all duration-500 ${
