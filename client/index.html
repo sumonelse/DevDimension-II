@@ -56,8 +56,21 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
   <!-- Preload Critical Resources -->
-  <link rel="preload" href="/src/main.jsx" as="script" />
+  <link rel="preload" href="/src/critical.css" as="style" />
   <link rel="preload" href="/src/index.css" as="style" />
+  <link rel="preload" href="/src/main.jsx" as="script" />
+
+  <!-- DNS Prefetch for External Resources -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+  <!-- Preload Important Images -->
+  <link rel="preload" as="image" href="/profile-pic.webp" />
+
+  <!-- Prefetch Spiderverse Assets (lower priority) -->
+  <link rel="prefetch" href="/src/components/SpiderverseNavbar.jsx" as="script" />
+  <link rel="prefetch" href="/src/components/SpiderverseHero.jsx" as="script" />
+  <link rel="prefetch" href="/src/spiderverse.css" as="style" />
 </head>
 
 <body>
