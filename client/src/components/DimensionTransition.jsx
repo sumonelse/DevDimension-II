@@ -8,7 +8,7 @@ const DimensionTransition = () => {
     const [particles, setParticles] = useState([])
     const containerRef = useRef(null)
 
-    // Enhanced messages for dimension transition
+    // Enhanced messages for dimension transition (mix of creative mode and Spider-Verse)
     const enteringMessages = [
         "DIMENSIONAL INTERFERENCE DETECTED",
         "ENTERING SPIDER-VERSE...",
@@ -20,6 +20,36 @@ const DimensionTransition = () => {
         "ADJUSTING VISUAL PARAMETERS...",
         "DIMENSIONAL COORDINATES LOCKED",
         "INITIATING COMIC BOOK PROTOCOLS",
+        // Developer journey messages
+        "CREATIVE MODE INTERFERENCE DETECTED",
+        "ENTERING DESIGN SPACE...",
+        "DEVELOPER MINDSET SHIFTING...",
+        "UI/UX BREACH IMMINENT",
+        "DESIGN-SENSE TINGLING...",
+        "CREATIVE PHYSICS ACTIVATED",
+        "PORTFOLIO COORDINATES LOCKED",
+        "INITIATING DESIGN PROTOCOLS",
+        // Mix of both themes
+        "DEVELOPER SIGNATURE VERIFIED",
+        "CREATIVE MODE ACCESS GRANTED",
+        "DESIGN DISTORTION FIELD ACTIVE",
+        "CSS ANIMATIONS LOADING...",
+        "QUANTUM SIGNATURE VERIFIED",
+        "SPIDER-VERSE ACCESS GRANTED",
+        "REALITY DISTORTION FIELD ACTIVE",
+        "COMIC BOOK SHADERS LOADING...",
+        "FRONTEND TRANSLATION ENGAGED",
+        "PORTFOLIO ANCHOR POINTS SECURED",
+        "UI/UX PHYSICS CALIBRATING",
+        "ANIMATION GENERATOR ONLINE",
+        "MULTIVERSAL TRANSLATION ENGAGED",
+        "DIMENSIONAL ANCHOR POINTS SECURED",
+        "SPIDER-VERSE PHYSICS CALIBRATING",
+        "ONOMATOPOEIA GENERATOR ONLINE",
+        "COMPONENT HIERARCHY INITIATED",
+        "GRID BORDERS MATERIALIZING",
+        "DESIGN SYSTEM SYNTHESIZING",
+        "PORTFOLIO GATEWAY OPENING",
     ]
 
     const exitingMessages = [
@@ -33,6 +63,70 @@ const DimensionTransition = () => {
         "DIMENSIONAL SHIFT REVERSING",
         "COMIC BOOK PHYSICS DEACTIVATING",
         "NORMAL REALITY PROTOCOLS ENGAGED",
+        // Developer journey messages
+        "RETURNING TO DEVELOPER MODE",
+        "CODE STABILIZING...",
+        "CLOSING DESIGN RIFT",
+        "UI/UX BREACH CONTAINED",
+        "RESTORING LOGICAL THINKING...",
+        "DESIGN-SENSE FADING",
+        "CREATIVE SHIFT REVERSING",
+        "DESIGN PHYSICS DEACTIVATING",
+        "NORMAL CODING PROTOCOLS ENGAGED",
+        // Mix of both themes
+        "PORTFOLIO BOOKMARK SAVED",
+        "CSS ANIMATIONS UNLOADING",
+        "CODE ANCHOR REESTABLISHING",
+        "PORTFOLIO COORDINATES RESETTING",
+        "SPIDER-VERSE BOOKMARK SAVED",
+        "COMIC BOOK SHADERS UNLOADING",
+        "REALITY ANCHOR REESTABLISHING",
+        "DIMENSIONAL COORDINATES RESETTING",
+        "FRONTEND LINK DISCONNECTING",
+        "LOGICAL THINKING RESTORING",
+        "COMPONENT SYSTEM SHUTTING DOWN",
+        "GRID BORDERS DISSOLVING",
+        "MULTIVERSAL LINK DISCONNECTING",
+        "NORMAL PHYSICS RESTORING",
+        "SPEECH BUBBLE SYSTEM SHUTTING DOWN",
+        "PANEL BORDERS DISSOLVING",
+        "DESIGN SYSTEM DEACTIVATING",
+        "ANIMATION GENERATOR OFFLINE",
+        "PORTFOLIO GATEWAY CLOSING",
+        "PRIME DEVELOPER MODE REENGAGING",
+    ]
+
+    // Easter egg messages that rarely appear during transition (mix of both themes)
+    const easterEggMessages = [
+        "SPIDER-PIG SAYS HELLO",
+        "DEADPOOL BROKE THE FOURTH WALL AGAIN",
+        "STAN LEE CAMEO DETECTED",
+        "WITH GREAT POWER COMES GREAT WEBSITE DESIGN",
+        "THWIP! THWIP! JUST TESTING THE WEB SHOOTERS",
+        "MILES MORALES APPROVES THIS TRANSITION",
+        "SPIDER-GWEN SAYS YOUR CSS IS ON POINT",
+        "PETER PARKER TOOK THIS PHOTO",
+        "DOCTOR STRANGE MONITORING THIS DIMENSIONAL SHIFT",
+        "MULTIVERSAL TOURISM BOARD THANKS YOU",
+        "SPIDER-MAN 2099 SAYS THIS TECH IS PRIMITIVE",
+        "VENOM THINKS THIS TRANSITION LOOKS DELICIOUS",
+        "THE WATCHER OBSERVES YOUR BROWSING HABITS",
+        // Developer journey Easter eggs
+        "STACKOVERFLOW OVERFLOW DETECTED",
+        "GITHUB COPILOT BROKE THE FOURTH WALL",
+        "SENIOR DEV CAMEO DETECTED",
+        "WITH GREAT CODE COMES GREAT DOCUMENTATION",
+        "CLICK! CLICK! JUST TESTING THE KEYBOARD",
+        "JOB APPLICATION #616 VALIDATED",
+        "TECH LEAD APPROVES THIS TRANSITION",
+        "DESIGN TEAM SAYS YOUR CSS IS ON POINT",
+        "PORTFOLIO SCREENSHOT CAPTURED",
+        "HIRING MANAGER MONITORING THIS CAREER SHIFT",
+        "RECRUITMENT BOARD THANKS YOU",
+        "FUTURE DEVELOPER SAYS THIS TECH IS PRIMITIVE",
+        "RECRUITER THINKS THIS PORTFOLIO LOOKS IMPRESSIVE",
+        "THE INTERVIEWER OBSERVES YOUR CODING HABITS",
+        "MYSTERIO: 'IS THIS REAL CODE OR JUST ILLUSION?'",
     ]
 
     // Generate comic book style particles
@@ -62,9 +156,41 @@ const DimensionTransition = () => {
                 ]
                 const color = colors[Math.floor(Math.random() * colors.length)]
 
-                // Random shape
-                const shapes = ["circle", "square", "triangle", "star"]
+                // Random shape - enhanced with developer and Spider-Verse themed shapes
+                const shapes = [
+                    "circle",
+                    "square",
+                    "triangle",
+                    "star",
+                    "hexagon",
+                    "diamond",
+                    "web",
+                    "speech-bubble",
+                    "exclamation",
+                    "question",
+                    "code-bracket",
+                    "curly-brace",
+                ]
                 const shape = shapes[Math.floor(Math.random() * shapes.length)]
+
+                // Random movement pattern
+                const movements = ["float", "zigzag", "spiral", "pulse"]
+                const movement =
+                    movements[Math.floor(Math.random() * movements.length)]
+
+                // Random text for speech bubbles (code-related terms)
+                const bubbleTexts = [
+                    "</>",
+                    "{ }",
+                    "404",
+                    "CSS",
+                    "JS",
+                    "API",
+                    "Bug",
+                    "Fix",
+                ]
+                const bubbleText =
+                    bubbleTexts[Math.floor(Math.random() * bubbleTexts.length)]
 
                 // Random opacity
                 const opacity = 0.3 + Math.random() * 0.7
@@ -79,6 +205,10 @@ const DimensionTransition = () => {
                     opacity,
                     duration,
                     delay,
+                    movement,
+                    bubbleText: shape === "speech-bubble" ? bubbleText : "",
+                    rotation: Math.random() * 360, // Random initial rotation
+                    scale: 0.8 + Math.random() * 0.4, // Random scale variation
                 })
             }
 
@@ -96,7 +226,29 @@ const DimensionTransition = () => {
     // Change messages and transition phases
     useEffect(() => {
         if (isTransitioning) {
-            const messages = isSpiderVerse ? exitingMessages : enteringMessages
+            // Select base messages based on transition direction
+            const baseMessages = isSpiderVerse
+                ? exitingMessages
+                : enteringMessages
+
+            // Create a combined message array with a chance for Easter eggs
+            const messages = [...baseMessages]
+
+            // Add 2-3 random Easter egg messages at random positions
+            const easterEggCount = 2 + Math.floor(Math.random() * 2) // 2 or 3
+            for (let i = 0; i < easterEggCount; i++) {
+                // Get random Easter egg message
+                const randomEasterEgg =
+                    easterEggMessages[
+                        Math.floor(Math.random() * easterEggMessages.length)
+                    ]
+
+                // Insert at random position (but not at the very beginning)
+                const insertPosition =
+                    1 + Math.floor(Math.random() * (messages.length - 1))
+                messages.splice(insertPosition, 0, randomEasterEgg)
+            }
+
             let messageIndex = 0
             setTransitionPhase(0)
 
@@ -133,6 +285,16 @@ const DimensionTransition = () => {
             particle.opacity * 10
         )}`
 
+        // Determine animation based on movement type
+        let movementAnimation = `float-particle ${particle.duration}s ease-in-out infinite ${particle.delay}s`
+        if (particle.movement === "zigzag") {
+            movementAnimation = `zigzag-particle ${particle.duration}s ease-in-out infinite ${particle.delay}s`
+        } else if (particle.movement === "spiral") {
+            movementAnimation = `spiral-particle ${particle.duration}s linear infinite ${particle.delay}s`
+        } else if (particle.movement === "pulse") {
+            movementAnimation = `float-particle ${particle.duration}s ease-in-out infinite ${particle.delay}s, pulse-slow 2s ease-in-out infinite`
+        }
+
         switch (particle.shape) {
             case "circle":
                 return (
@@ -143,7 +305,8 @@ const DimensionTransition = () => {
                             height: `${particle.size}px`,
                             left: `${particle.x}%`,
                             top: `${particle.y}%`,
-                            animation: `float-particle ${particle.duration}s ease-in-out infinite ${particle.delay}s`,
+                            animation: movementAnimation,
+                            transform: `scale(${particle.scale})`,
                         }}
                     />
                 )
@@ -156,7 +319,8 @@ const DimensionTransition = () => {
                             height: `${particle.size}px`,
                             left: `${particle.x}%`,
                             top: `${particle.y}%`,
-                            animation: `float-particle ${particle.duration}s ease-in-out infinite ${particle.delay}s, rotate-slow 10s linear infinite`,
+                            animation: `${movementAnimation}, rotate-slow 10s linear infinite`,
+                            transform: `scale(${particle.scale}) rotate(${particle.rotation}deg)`,
                         }}
                     />
                 )
@@ -169,7 +333,8 @@ const DimensionTransition = () => {
                             height: `${particle.size}px`,
                             left: `${particle.x}%`,
                             top: `${particle.y}%`,
-                            animation: `float-particle ${particle.duration}s ease-in-out infinite ${particle.delay}s, rotate-slow 15s linear infinite`,
+                            animation: `${movementAnimation}, rotate-slow 15s linear infinite`,
+                            transform: `scale(${particle.scale}) rotate(${particle.rotation}deg)`,
                         }}
                     />
                 )
@@ -182,9 +347,149 @@ const DimensionTransition = () => {
                             height: `${particle.size}px`,
                             left: `${particle.x}%`,
                             top: `${particle.y}%`,
-                            animation: `float-particle ${particle.duration}s ease-in-out infinite ${particle.delay}s, pulse-slow 3s ease-in-out infinite`,
+                            animation: `${movementAnimation}, pulse-slow 3s ease-in-out infinite`,
+                            transform: `scale(${particle.scale}) rotate(${particle.rotation}deg)`,
                         }}
                     />
+                )
+            case "hexagon":
+                return (
+                    <div
+                        className={`${baseClasses} clip-hexagon`}
+                        style={{
+                            width: `${particle.size}px`,
+                            height: `${particle.size}px`,
+                            left: `${particle.x}%`,
+                            top: `${particle.y}%`,
+                            animation: `${movementAnimation}, rotate-slow 12s linear infinite`,
+                            transform: `scale(${particle.scale}) rotate(${particle.rotation}deg)`,
+                        }}
+                    />
+                )
+            case "diamond":
+                return (
+                    <div
+                        className={`${baseClasses}`}
+                        style={{
+                            width: `${particle.size}px`,
+                            height: `${particle.size}px`,
+                            left: `${particle.x}%`,
+                            top: `${particle.y}%`,
+                            clipPath:
+                                "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
+                            animation: `${movementAnimation}, rotate-slow 8s linear infinite`,
+                            transform: `scale(${particle.scale}) rotate(${particle.rotation}deg)`,
+                        }}
+                    />
+                )
+            case "web":
+                return (
+                    <div
+                        className={`absolute opacity-${Math.floor(
+                            particle.opacity * 10
+                        )}`}
+                        style={{
+                            width: `${particle.size}px`,
+                            height: `${particle.size}px`,
+                            left: `${particle.x}%`,
+                            top: `${particle.y}%`,
+                            backgroundImage:
+                                "url(\"data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2L2 12L12 22L22 12L12 2Z' stroke='white' stroke-width='1'/%3E%3Cpath d='M12 2V22M2 12H22M4 8L20 16M4 16L20 8' stroke='white' stroke-width='1'/%3E%3C/svg%3E\")",
+                            backgroundSize: "contain",
+                            backgroundRepeat: "no-repeat",
+                            animation: `${movementAnimation}, rotate-slow 20s linear infinite`,
+                            transform: `scale(${particle.scale}) rotate(${particle.rotation}deg)`,
+                        }}
+                    />
+                )
+            case "speech-bubble":
+                return (
+                    <div
+                        className={`absolute flex items-center justify-center text-xs font-bold opacity-${Math.floor(
+                            particle.opacity * 10
+                        )}`}
+                        style={{
+                            width: `${particle.size * 1.5}px`,
+                            height: `${particle.size}px`,
+                            left: `${particle.x}%`,
+                            top: `${particle.y}%`,
+                            backgroundColor: `var(--${particle.color})`,
+                            borderRadius: "50%",
+                            animation: movementAnimation,
+                            transform: `scale(${particle.scale})`,
+                            color: "black",
+                        }}
+                    >
+                        {particle.bubbleText}
+                    </div>
+                )
+            case "code-bracket":
+                return (
+                    <div
+                        className={`absolute opacity-${Math.floor(
+                            particle.opacity * 10
+                        )} text-${particle.color} font-mono font-bold`}
+                        style={{
+                            fontSize: `${particle.size * 0.8}px`,
+                            left: `${particle.x}%`,
+                            top: `${particle.y}%`,
+                            animation: `${movementAnimation}, rotate-slow 5s linear infinite`,
+                            transform: `scale(${particle.scale}) rotate(${particle.rotation}deg)`,
+                        }}
+                    >
+                        {"</>"}
+                    </div>
+                )
+            case "curly-brace":
+                return (
+                    <div
+                        className={`absolute opacity-${Math.floor(
+                            particle.opacity * 10
+                        )} text-${particle.color} font-mono font-bold`}
+                        style={{
+                            fontSize: `${particle.size * 0.8}px`,
+                            left: `${particle.x}%`,
+                            top: `${particle.y}%`,
+                            animation: `${movementAnimation}, rotate-slow 5s linear infinite`,
+                            transform: `scale(${particle.scale}) rotate(${particle.rotation}deg)`,
+                        }}
+                    >
+                        {"{  }"}
+                    </div>
+                )
+            case "exclamation":
+                return (
+                    <div
+                        className={`absolute opacity-${Math.floor(
+                            particle.opacity * 10
+                        )} text-${particle.color} font-bold`}
+                        style={{
+                            fontSize: `${particle.size * 0.8}px`,
+                            left: `${particle.x}%`,
+                            top: `${particle.y}%`,
+                            animation: `${movementAnimation}, pulse-slow 2s ease-in-out infinite`,
+                            transform: `scale(${particle.scale})`,
+                        }}
+                    >
+                        !
+                    </div>
+                )
+            case "question":
+                return (
+                    <div
+                        className={`absolute opacity-${Math.floor(
+                            particle.opacity * 10
+                        )} text-${particle.color} font-bold`}
+                        style={{
+                            fontSize: `${particle.size * 0.8}px`,
+                            left: `${particle.x}%`,
+                            top: `${particle.y}%`,
+                            animation: `${movementAnimation}, pulse-slow 2s ease-in-out infinite`,
+                            transform: `scale(${particle.scale})`,
+                        }}
+                    >
+                        ?
+                    </div>
                 )
             default:
                 return null

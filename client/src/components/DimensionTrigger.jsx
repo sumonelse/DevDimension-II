@@ -8,67 +8,159 @@ const DimensionTrigger = () => {
     const [currentMessage, setCurrentMessage] = useState("")
     const [showMessage, setShowMessage] = useState(false)
     const [isGlitching, setIsGlitching] = useState(false)
-    const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 })
-    const [isRunningAway, setIsRunningAway] = useState(false)
     const buttonRef = useRef(null)
     const messageIntervalRef = useRef(null)
     const randomMessageIntervalRef = useRef(null)
-    const runAwayTimeoutRef = useRef(null)
     const clickAttempts = useRef(0)
 
-    // Fun warning messages for the button
+    // Fun warning messages for the button (mix of dev journey and Spider-Verse)
     const warningMessages = [
         "Don't click me!",
         "Are you sure?",
-        "This might break reality...",
-        "Your spider-sense says NO",
-        "Dimensional collapse imminent",
+        "This might break the code...",
+        "Your dev-sense says NO",
+        "Stack overflow imminent",
         "Click if you dare...",
-        "Reality is fragile here",
-        "Multiverse breach detected",
+        "Codebase is fragile here",
+        "Merge conflict detected",
         "This button is unstable",
-        "Warning: Glitchy dimension ahead",
-        "Click to destabilize reality",
-        "Spidey would be cautious",
-        "Dimensional rift detected",
+        "Warning: Buggy code ahead",
+        "Click to destabilize production",
+        "Senior devs would be cautious",
+        "Git conflict detected",
         "This might get weird...",
         "Proceed at your own risk",
-        "Quantum uncertainty activated",
-        "Dimensional stability: 12%",
-        "Caution: Reality warping",
-        "Multiverse protocols: Unstable",
-        "Danger! Dimension collapsing",
+        "Runtime uncertainty activated",
+        "Code stability: 12%",
+        "Caution: CSS warping",
+        "CI/CD pipeline: Unstable",
+        "Danger! Database collapsing",
+
+        "Dimensional collapse imminent",
+        "Spider-sense tingling...",
+        "Reality is fragile here",
+        "Multiverse breach detected",
+        "Warning: Glitchy dimension ahead",
+        // More dev journey messages
+        "Resume not yet optimized...",
+        "Interview prep incomplete",
+        "Algorithm challenge loading...",
+        "Whiteboard interview detected",
+        "Warning: Technical test unfinished",
+        "Job application barrier thinning",
+        "LinkedIn profile incomplete",
+        "Portfolio stretching thin",
+        "Callback loops forming",
+        "Career divergence imminent",
+        "Parallel job offers converging",
+        "Work-life balance rupturing",
+        "Project deadline at risk",
+        "Butterfly effect in your GitHub",
+        "Tech stack expanding rapidly",
+        "Job security unstable",
+        "Impostor syndrome increasing",
+        "Technical debt threshold reached",
     ]
 
-    // Teasing messages when in Spider-Verse
+    // Teasing messages when in Spider-Verse (mix of creative mode and Spider-Verse)
     const teasingMessages = [
-        "Miss your boring dimension?",
-        "Can't handle the Spider-Verse?",
-        "Back to reality?",
+        "Miss your boring code editor?",
+        "Can't handle the creative mode?",
+        "Back to plain HTML?",
         "Too colorful for you?",
         "Leaving so soon?",
+        "The design world will miss you",
+        "UI/UX says stay a while",
+        "Running from creativity?",
+        "Afraid of a little design chaos?",
+        "The creative dimension chose you",
+
+        "Can't handle the Spider-Verse?",
         "The multiverse will miss you",
         "Spidey says stay a while",
         "Running from adventure?",
-        "Afraid of a little chaos?",
         "The Spider-Verse chose you",
-        "One more minute in comic land?",
-        "Your dimension is so... plain",
+        // More creative mode messages
+        "One more minute in design land?",
+        "Your code is so... plain",
         "But the fun just started!",
-        "The multiverse needs you",
-        "Dimensional tourist leaving?",
+        "This portfolio needs you",
+        "Creative tourist leaving?",
+        "Your design powers just activated",
+        "But you look good in creative mode",
+        "The web of design is comfy",
+        "A good developer would stay longer",
+        "UI/UX thinking is addictive",
+        // More Spider-Verse messages
         "Your spider-powers just activated",
         "But you look good in comic style",
         "The web of reality is comfy",
         "Spidey would stay longer",
-        "Dimension hopping is addictive",
+        // More creative mode messages
+        "Trading creativity for boring code?",
+        "Your frontend potential is just starting",
+        "The CSS is still fresh on your page",
+        "Animations and transitions suit you",
+        "Leaving before the portfolio is seen?",
+        "The creative side has cookies",
+        "Your developer story just began",
+        "Plain code is so last year",
+        "The design team will be disappointed",
+        "Recruiters would be pleased you're leaving",
+        "Tech leads will miss your creative touch",
+        "The UX designer was about to offer feedback",
+        "The senior dev was going to teach you React tricks",
+        "The product manager prepared a feature for you",
+        "The QA team found no bugs in your code",
+        "With great power comes great... oh nevermind",
+    ]
+
+    // Rare Easter egg messages (mix of dev journey and Spider-Verse)
+    const easterEggMessages = [
+        "Did you know this button was coded at 3 AM?",
+        "I've been clicked by 14,000,605 recruiters...",
+        "In another company, YOU are the CTO",
+        "The real dev journey was the bugs we fixed along the way",
+        "This portfolio exists in 616 GitHub repositories simultaneously",
+        // Spider-Verse Easter eggs
+        "Deadpool says hi from the fourth wall",
+        "This dimension smells like fresh ink",
+        "Thwip! Just practicing my web sounds",
+        // More dev journey Easter eggs
+        "The debugger says hi from the console",
+        "This codebase smells like fresh coffee",
+        "I'm not just a button, I'm a career pivot point",
+        "Beep! Just practicing my error sounds",
+        "Help! I'm trapped in a coding bootcamp!",
+        "Click me three times to unlock job offers... just kidding",
+        "Schrödinger's code: this function is both working and not working",
+        // More Spider-Verse Easter eggs
+        "The multiverse theory states this button is both clicked and not clicked",
+        "In one universe, this website won an Oscar",
+        "Spider-sense tingling... or maybe that's just static electricity",
+        // Final dev journey Easter eggs
+        "In one timeline, this website won a Webby Award",
+        "Code-sense tingling... or maybe that's just caffeine",
+        "If you see this message, you're the developer we're looking for",
     ]
 
     // Function to get a random message
     const getRandomMessage = () => {
+        // 5% chance to show an Easter egg message
+        if (Math.random() < 0.05 && easterEggMessages.length > 0) {
+            return easterEggMessages[
+                Math.floor(Math.random() * easterEggMessages.length)
+            ]
+        }
+
         const messages = isSpiderVerse ? teasingMessages : warningMessages
         return messages[Math.floor(Math.random() * messages.length)]
     }
+
+    // No cleanup needed for component mount
+    useEffect(() => {
+        // Component mount logic can be added here if needed
+    }, [])
 
     // Handle hover effects with enhanced glitches
     useEffect(() => {
@@ -87,33 +179,136 @@ const DimensionTrigger = () => {
                 const button = buttonRef.current
                 if (button) {
                     // Random glitch effect with more intensity
-                    const glitchX = Math.random() * 8 - 4
-                    const glitchY = Math.random() * 8 - 4
-                    const glitchRotate = Math.random() * 5 - 2.5
-                    const glitchScale = 0.95 + Math.random() * 0.1
-                    const glitchSkewX = Math.random() * 3 - 1.5
-                    const glitchSkewY = Math.random() * 3 - 1.5
+                    const glitchX = Math.random() * 10 - 5
+                    const glitchY = Math.random() * 10 - 5
+                    const glitchRotate = Math.random() * 8 - 4
+                    const glitchScale = 0.92 + Math.random() * 0.16
+                    const glitchSkewX = Math.random() * 4 - 2
+                    const glitchSkewY = Math.random() * 4 - 2
 
-                    button.style.transform = `translate(${glitchX}px, ${glitchY}px) rotate(${glitchRotate}deg) scale(${glitchScale}) skew(${glitchSkewX}deg, ${glitchSkewY}deg)`
+                    // Add occasional perspective transform for 3D effect
+                    const perspective =
+                        Math.random() > 0.8
+                            ? `perspective(100px) rotateX(${
+                                  Math.random() * 10 - 5
+                              }deg) rotateY(${Math.random() * 10 - 5}deg)`
+                            : ""
 
-                    // Random color shift and glitch effects
-                    if (Math.random() > 0.6) {
+                    button.style.transform = `translate(${glitchX}px, ${glitchY}px) rotate(${glitchRotate}deg) scale(${glitchScale}) skew(${glitchSkewX}deg, ${glitchSkewY}deg) ${perspective}`
+
+                    // Enhanced random color shift and glitch effects
+                    if (Math.random() > 0.5) {
+                        // Increased frequency of color effects
                         const hueRotate = Math.random() * 360
                         const blurAmount =
-                            Math.random() > 0.8
-                                ? `blur(${Math.random() * 2}px)`
+                            Math.random() > 0.7
+                                ? `blur(${Math.random() * 3}px)`
                                 : ""
-                        const brightness = 0.8 + Math.random() * 0.4
+                        const brightness = 0.7 + Math.random() * 0.6
+                        const contrast =
+                            Math.random() > 0.8
+                                ? `contrast(${150 + Math.random() * 100}%)`
+                                : ""
+                        const invert =
+                            Math.random() > 0.9
+                                ? `invert(${Math.random() * 30}%)`
+                                : ""
+                        const saturate =
+                            Math.random() > 0.7
+                                ? `saturate(${150 + Math.random() * 150}%)`
+                                : ""
 
-                        button.style.filter = `hue-rotate(${hueRotate}deg) ${blurAmount} brightness(${brightness})`
+                        button.style.filter = `hue-rotate(${hueRotate}deg) ${blurAmount} brightness(${brightness}) ${contrast} ${invert} ${saturate}`
 
                         // Occasionally trigger more intense glitch
-                        if (Math.random() > 0.9) {
+                        if (Math.random() > 0.85) {
+                            // Increased frequency
                             setIsGlitching(true)
-                            setTimeout(() => setIsGlitching(false), 200)
+                            setTimeout(
+                                () => setIsGlitching(false),
+                                200 + Math.random() * 300
+                            ) // Variable duration
+                        }
+
+                        // Occasionally add a CSS text shadow for glow effect
+                        if (Math.random() > 0.8) {
+                            const r = Math.floor(Math.random() * 255)
+                            const g = Math.floor(Math.random() * 255)
+                            const b = Math.floor(Math.random() * 255)
+                            button.style.boxShadow = `0 0 8px 2px rgba(${r}, ${g}, ${b}, 0.8)`
+                        } else {
+                            button.style.boxShadow = ""
                         }
                     } else {
                         button.style.filter = ""
+                        button.style.boxShadow = ""
+                    }
+
+                    // Occasionally create mini-particles around the button
+                    if (Math.random() > 0.92) {
+                        const particleContainer = document.createElement("div")
+                        particleContainer.className =
+                            "absolute inset-0 pointer-events-none"
+
+                        // Create 3-8 particles
+                        const particleCount = 3 + Math.floor(Math.random() * 6)
+                        for (let i = 0; i < particleCount; i++) {
+                            const particle = document.createElement("div")
+                            const size = 2 + Math.random() * 6
+                            const angle = Math.random() * Math.PI * 2
+                            const distance = 30 + Math.random() * 50
+                            const duration = 0.5 + Math.random() * 1
+
+                            // Position particle around button
+                            const x = Math.cos(angle) * distance
+                            const y = Math.sin(angle) * distance
+
+                            // Random color
+                            const hue = Math.floor(Math.random() * 360)
+
+                            particle.style.cssText = `
+                                position: absolute;
+                                width: ${size}px;
+                                height: ${size}px;
+                                background-color: hsl(${hue}, 100%, 70%);
+                                border-radius: 50%;
+                                left: 50%;
+                                top: 50%;
+                                transform: translate(-50%, -50%);
+                                animation: particle-float ${duration}s ease-out forwards;
+                                opacity: 0.8;
+                            `
+
+                            particleContainer.appendChild(particle)
+
+                            // Custom animation for this particle
+                            const style = document.createElement("style")
+                            style.textContent = `
+                                @keyframes particle-float {
+                                    0% {
+                                        transform: translate(-50%, -50%);
+                                        opacity: 0.8;
+                                    }
+                                    100% {
+                                        transform: translate(calc(-50% + ${x}px), calc(-50% + ${y}px));
+                                        opacity: 0;
+                                    }
+                                }
+                            `
+                            document.head.appendChild(style)
+
+                            // Clean up after animation
+                            setTimeout(() => {
+                                if (particleContainer.parentNode) {
+                                    particleContainer.parentNode.removeChild(
+                                        particleContainer
+                                    )
+                                }
+                                document.head.removeChild(style)
+                            }, duration * 1000)
+                        }
+
+                        button.appendChild(particleContainer)
                     }
                 }
             }, 100) // Faster interval for more erratic movement
@@ -136,9 +331,10 @@ const DimensionTrigger = () => {
 
             // Reset styles
             const button = buttonRef.current
-            if (button && !isRunningAway) {
+            if (button) {
                 button.style.transform = ""
                 button.style.filter = ""
+                button.style.boxShadow = ""
             }
         }
 
@@ -150,77 +346,113 @@ const DimensionTrigger = () => {
                 clearInterval(messageIntervalRef.current)
             }
         }
-    }, [isHovering, glitchInterval, isSpiderVerse, isRunningAway])
+    }, [isHovering, glitchInterval, isSpiderVerse])
 
-    // Function to make the button run away
-    const runAway = () => {
-        if (isRunningAway || isTransitioning) return
+    // Function removed: runAway
 
-        setIsRunningAway(true)
-        clickAttempts.current += 1
-
-        // Set a random new position within viewport boundaries
-        const viewportWidth = window.innerWidth
-        const viewportHeight = window.innerHeight
-        const buttonWidth = 60 // Approximate button width
-        const buttonHeight = 60 // Approximate button height
-
-        // Keep button within viewport bounds
-        const maxX = viewportWidth - buttonWidth - 20
-        const maxY = viewportHeight - buttonHeight - 20
-
-        // Calculate new position
-        let newX = Math.random() * maxX
-        let newY = Math.random() * maxY
-
-        // Ensure button doesn't go too close to edges
-        newX = Math.max(20, newX)
-        newY = Math.max(20, newY)
-
-        // Update position
-        setButtonPosition({ x: newX, y: newY })
-
-        // Set a special message
-        setCurrentMessage("Catch me if you can!")
-        setShowMessage(true)
-
-        // Reset after a delay
-        runAwayTimeoutRef.current = setTimeout(() => {
-            setIsRunningAway(false)
-            setButtonPosition({ x: 0, y: 0 })
-
-            // If user has tried to click multiple times, give up and let them click
-            if (clickAttempts.current >= 3) {
-                clickAttempts.current = 0
-                setCurrentMessage("Fine, you win. Click me.")
-            } else {
-                setShowMessage(false)
-            }
-        }, 2000)
-    }
-
-    // Handle button click with chance to run away
+    // Handle button click
     const handleButtonClick = () => {
         if (isTransitioning) return
 
-        // 30% chance the button runs away instead of triggering
-        if (!isSpiderVerse && Math.random() < 0.3 && !isRunningAway) {
-            runAway()
+        // 5% chance for a fake glitch effect that doesn't actually transition
+        if (Math.random() < 0.05) {
+            setIsGlitching(true)
+
+            // Show a fake error message
+            const fakeErrorMessages = [
+                "ERROR: Dimensional coordinates misaligned",
+                "ALERT: Quantum fluctuation detected",
+                "WARNING: Dimensional breach unstable",
+                "SYSTEM ERROR: Multiverse buffer overflow",
+                "CRITICAL: Reality matrix corruption",
+                "FAILURE: Dimensional anchor points lost",
+                "ERROR 616: Spider-Verse connection refused",
+            ]
+
+            setCurrentMessage(
+                fakeErrorMessages[
+                    Math.floor(Math.random() * fakeErrorMessages.length)
+                ]
+            )
+            setShowMessage(true)
+
+            // Create a fake loading effect
+            const button = buttonRef.current
+            if (button) {
+                button.style.opacity = "0.5"
+                button.style.transform = "scale(0.95)"
+
+                // Add a pulsing effect
+                let pulseCount = 0
+                const pulseInterval = setInterval(() => {
+                    button.style.transform =
+                        pulseCount % 2 === 0 ? "scale(0.95)" : "scale(1.05)"
+                    pulseCount++
+
+                    if (pulseCount >= 6) {
+                        clearInterval(pulseInterval)
+
+                        // Reset after the fake glitch
+                        setTimeout(() => {
+                            setIsGlitching(false)
+                            button.style.opacity = "1"
+                            button.style.transform = ""
+
+                            // Show a recovery message
+                            const recoveryMessages = [
+                                "Dimensional stabilizers recalibrated",
+                                "System recovered. Try again?",
+                                "Quantum alignment restored",
+                                "Multiverse connection reestablished",
+                                "Reality matrix repaired",
+                            ]
+
+                            setCurrentMessage(
+                                recoveryMessages[
+                                    Math.floor(
+                                        Math.random() * recoveryMessages.length
+                                    )
+                                ]
+                            )
+
+                            // Hide message after a delay
+                            setTimeout(() => {
+                                setShowMessage(false)
+                            }, 2000)
+                        }, 800)
+                    }
+                }, 150)
+            }
+
             return
         }
 
-        // 19% chance to show a special message before triggering
-        if (Math.random() < 0.19 && !isRunningAway) {
+        // 25% chance to show a special message before triggering (increased from 19%)
+        if (Math.random() < 0.25) {
             const specialMessages = isSpiderVerse
                 ? [
                       "Goodbye, Spider-Verse!",
                       "See you in another dimension!",
                       "Reality check time!",
+                      "Closing dimensional portal...",
+                      "Reverting to standard physics...",
+                      "Folding comic panels...",
+                      "Saving Spider-Verse progress...",
+                      "Dimensional shift initiating...",
+                      "Web-slinging license expired",
+                      "Multiverse bookmark saved",
                   ]
                 : [
                       "Here we go!",
                       "Brace yourself!",
                       "Dimension jump in 3...2...1!",
+                      "Spider-Verse protocols activating",
+                      "Comic book physics loading...",
+                      "Multiverse connection established",
+                      "Reality distortion field engaged",
+                      "Spidey-sense calibration in progress",
+                      "Dimensional anchors releasing",
+                      "Web-fluid synthesizing...",
                   ]
 
             setCurrentMessage(
@@ -231,14 +463,99 @@ const DimensionTrigger = () => {
             setShowMessage(true)
             setIsGlitching(true)
 
+            // Create a more dramatic effect before transition
+            const button = buttonRef.current
+            if (button) {
+                // Add a pulsing glow effect
+                const r = isSpiderVerse ? 0 : 128
+                const g = isSpiderVerse ? 0 : 0
+                const b = isSpiderVerse ? 0 : 255
+                button.style.boxShadow = `0 0 15px 5px rgba(${r}, ${g}, ${b}, 0.8)`
+
+                // Add a rotation effect
+                button.style.transform = "scale(1.2)"
+
+                // Create particles bursting from the button
+                const particleCount = 20 + Math.floor(Math.random() * 15)
+                for (let i = 0; i < particleCount; i++) {
+                    setTimeout(() => {
+                        const particle = document.createElement("div")
+                        const size = 3 + Math.random() * 8
+                        const angle = Math.random() * Math.PI * 2
+                        const distance = 50 + Math.random() * 100
+                        const duration = 0.8 + Math.random() * 1.2
+
+                        // Position particle
+                        const buttonRect = button.getBoundingClientRect()
+                        const startX = buttonRect.left + buttonRect.width / 2
+                        const startY = buttonRect.top + buttonRect.height / 2
+
+                        // Random color based on dimension
+                        const hue = isSpiderVerse
+                            ? Math.floor(Math.random() * 60) + 180 // blues/cyans for exiting
+                            : Math.floor(Math.random() * 60) + 300 // purples/magentas for entering
+
+                        particle.style.cssText = `
+                            position: fixed;
+                            width: ${size}px;
+                            height: ${size}px;
+                            background-color: hsl(${hue}, 100%, 70%);
+                            border-radius: 50%;
+                            left: ${startX}px;
+                            top: ${startY}px;
+                            z-index: 9999;
+                            pointer-events: none;
+                            animation: dimension-particle ${duration}s ease-out forwards;
+                        `
+
+                        document.body.appendChild(particle)
+
+                        // Custom animation for this particle
+                        const style = document.createElement("style")
+                        style.textContent = `
+                            @keyframes dimension-particle {
+                                0% {
+                                    transform: translate(-50%, -50%) scale(0.5);
+                                    opacity: 1;
+                                }
+                                100% {
+                                    transform: translate(calc(-50% + ${
+                                        Math.cos(angle) * distance
+                                    }px), calc(-50% + ${
+                            Math.sin(angle) * distance
+                        }px)) scale(${0.5 + Math.random()});
+                                    opacity: 0;
+                                }
+                            }
+                        `
+                        document.head.appendChild(style)
+
+                        // Clean up after animation
+                        setTimeout(() => {
+                            if (particle.parentNode) {
+                                particle.parentNode.removeChild(particle)
+                            }
+                            document.head.removeChild(style)
+                        }, duration * 1000)
+                    }, Math.random() * 500) // Stagger particle creation
+                }
+            }
+
             // Add a dramatic pause before transition
             setTimeout(() => {
                 setIsGlitching(false)
                 // Reset click attempts
                 clickAttempts.current = 0
+
+                // Reset button styles
+                if (button) {
+                    button.style.boxShadow = ""
+                    button.style.transform = ""
+                }
+
                 // Trigger the dimension change
                 toggleDimension()
-            }, 1000)
+            }, 1200) // Slightly longer pause
 
             return
         }
@@ -298,9 +615,6 @@ const DimensionTrigger = () => {
     // Clean up on unmount
     useEffect(() => {
         return () => {
-            if (runAwayTimeoutRef.current) {
-                clearTimeout(runAwayTimeoutRef.current)
-            }
             if (randomMessageIntervalRef.current) {
                 clearInterval(randomMessageIntervalRef.current)
             }
@@ -326,20 +640,11 @@ const DimensionTrigger = () => {
             {/* Message speech bubble */}
             {showMessage && (
                 <div
-                    className={`fixed z-40 ${
-                        isRunningAway ? "bottom-40" : "bottom-36"
-                    } right-6 bg-white border-2 border-black rounded-xl p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-sm max-w-[200px] whitespace-normal ${
+                    className={`fixed z-40 bottom-36 right-6 bg-white border-2 border-black rounded-xl p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-sm max-w-[200px] whitespace-normal ${
                         isSpiderVerse ? "comic-text" : ""
                     }`}
                     data-text={currentMessage}
                     style={{
-                        transform: isRunningAway
-                            ? `translate(${
-                                  buttonPosition.x > window.innerWidth / 2
-                                      ? "-120%"
-                                      : "20%"
-                              }, 0)`
-                            : "",
                         transition: "all 0.3s ease",
                         animation: isGlitching
                             ? "message-glitch 0.3s infinite"
@@ -398,11 +703,9 @@ const DimensionTrigger = () => {
                         : "bg-purple-600 text-white shadow-lg hover:bg-purple-700 hover:scale-110"
                 }`}
                 style={{
-                    bottom: isRunningAway ? `${buttonPosition.y}px` : "6rem",
-                    right: isRunningAway ? `${buttonPosition.x}px` : "1.5rem",
-                    transition: isRunningAway
-                        ? "bottom 0.5s ease-out, right 0.5s ease-out"
-                        : "transform 0.3s ease, filter 0.3s ease",
+                    bottom: "6rem",
+                    right: "1.5rem",
+                    transition: "transform 0.3s ease, filter 0.3s ease",
                     animation: isGlitching
                         ? "dimension-glitch-anim 0.3s infinite"
                         : "",
@@ -493,6 +796,53 @@ const DimensionTrigger = () => {
                     60% { transform: translate(49%, 1px) skew(1deg, -2deg); }
                     80% { transform: translate(51%, -1px) skew(-1deg, 2deg); }
                     100% { transform: translate(50%, 0) skew(0deg, 0deg); }
+                }
+                
+                @keyframes dimension-glitch-anim {
+                    0% { transform: translate(0, 0) scale(1); }
+                    10% { transform: translate(-5px, 3px) scale(1.05) skew(2deg, 0deg); }
+                    20% { transform: translate(5px, 0) scale(0.95) skew(0deg, 2deg); }
+                    30% { transform: translate(0, -3px) scale(1.02) skew(-2deg, 0deg); }
+                    40% { transform: translate(3px, 3px) scale(0.98) skew(0deg, -2deg); }
+                    50% { transform: translate(-3px, -3px) scale(1.05) skew(2deg, 2deg); }
+                    60% { transform: translate(0, 5px) scale(0.95) skew(-2deg, -2deg); }
+                    70% { transform: translate(-5px, 0) scale(1.02) skew(0deg, 2deg); }
+                    80% { transform: translate(5px, -5px) scale(0.98) skew(-2deg, 0deg); }
+                    90% { transform: translate(3px, 3px) scale(1.05) skew(2deg, -2deg); }
+                    100% { transform: translate(0, 0) scale(1); }
+                }
+                
+                @keyframes spin-slow {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+                
+                @keyframes float-particle {
+                    0% { transform: translate(0, 0) rotate(0deg); }
+                    25% { transform: translate(-10px, -15px) rotate(90deg); }
+                    50% { transform: translate(10px, 15px) rotate(180deg); }
+                    75% { transform: translate(15px, -10px) rotate(270deg); }
+                    100% { transform: translate(0, 0) rotate(360deg); }
+                }
+                
+                @keyframes warning-pulse {
+                    0% { color: #ff3d00; text-shadow: 0 0 5px rgba(255, 61, 0, 0.7); }
+                    50% { color: #ff9100; text-shadow: 0 0 15px rgba(255, 145, 0, 0.9); }
+                    100% { color: #ff3d00; text-shadow: 0 0 5px rgba(255, 61, 0, 0.7); }
+                }
+                
+                @keyframes dimension-flicker {
+                    0% { opacity: 1; }
+                    25% { opacity: 0.9; }
+                    50% { opacity: 1; }
+                    75% { opacity: 0.8; }
+                    100% { opacity: 1; }
+                }
+                
+                @keyframes glow-pulse {
+                    0% { box-shadow: 0 0 5px 2px rgba(128, 0, 255, 0.5); }
+                    50% { box-shadow: 0 0 15px 5px rgba(128, 0, 255, 0.8); }
+                    100% { box-shadow: 0 0 5px 2px rgba(128, 0, 255, 0.5); }
                 }
             `}</style>
         </>
