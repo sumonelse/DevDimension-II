@@ -2,13 +2,15 @@ import React, { useEffect, useRef } from "react"
 import { useDimension } from "../context/DimensionContext"
 
 const SpiderverseAudio = () => {
-    const { isSpiderVerse, isTransitioning, isAudioMuted } = useDimension()
+    const { isSpiderVerse, isTransitioning, isAudioMuted, triggerPostCredit } =
+        useDimension()
     const audioRefs = useRef({
         transition: null,
         background: null,
         hover: null,
         click: null,
         webShoot: null,
+        glitch: null,
     })
 
     // Audio URLs
@@ -19,6 +21,7 @@ const SpiderverseAudio = () => {
         hover: "/audio/mixkit-fast-small-sweep-transition-166.wav",
         click: "/audio/mixkit-electronic-retro-block-hit-2185.wav",
         webShoot: "/audio/mixkit-fast-rocket-whoosh-1714.wav",
+        glitch: "/audio/mixkit-electronic-retro-block-hit-2185.wav", // Reusing click sound for glitch
     }
 
     // Initialize audio elements
@@ -209,13 +212,35 @@ const SpiderverseAudio = () => {
                         )
                 }
             },
+            playGlitch: () => {
+                if (audioRefs.current.glitch && !isAudioMuted) {
+                    audioRefs.current.glitch.currentTime = 0
+                    audioRefs.current.glitch.playbackRate = 0.8 // Slower rate for glitch effect
+                    audioRefs.current.glitch
+                        .play()
+                        .catch((e) =>
+                            console.log("Glitch audio play failed:", e)
+                        )
+                }
+            },
             isMuted: () => isAudioMuted,
+            // Expose post-credit trigger for console testing
+            showPostCredit: () => {
+                console.log("Triggering post-credit scene...")
+                triggerPostCredit()
+            },
         }
+
+        // Add a console message for developers
+        console.log(
+            "%c🕸️ Spider-Verse Mode Active! Try window.spiderverseAudio.showPostCredit() to see the post-credit scene.",
+            "background: #FF1744; color: white; padding: 4px; border-radius: 4px;"
+        )
 
         return () => {
             delete window.spiderverseAudio
         }
-    }, [isSpiderVerse, isAudioMuted])
+    }, [isSpiderVerse, isAudioMuted, triggerPostCredit])
 
     return null // This component doesn't render anything
 }

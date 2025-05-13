@@ -26,6 +26,9 @@ export const DimensionProvider = ({ children }) => {
     // State for audio mute
     const [isAudioMuted, setIsAudioMuted] = useState(false)
 
+    // State for post-credit scene
+    const [showPostCredit, setShowPostCredit] = useState(false)
+
     // Function to toggle between dimensions with transition effect
     const toggleDimension = () => {
         if (isTransitioning) return // Prevent multiple transitions
@@ -120,6 +123,29 @@ export const DimensionProvider = ({ children }) => {
         }
     }
 
+    // Trigger post-credit scene with enhanced functionality
+    const triggerPostCredit = () => {
+        if (!isSpiderVerse) return
+
+        // Play special sound effect if available
+        if (window.spiderverseAudio) {
+            window.spiderverseAudio.playWebShoot()
+        }
+
+        setShowPostCredit(true)
+
+        // Hide after 35 seconds (extended to allow for more dialogue)
+        setTimeout(() => {
+            setShowPostCredit(false)
+        }, 35000)
+
+        // Increase multiverse awareness when post-credit scene is viewed
+        setMultiverseAwareness((prev) => Math.min(prev + 1, 10))
+
+        // Store in localStorage that post-credit has been shown
+        localStorage.setItem("post-credit-shown", "true")
+    }
+
     // Check for saved preferences
     useEffect(() => {
         const savedDimension = localStorage.getItem("spiderverse-dimension")
@@ -161,6 +187,8 @@ export const DimensionProvider = ({ children }) => {
         multiverseAwareness,
         isAudioMuted,
         toggleAudioMute,
+        showPostCredit,
+        triggerPostCredit,
     }
 
     return (

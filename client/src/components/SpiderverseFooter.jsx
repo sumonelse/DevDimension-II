@@ -1,8 +1,76 @@
 import React, { useEffect, useState } from "react"
+import { useDimension } from "../context/DimensionContext"
 
 const SpiderverseFooter = () => {
     const currentYear = new Date().getFullYear()
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+    const [clickCount, setClickCount] = useState(0)
+    const { triggerPostCredit, multiverseAwareness } = useDimension()
+    const [showInitialAnimation, setShowInitialAnimation] = useState(false)
+
+    // State for click animation
+    const [showClickEffect, setShowClickEffect] = useState(false)
+    const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 })
+
+    // Enhanced secret click handler with visual feedback
+    const handleSecretClick = (e) => {
+        // Only allow triggering if multiverse awareness is high enough
+        if (multiverseAwareness < 3) return
+
+        // Get click position for the effect
+        const rect = e.currentTarget.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        setClickPosition({ x, y })
+
+        // Show click effect
+        setShowClickEffect(true)
+        setTimeout(() => setShowClickEffect(false), 700)
+
+        setClickCount((prev) => {
+            const newCount = prev + 1
+
+            // After 3 clicks, trigger the post-credit scene
+            if (newCount >= 3) {
+                // Add a dramatic pause before triggering
+                setTimeout(() => {
+                    // Play special sound
+                    if (window.spiderverseAudio) {
+                        window.spiderverseAudio.playWebShoot()
+                    }
+
+                    // Visual feedback - screen flash
+                    const flash = document.createElement("div")
+                    flash.style.position = "fixed"
+                    flash.style.inset = "0"
+                    flash.style.backgroundColor = "rgba(255, 255, 255, 0.3)"
+                    flash.style.zIndex = "9999"
+                    flash.style.pointerEvents = "none"
+                    document.body.appendChild(flash)
+
+                    // Fade out the flash
+                    setTimeout(() => {
+                        flash.style.transition = "opacity 0.5s ease-out"
+                        flash.style.opacity = "0"
+                        setTimeout(() => {
+                            document.body.removeChild(flash)
+                            // Trigger post-credit scene
+                            triggerPostCredit()
+                            // Reset click count
+                            setClickCount(0)
+                        }, 500)
+                    }, 100)
+                }, 300)
+            } else if (newCount > 0) {
+                // Give enhanced feedback on each click
+                if (window.spiderverseAudio) {
+                    window.spiderverseAudio.playClick()
+                }
+            }
+
+            return newCount
+        })
+    }
 
     // Track mouse position for parallax effects
     useEffect(() => {
@@ -15,6 +83,28 @@ const SpiderverseFooter = () => {
             window.removeEventListener("mousemove", handleMouseMove)
         }
     }, [])
+
+    // Initial animation to draw attention to the clickable text
+    useEffect(() => {
+        if (multiverseAwareness >= 3) {
+            // Delay to ensure the footer is visible
+            const timer = setTimeout(() => {
+                setShowInitialAnimation(true)
+
+                // Play a subtle sound
+                if (window.spiderverseAudio) {
+                    window.spiderverseAudio.playHover()
+                }
+
+                // Hide after a few seconds
+                setTimeout(() => {
+                    setShowInitialAnimation(false)
+                }, 3000)
+            }, 2000)
+
+            return () => clearTimeout(timer)
+        }
+    }, [multiverseAwareness])
 
     // Calculate parallax transform based on mouse position
     const getParallaxStyle = (depth) => {
@@ -209,8 +299,126 @@ const SpiderverseFooter = () => {
                             </p>
                             <p className="text-black text-xs mt-2 relative z-10">
                                 Built with React, Tailwind CSS &
-                                <span className="bg-gradient-to-r from-spiderverse-red via-spiderverse-blue to-spiderverse-purple bg-clip-text text-transparent font-bold animate-color-cycle ml-1">
+                                <span
+                                    onClick={handleSecretClick}
+                                    className={`bg-gradient-to-r from-spiderverse-red via-spiderverse-blue to-spiderverse-purple bg-clip-text text-transparent font-bold animate-color-cycle ml-1 cursor-pointer hover:underline relative group ${
+                                        multiverseAwareness >= 3
+                                            ? "hover:scale-110 transform transition-transform duration-300"
+                                            : ""
+                                    }`}
+                                    title={
+                                        multiverseAwareness >= 3
+                                            ? "Click for a post-credit scene"
+                                            : ""
+                                    }
+                                    aria-label={
+                                        multiverseAwareness >= 3
+                                            ? "Click for a post-credit scene. Currently needs " +
+                                              (3 - (clickCount % 3)) +
+                                              " more clicks"
+                                            : "Spider-Verse Inspiration"
+                                    }
+                                >
                                     Spider-Verse Inspiration
+                                    {/* Initial attention animation */}
+                                    {showInitialAnimation &&
+                                        multiverseAwareness >= 3 && (
+                                            <span className="absolute inset-0 rounded-lg border-2 border-spiderverse-yellow animate-pulse-slow"></span>
+                                        )}
+                                    {/* Click effect animation */}
+                                    {showClickEffect && (
+                                        <span
+                                            className="absolute pointer-events-none"
+                                            style={{
+                                                left: `${clickPosition.x}px`,
+                                                top: `${clickPosition.y}px`,
+                                                transform:
+                                                    "translate(-50%, -50%)",
+                                            }}
+                                        >
+                                            <span className="absolute w-12 h-12 bg-gradient-to-r from-spiderverse-red via-spiderverse-blue to-spiderverse-purple rounded-full animate-ping opacity-70"></span>
+                                            <span
+                                                className="absolute w-8 h-8 bg-white rounded-full animate-ping opacity-50"
+                                                style={{
+                                                    animationDuration: "0.5s",
+                                                }}
+                                            ></span>
+                                            <svg
+                                                className="relative w-6 h-6 text-spiderverse-red animate-spin-slow"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                ></circle>
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                ></path>
+                                            </svg>
+                                        </span>
+                                    )}
+                                    {multiverseAwareness >= 3 && (
+                                        <>
+                                            {/* Enhanced indicator with animation */}
+                                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-spiderverse-red opacity-75"></span>
+                                                <span className="relative inline-flex rounded-full h-3 w-3 bg-spiderverse-red"></span>
+                                            </span>
+
+                                            {/* Enhanced tooltip with better styling and animations */}
+                                            <span
+                                                className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-black border-2 border-spiderverse-red text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap z-50 shadow-lg"
+                                                style={{
+                                                    boxShadow:
+                                                        "0 0 10px rgba(255, 23, 68, 0.5)",
+                                                }}
+                                            >
+                                                {/* Comic dots overlay */}
+                                                <div className="absolute inset-0 benday-dots opacity-10 rounded-lg"></div>
+                                                {/* Animated arrow pointing down */}
+                                                <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-black border-r-2 border-b-2 border-spiderverse-red rotate-45"></span>
+                                                <span className="text-spiderverse-yellow font-bold">
+                                                    Click
+                                                </span>{" "}
+                                                <span className="text-spiderverse-cyan font-bold text-base animate-pulse inline-block min-w-[12px] text-center">
+                                                    {3 - (clickCount % 3)}
+                                                </span>{" "}
+                                                <span className="text-spiderverse-yellow font-bold">
+                                                    more{" "}
+                                                    {clickCount % 3 === 2
+                                                        ? "time"
+                                                        : "times"}
+                                                </span>{" "}
+                                                <span className="text-white">
+                                                    for post-credit scene
+                                                </span>
+                                                {/* Visual click indicator */}
+                                                <span className="ml-1 inline-flex items-center">
+                                                    {[...Array(3)].map(
+                                                        (_, i) => (
+                                                            <span
+                                                                key={i}
+                                                                className={`inline-block w-2 h-2 rounded-full mx-0.5 ${
+                                                                    i <
+                                                                    clickCount %
+                                                                        3
+                                                                        ? "bg-spiderverse-red"
+                                                                        : "bg-gray-600"
+                                                                }`}
+                                                            ></span>
+                                                        )
+                                                    )}
+                                                </span>
+                                            </span>
+                                        </>
+                                    )}
                                 </span>
                             </p>
 

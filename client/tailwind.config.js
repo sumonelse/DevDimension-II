@@ -46,6 +46,14 @@ export default {
         // Add more colors as needed
     ],
     theme: {
+        screens: {
+            xs: "480px",
+            sm: "640px",
+            md: "768px",
+            lg: "1024px",
+            xl: "1280px",
+            "2xl": "1536px",
+        },
         extend: {
             colors: {
                 // Enhanced dark theme with deeper blue undertones
@@ -99,6 +107,8 @@ export default {
                     cyan: "#00E5FF",
                     purple: "#AA00FF",
                     green: "#00E676",
+                    orange: "#FF9100",
+                    black: "#212121",
                     dark: "#0A0A1A",
                     darker: "#050510",
                 },
@@ -144,6 +154,10 @@ export default {
                 "color-cycle": "colorCycle 10s infinite",
                 "float-up-slow": "floatUpSlow 4s ease-out forwards",
                 "float-down": "floatDown 4s ease-out forwards",
+                "bounce-x": "bounceX 1s ease-in-out infinite",
+                "slide-x": "slideX 15s linear infinite",
+                "float-particle": "floatParticle 10s linear infinite",
+                "pulse-fade": "pulseFade 3s infinite",
             },
             keyframes: {
                 bounce: {
@@ -406,6 +420,29 @@ export default {
                     "20%": { opacity: 0.7 },
                     "80%": { opacity: 0.7 },
                     "100%": { transform: "translateY(100px)", opacity: 0 },
+                },
+                bounceX: {
+                    "0%, 100%": { transform: "translateX(0) translateY(-50%)" },
+                    "50%": { transform: "translateX(-5px) translateY(-50%)" },
+                },
+                slideX: {
+                    "0%": { transform: "translateX(-50%)" },
+                    "100%": { transform: "translateX(0%)" },
+                },
+                floatParticle: {
+                    "0%": { transform: "translate(0, 0)", opacity: 0 },
+                    "10%": { opacity: 0.3 },
+                    "90%": { opacity: 0.3 },
+                    "100%": {
+                        transform:
+                            "translate(var(--x-offset, 20vw), var(--y-offset, 20vh))",
+                        opacity: 0,
+                    },
+                },
+                pulseFade: {
+                    "0%": { opacity: 0.1 },
+                    "50%": { opacity: 0.4 },
+                    "100%": { opacity: 0.1 },
                 },
             },
             backgroundImage: {

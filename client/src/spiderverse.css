@@ -10,6 +10,8 @@
     --spiderverse-cyan: #00e5ff;
     --spiderverse-purple: #aa00ff;
     --spiderverse-green: #00e676;
+    --spiderverse-orange: #ff9100;
+    --spiderverse-black: #212121;
 
     /* Background colors */
     --spiderverse-dark: #0a0a1a;
@@ -1280,4 +1282,223 @@
         transform: translate(0) skew(0);
         opacity: 1;
     }
+}
+
+/* Post-Credit Scene Animations */
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes bounce-slow {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes spin-slow {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes portal-pulse {
+    0% {
+        opacity: 0.3;
+        transform: scale(0.9);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 0.3;
+        transform: scale(0.9);
+    }
+}
+
+@keyframes spider-sense {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 234, 0, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 234, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 234, 0, 0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.5s ease-in-out forwards;
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 2s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+}
+
+.animate-portal-pulse {
+    animation: portal-pulse 3s ease-in-out infinite;
+}
+
+.animate-spider-sense {
+    animation: spider-sense 1.5s ease-in-out infinite;
+}
+
+.drop-shadow-lg {
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8), 0 0 5px rgba(0, 0, 0, 0.6);
+}
+
+.drop-shadow-glow {
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.8),
+        0 0 5px rgba(255, 255, 255, 0.6);
+}
+
+/* Post-Credit Scene Enhanced Animations */
+@keyframes float-particle {
+    0% {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.3;
+    }
+    90% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translate(var(--x-offset, 20vw), var(--y-offset, 20vh));
+        opacity: 0;
+    }
+}
+
+@keyframes pulse-fade {
+    0% {
+        opacity: 0.1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    100% {
+        opacity: 0.1;
+    }
+}
+
+@keyframes bounce-x {
+    0%,
+    100% {
+        transform: translateX(0) translateY(-50%);
+    }
+    50% {
+        transform: translateX(-5px) translateY(-50%);
+    }
+}
+
+@keyframes slide-x {
+    0% {
+        transform: translateX(-50%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+@keyframes spin-slow {
+    from {
+        transform: rotate(0deg) translateY(-50%);
+    }
+    to {
+        transform: rotate(360deg) translateY(-50%);
+    }
+}
+
+@keyframes animate-color-cycle {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+    100% {
+        filter: hue-rotate(360deg);
+    }
+}
+
+.animate-color-cycle {
+    animation: animate-color-cycle 8s linear infinite;
+}
+
+.animate-bounce-slow {
+    animation: bounce 3s ease-in-out infinite;
+}
+
+.animate-float-slow {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+.animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+}
+
+.animate-bounce-x {
+    animation: bounce-x 1s ease-in-out infinite;
+}
+
+.animate-slide-x {
+    animation: slide-x 15s linear infinite;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Dimensional portal effect */
+.dimensional-portal {
+    background: conic-gradient(
+        from 0deg,
+        var(--spiderverse-red),
+        var(--spiderverse-blue),
+        var(--spiderverse-purple),
+        var(--spiderverse-cyan),
+        var(--spiderverse-red)
+    );
+    animation: animate-color-cycle 8s linear infinite,
+        spin-slow 20s linear infinite;
 }

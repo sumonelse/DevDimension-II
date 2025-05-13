@@ -36,6 +36,9 @@ const SpiderverseAudio = lazy(() => import("./components/SpiderverseAudio"))
 const MultiverseEasterEgg = lazy(() =>
     import("./components/MultiverseEasterEgg")
 )
+const SpiderversePostCredit = lazy(() =>
+    import("./components/SpiderversePostCredit")
+)
 
 const App = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -248,6 +251,11 @@ const App = () => {
                     {/* Easter egg */}
                     <Suspense fallback={null}>
                         <MultiverseEasterEgg />
+                    </Suspense>
+
+                    {/* Post-credit scene */}
+                    <Suspense fallback={null}>
+                        <SpiderversePostCredit />
                     </Suspense>
                 </div>
             )}
