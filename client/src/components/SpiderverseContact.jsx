@@ -763,7 +763,7 @@ const SpiderverseContact = () => {
             {/* Comic book style decorative elements removed to keep it simpler */}
 
             {/* Add CSS animations */}
-            <style jsx>{`
+            <style jsx="true">{`
                 @keyframes bounce-in {
                     0% {
                         opacity: 0;

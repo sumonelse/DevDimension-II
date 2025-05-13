@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
-import { useDimension } from "../context/DimensionContext"
 
 const Contact = () => {
-    const { isSpiderVerse } = useDimension()
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -809,7 +807,7 @@ const Contact = () => {
             </div>
 
             {/* Add CSS animations */}
-            <style jsx>{`
+            <style jsx="true">{`
                 @keyframes fade-in {
                     from {
                         opacity: 0;
