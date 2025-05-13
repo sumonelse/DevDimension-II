@@ -97,12 +97,6 @@ const FloatingControls = () => {
         }
     }
 
-    // Toggle controls panel expansion
-    const toggleExpansion = () => {
-        setIsExpanded(!isExpanded)
-        resetControlsTimeout()
-    }
-
     // Toggle control panel
     const toggleControlPanel = () => {
         setIsControlPanelOpen(!isControlPanelOpen)
@@ -233,17 +227,17 @@ const FloatingControls = () => {
                                     >
                                         {isAudioMuted ? (
                                             <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
                                                 strokeWidth={2}
-                                                d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
+                                                d="M17.25 9.75 19.5 12m0 0 2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6 4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
                                             />
                                         ) : (
                                             <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
                                                 strokeWidth={2}
-                                                d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a9.99 9.99 0 011.414 1.414M12 6a7.975 7.975 0 00-5.657 2.343m0 0a9.99 9.99 0 00-1.414 1.414M12 6c-2.583 0-4.824 1.22-6.243 3.122m0 0A9.925 9.925 0 004 12c0 .998.146 1.962.418 2.878M12 6a9.925 9.925 0 00-6.243 5.878M12 6c2.583 0 4.824 1.22 6.243 3.122m0 0A9.925 9.925 0 0120 12c0 .998-.146 1.962-.418 2.878m-6.243-3.122a9.925 9.925 0 00-6.243 5.878M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                                                d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
                                             />
                                         )}
                                     </svg>

@@ -8,7 +8,6 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
     const { activateSpiderSense } = useDimension()
     const [currentPanel, setCurrentPanel] = useState(0)
     const [isAnimating, setIsAnimating] = useState(false)
-    const [isMuted, setIsMuted] = useState(false)
 
     // Define comic panels for the project
     const comicPanels = [
@@ -32,8 +31,8 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
             // Prevent scrolling when modal is open
             document.body.style.overflow = "hidden"
 
-            // Play sound effect if not muted
-            if (!isMuted && window.spiderverseAudio) {
+            // Play sound effect using global audio settings
+            if (window.spiderverseAudio && !window.spiderverseAudio.isMuted()) {
                 window.spiderverseAudio.playWebShoot()
             }
         }
@@ -61,21 +60,10 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
         }
     }, [isOpen, onClose])
 
-    // Toggle mute state
-    const toggleMute = () => {
-        setIsMuted((prev) => !prev)
-
-        // If we're unmuting, play a sound to confirm audio is working
-        if (isMuted && window.spiderverseAudio) {
-            setTimeout(() => {
-                window.spiderverseAudio.playClick()
-            }, 100)
-        }
-    }
-
-    // Play sound if not muted
+    // Play sound using global audio settings
     const playSound = (soundType) => {
-        if (isMuted || !window.spiderverseAudio) return
+        if (!window.spiderverseAudio || window.spiderverseAudio.isMuted())
+            return
 
         switch (soundType) {
             case "click":
@@ -169,39 +157,6 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
 
                     {/* Action buttons */}
                     <div className="flex items-center gap-1 sm:gap-2 relative z-10">
-                        {/* Mute/Unmute button */}
-                        <button
-                            onClick={toggleMute}
-                            className="relative z-10 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-white text-spiderverse-blue flex items-center justify-center border-2 border-black transform transition-transform hover:scale-110"
-                            aria-label={
-                                isMuted ? "Unmute sounds" : "Mute sounds"
-                            }
-                            title={isMuted ? "Unmute sounds" : "Mute sounds"}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                            >
-                                {isMuted ? (
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
-                                    />
-                                ) : (
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a9.99 9.99 0 011.414 1.414M12 6a7.975 7.975 0 00-5.657 2.343m0 0a9.99 9.99 0 00-1.414 1.414M12 6c-2.583 0-4.824 1.22-6.243 3.122m0 0A9.925 9.925 0 004 12c0 .998.146 1.962.418 2.878M12 6a9.925 9.925 0 00-6.243 5.878M12 6c2.583 0 4.824 1.22 6.243 3.122m0 0A9.925 9.925 0 0120 12c0 .998-.146 1.962-.418 2.878m-6.243-3.122a9.925 9.925 0 00-6.243 5.878M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-                                    />
-                                )}
-                            </svg>
-                        </button>
-
                         {/* Close button */}
                         <button
                             onClick={onClose}
@@ -245,8 +200,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                                         key={index}
                                         onClick={() => {
                                             setCurrentPanel(index)
-                                            if (window.spiderverseAudio)
-                                                window.spiderverseAudio.playClick()
+                                            playSound("click")
                                         }}
                                         className={`px-3 sm:px-4 py-2 font-['Comic_Neue'] font-bold text-sm sm:text-lg transition-all mx-1 first:ml-0 last:mr-0 ${
                                             currentPanel === index
@@ -268,8 +222,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                                         key={index}
                                         onClick={() => {
                                             setCurrentPanel(index)
-                                            if (window.spiderverseAudio)
-                                                window.spiderverseAudio.playClick()
+                                            playSound("click")
                                         }}
                                         className={`w-2 h-2 rounded-full transition-all ${
                                             currentPanel === index
