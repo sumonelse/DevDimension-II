@@ -74,12 +74,13 @@ const SpiderverseAbout = () => {
                         <ul className="text-black space-y-2 list-disc pl-5">
                             <li>
                                 <span className="font-bold">
-                                    B.Tech in Computer Science
+                                    B.Tech in Artificial Intelligence and
+                                    Machine Learning
                                 </span>
                                 <br />
                                 <span className="text-sm">
-                                    Graduated with honors, focusing on
-                                    algorithms and data structures
+                                    Graduating in 2026, focusing on AI
+                                    algorithms and data science
                                 </span>
                             </li>
                             <li>
