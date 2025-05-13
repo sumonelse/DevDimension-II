@@ -304,8 +304,14 @@ const DimensionTrigger = () => {
             if (randomMessageIntervalRef.current) {
                 clearInterval(randomMessageIntervalRef.current)
             }
+            if (messageIntervalRef.current) {
+                clearInterval(messageIntervalRef.current)
+            }
+            if (glitchInterval) {
+                clearInterval(glitchInterval)
+            }
         }
-    }, [])
+    }, [glitchInterval])
 
     return (
         <>
@@ -375,6 +381,11 @@ const DimensionTrigger = () => {
                 id="dimension-trigger"
                 onClick={handleButtonClick}
                 disabled={isTransitioning}
+                aria-label={
+                    isSpiderVerse
+                        ? "Exit Spider-Verse Mode"
+                        : "Enter Spider-Verse Mode"
+                }
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
                 className={`fixed z-40 p-3 rounded-full transition-all duration-300 ${
