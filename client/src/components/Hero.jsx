@@ -70,8 +70,8 @@ const Hero = () => {
             id="hero"
             className="min-h-screen pt-24 flex items-center justify-center relative overflow-hidden transition-colors duration-500"
         >
-            {/* Enhanced background gradient with subtle animation */}
-            <div className="absolute inset-0 bg-gradient-radial transition-colors duration-500 animate-pulse-slow"></div>
+            {/* More subtle background gradient to allow the main gradient to show through */}
+            <div className="absolute inset-0 bg-gradient-radial opacity-30 transition-colors duration-500 animate-pulse-slow"></div>
 
             {/* Grid pattern overlay with improved opacity */}
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMDIwMjAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djJoLTJ2LTJoMnptMC00aDJ2MmgtMnYtMnptLTQgMHYyaC0ydi0yaDJ6bTIgMGgydjJoLTJ2LTJ6bS02IDBoMnYyaC0ydi0yem0yLTRoMnYyaC0ydi0yem0yIDBIMzZ2Mmgtc3YtMnptMC00aDJ2MmgtMnYtMnptMiAwaDJ2MmgtMnYtMnptMi00aDJ2MmgtMnYtMnptMCAwaDJ2MmgtMnYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-15"></div>
@@ -159,35 +159,11 @@ const Hero = () => {
                                 .
                             </p>
 
-                            {/* Enhanced CTA buttons with CP highlight */}
+                            {/* CTA buttons */}
                             <div
                                 className="flex flex-wrap gap-4 justify-center animate-slide-up"
                                 style={{ animationDelay: "0.8s" }}
                             >
-                                {/* <a
-                                    href="#competitive-programming"
-                                    className="group px-7 py-3.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-medium rounded-full transition-all duration-500 hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
-                                >
-                                    <span className="absolute top-0 left-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></span>
-                                    <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-600 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></span>
-                                    <span className="relative z-10 flex items-center">
-                                        Competitive Programming
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M13 10V3L4 14h7v7l9-11h-7z"
-                                            />
-                                        </svg>
-                                    </span>
-                                </a> */}
                                 <a
                                     href="#projects"
                                     className="group px-7 py-3.5 glass border border-pink-500/30 font-medium rounded-full transition-all duration-500 hover:border-pink-400 hover:bg-pink-500/10 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"

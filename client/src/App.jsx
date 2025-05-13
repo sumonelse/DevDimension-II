@@ -114,6 +114,10 @@ const App = () => {
                 <div
                     className={`min-h-screen text-white transition-colors duration-500 ${
                         isTransitioning ? "dimension-transition" : ""
+                    } ${
+                        !isSpiderVerse
+                            ? "bg-main-gradient gradient-overlay"
+                            : ""
                     }`}
                 >
                     {/* Background based on current dimension */}
@@ -128,20 +132,47 @@ const App = () => {
                         </Suspense>
                     ) : (
                         <div className="fixed inset-0 z-0 transition-opacity duration-1000">
-                            {/* Animated gradient blobs */}
-                            <div className="absolute top-20 right-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
+                            {/* Background pattern similar to Contact section */}
+                            <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMDIwMjAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djJoLTJ2LTJoMnptMC00aDJ2MmgtMnYtMnptLTQgMHYyaC0ydi0yaDJ6bTIgMGgydjJoLTJ2LTJ6bS02IDBoMnYyaC0ydi0yem0yLTRoMnYyaC0ydi0yem0yIDBIMzZ2Mmgtc3YtMnptMC00aDJ2MmgtMnYtMnptMiAwaDJ2MmgtMnYtMnptMi00aDJ2MmgtMnYtMnptMCAwaDJ2MmgtMnYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-5"></div>
+
+                            {/* Animated gradient blobs with increased size and opacity */}
+                            <div className="absolute top-20 right-10 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse-slow"></div>
                             <div
-                                className="absolute bottom-20 left-10 w-80 h-80 bg-cyan-500/20 rounded-full blur-3xl animate-pulse-slow"
+                                className="absolute bottom-20 left-10 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl animate-pulse-slow"
                                 style={{ animationDelay: "1s" }}
                             ></div>
                             <div
-                                className="absolute top-1/3 left-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse-slow"
+                                className="absolute top-1/3 left-1/4 w-[30rem] h-[30rem] bg-pink-500/30 rounded-full blur-3xl animate-pulse-slow"
                                 style={{ animationDelay: "2s" }}
                             ></div>
                             <div
-                                className="absolute bottom-1/3 right-1/4 w-64 h-64 bg-amber-500/20 rounded-full blur-3xl animate-pulse-slow"
+                                className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-amber-500/30 rounded-full blur-3xl animate-pulse-slow"
                                 style={{ animationDelay: "1.5s" }}
                             ></div>
+
+                            {/* Cyan glow in bottom right corner like in Contact section */}
+                            <div className="absolute bottom-0 right-0 w-1/3 h-1/3 bg-cyan-500/10 rounded-tl-full blur-3xl"></div>
+
+                            {/* Interactive particles background similar to Contact section */}
+                            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                                <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-purple-500 rounded-full animate-float opacity-70"></div>
+                                <div
+                                    className="absolute top-3/4 left-1/3 w-3 h-3 bg-cyan-500 rounded-full animate-float-slow opacity-60"
+                                    style={{ animationDelay: "1s" }}
+                                ></div>
+                                <div
+                                    className="absolute top-1/2 right-1/4 w-2 h-2 bg-pink-500 rounded-full animate-float-slow opacity-70"
+                                    style={{ animationDelay: "2s" }}
+                                ></div>
+                                <div
+                                    className="absolute bottom-1/4 right-1/3 w-2 h-2 bg-blue-500 rounded-full animate-float opacity-60"
+                                    style={{ animationDelay: "0.5s" }}
+                                ></div>
+                                <div
+                                    className="absolute top-1/3 right-1/2 w-1 h-1 bg-yellow-500 rounded-full animate-float-slow opacity-80"
+                                    style={{ animationDelay: "1.5s" }}
+                                ></div>
+                            </div>
                         </div>
                     )}
 
