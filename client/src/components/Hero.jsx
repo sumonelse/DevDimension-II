@@ -107,7 +107,7 @@ const Hero = () => {
 
                             {/* Improved typing effect with better cursor */}
                             <h2
-                                className="text-2xl md:text-3xl font-semibold mb-4 flex items-center justify-center animate-slide-up h-10"
+                                className="text-2xl md:text-3xl font-semibold mb-4 flex items-center justify-center animate-slide-up h-10 font-heading"
                                 style={{ animationDelay: "0.4s" }}
                             >
                                 <span className="text-gradient-cyan">
@@ -122,36 +122,36 @@ const Hero = () => {
 
                             {/* Enhanced description with better spacing and highlights */}
                             <p
-                                className="text-lg md:text-xl mb-8 leading-relaxed mx-auto animate-slide-up max-w-2xl"
+                                className="text-lg md:text-xl mb-8 leading-relaxed mx-auto animate-slide-up max-w-2xl font-medium"
                                 style={{ animationDelay: "0.6s" }}
                             >
                                 I build exceptional digital experiences with a
                                 passion for
-                                <span className="text-purple-500 font-medium hover:text-purple-400 transition-colors duration-300 relative group">
+                                <span className="text-purple-500 font-semibold hover:text-purple-400 transition-colors duration-300 relative group">
                                     {" "}
                                     competitive programming
                                     <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-purple-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                                 </span>
                                 ,
-                                <span className="text-cyan-500 font-medium hover:text-cyan-400 transition-colors duration-300 relative group">
+                                <span className="text-cyan-500 font-semibold hover:text-cyan-400 transition-colors duration-300 relative group">
                                     {" "}
                                     algorithmic thinking
                                     <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-cyan-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                                 </span>
                                 ,
-                                <span className="text-pink-500 font-medium hover:text-pink-400 transition-colors duration-300 relative group">
+                                <span className="text-pink-500 font-semibold hover:text-pink-400 transition-colors duration-300 relative group">
                                     {" "}
                                     efficient problem-solving
                                     <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-pink-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                                 </span>
                                 ,
-                                <span className="text-amber-500 font-medium hover:text-amber-400 transition-colors duration-300 relative group">
+                                <span className="text-amber-500 font-semibold hover:text-amber-400 transition-colors duration-300 relative group">
                                     {" "}
                                     optimized solutions
                                     <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-amber-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                                 </span>
                                 , and
-                                <span className="text-emerald-500 font-medium hover:text-emerald-400 transition-colors duration-300 relative group">
+                                <span className="text-emerald-500 font-semibold hover:text-emerald-400 transition-colors duration-300 relative group">
                                     {" "}
                                     real-world applications
                                     <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-emerald-500/50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>

@@ -235,7 +235,7 @@ const Skills = () => {
                                         >
                                             {category.icon}
                                         </div>
-                                        <h3 className="text-xl font-bold">
+                                        <h3 className="text-xl font-bold font-heading">
                                             <span
                                                 className={`bg-clip-text text-transparent bg-gradient-to-r from-${category.color}-400 to-${category.color}-600`}
                                             >
@@ -250,7 +250,7 @@ const Skills = () => {
                                             (skill, skillIndex) => (
                                                 <div
                                                     key={skillIndex}
-                                                    className={`px-4 py-2.5 rounded-lg bg-dark-900/80 font-medium text-sm transition-all duration-300 hover:shadow-sm hover:translate-y-[-2px] animate-slide-up border border-${category.color}-500/20 text-${category.color}-400 hover:border-${category.color}-500/40`}
+                                                    className={`px-4 py-2.5 rounded-lg bg-dark-900/80 font-semibold text-sm transition-all duration-300 hover:shadow-sm hover:translate-y-[-2px] animate-slide-up border border-${category.color}-500/20 text-${category.color}-400 hover:border-${category.color}-500/40`}
                                                     style={{
                                                         transform:
                                                             "translateZ(0)",

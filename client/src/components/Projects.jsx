@@ -304,11 +304,11 @@ const Projects = () => {
 
                                     <div className="p-6 flex-grow flex flex-col tilt-card-content">
                                         <h3
-                                            className={`text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-${project.color}-500 to-${project.color}-700`}
+                                            className={`text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-${project.color}-500 to-${project.color}-700 font-heading`}
                                         >
                                             {project.title}
                                         </h3>
-                                        <p className="text-gray-300 mb-4 flex-grow leading-relaxed line-clamp-3">
+                                        <p className="text-gray-300 mb-4 flex-grow leading-relaxed line-clamp-3 font-medium">
                                             {project.description}
                                         </p>
 

@@ -58,45 +58,63 @@ export default {
             colors: {
                 // Enhanced dark theme with deeper blue undertones
                 dark: {
-                    950: "#080C1F", // Deeper blue-black
+                    950: "#070A18", // Deeper blue-black (slightly darker for better contrast)
                     900: "#0F1631", // Deep navy
                     800: "#151C3D", // Rich indigo
                     700: "#1E2A4F", // Midnight blue
                     600: "#2A3A6A", // Royal blue-purple
                     500: "#364785", // Slate blue
                 },
-                // Vibrant violet-indigo accent
+                // Primary brand color - Vibrant violet-indigo accent
                 purple: {
-                    700: "#5B21B6", // Deep violet
-                    600: "#7C3AED", // Vivid purple
+                    900: "#4C1D95", // Deepest violet for accessibility
+                    800: "#5B21B6", // Very deep violet
+                    700: "#6D28D9", // Deep violet
+                    600: "#7C3AED", // Vivid purple - PRIMARY BRAND COLOR
                     500: "#8B5CF6", // Bright violet
                     400: "#A78BFA", // Light violet
                     300: "#C4B5FD", // Soft lavender
+                    200: "#DDD6FE", // Very soft lavender
+                    100: "#EDE9FE", // Lightest lavender
                 },
-                // Teal-cyan accent for fresh contrast
+                // Secondary brand color - Teal-cyan accent for fresh contrast
                 cyan: {
-                    700: "#0E7490", // Deep teal
-                    600: "#0891B2", // Vibrant teal
-                    500: "#06B6D4", // Bright cyan
-                    400: "#22D3EE", // Light cyan
-                    300: "#67E8F9", // Soft cyan
+                    900: "#0C4A6E", // Deepest teal for accessibility
+                    800: "#0E7490", // Very deep teal
+                    700: "#0891B2", // Deep teal
+                    600: "#06B6D4", // Vibrant teal - SECONDARY BRAND COLOR
+                    500: "#22D3EE", // Bright cyan
+                    400: "#67E8F9", // Light cyan
+                    300: "#A5F3FC", // Soft cyan
+                    200: "#CFFAFE", // Very soft cyan
+                    100: "#ECFEFF", // Lightest cyan
                 },
-                // Vibrant coral-pink accent for highlights
+                // Accent brand color - Vibrant coral-pink accent for highlights
                 pink: {
+                    900: "#831843", // Deepest magenta for accessibility
+                    800: "#9D174D", // Very deep magenta
                     700: "#BE185D", // Deep magenta
                     600: "#DB2777", // Vibrant pink
-                    500: "#EC4899", // Bright pink
+                    500: "#EC4899", // Bright pink - ACCENT BRAND COLOR
                     400: "#F472B6", // Light pink
                     300: "#F9A8D4", // Soft pink
+                    200: "#FBCFE8", // Very soft pink
+                    100: "#FCE7F3", // Lightest pink
                 },
-                // New accent colors
+                // Supporting accent colors
                 amber: {
+                    700: "#B45309", // Deep amber
+                    600: "#D97706", // Vibrant amber
                     500: "#F59E0B", // Warm amber
                     400: "#FBBF24", // Light amber
+                    300: "#FCD34D", // Soft amber
                 },
                 emerald: {
-                    500: "#10B981", // Vibrant emerald
+                    700: "#047857", // Deep emerald
+                    600: "#059669", // Vibrant emerald
+                    500: "#10B981", // Bright emerald
                     400: "#34D399", // Light emerald
+                    300: "#6EE7B7", // Soft emerald
                 },
                 // Spider-Verse inspired colors
                 spiderverse: {
@@ -115,8 +133,16 @@ export default {
             },
             fontFamily: {
                 sans: ["Poppins", "system-ui", "sans-serif"],
-                heading: ["Space Grotesk", "sans-serif"],
-                mono: ["Fira Code", "monospace"],
+                heading: ["'Space Grotesk'", "sans-serif"],
+                mono: ["'Fira Code'", "monospace"],
+                brand: ["'Space Grotesk'", "sans-serif"],
+            },
+            fontWeight: {
+                normal: "400",
+                medium: "500",
+                semibold: "600",
+                bold: "700",
+                extrabold: "800",
             },
             animation: {
                 bounce: "bounce 2s infinite",

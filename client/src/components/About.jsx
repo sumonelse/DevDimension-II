@@ -158,14 +158,14 @@ const About = () => {
                                 </h3>
                             </div>
 
-                            <div className="space-y-4 text-gray-300">
+                            <div className="space-y-4 text-gray-300 font-medium">
                                 <p className="leading-relaxed text-lg">
                                     Full-stack developer with a{" "}
-                                    <span className="text-purple-400 font-medium">
+                                    <span className="text-purple-400 font-semibold">
                                         competitive programming
                                     </span>{" "}
                                     background and
-                                    <span className="text-cyan-400 font-medium">
+                                    <span className="text-cyan-400 font-semibold">
                                         {" "}
                                         5+ years
                                     </span>{" "}
@@ -173,7 +173,7 @@ const About = () => {
                                     blend algorithmic thinking with creative
                                     problem-solving to build applications that
                                     are both
-                                    <span className="text-pink-400 font-medium">
+                                    <span className="text-pink-400 font-semibold">
                                         {" "}
                                         elegant and efficient
                                     </span>
@@ -182,7 +182,7 @@ const About = () => {
 
                                 <p className="leading-relaxed text-lg">
                                     My expertise spans the{" "}
-                                    <span className="text-amber-400 font-medium">
+                                    <span className="text-amber-400 font-semibold">
                                         JavaScript ecosystem
                                     </span>
                                     , with a focus on React, Node.js, and modern

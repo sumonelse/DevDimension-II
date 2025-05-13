@@ -4,9 +4,9 @@ import React, { useEffect } from "react"
  * SEO component for managing document head metadata
  */
 const SEO = ({
-    title = "Sumit Maurya | Portfolio",
+    title = "Sumit Maurya | Full-Stack Developer & Problem Solver",
     description = "Full-Stack Developer with a passion for competitive programming, algorithmic thinking, and efficient problem-solving.",
-    keywords = "developer, portfolio, full-stack, competitive programming, web development",
+    keywords = "developer, portfolio, full-stack, competitive programming, web development, algorithms, problem-solving",
     author = "Sumit Maurya",
     ogImage = "/og-image.jpg",
     ogUrl = "https://sumitmaurya.dev",

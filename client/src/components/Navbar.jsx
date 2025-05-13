@@ -120,10 +120,10 @@ const Navbar = () => {
                         <span className="absolute -inset-1 bg-gradient-purple opacity-0 group-hover:opacity-20 rounded-full blur-md transition-opacity duration-500"></span>
 
                         {/* Logo text with animated gradient */}
-                        <span className="text-gradient-purple transition-all duration-500 group-hover:text-gradient-cyan relative">
+                        <span className="text-gradient-purple transition-all duration-500 group-hover:text-gradient-cyan relative font-heading">
                             SM
                         </span>
-                        <span className="text-purple-400 group-hover:text-cyan-400 transition-colors duration-500 relative">
+                        <span className="text-purple-400 group-hover:text-cyan-400 transition-colors duration-500 relative font-heading">
                             .
                         </span>
 

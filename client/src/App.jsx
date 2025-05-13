@@ -9,8 +9,11 @@ import Footer from "./components/Footer"
 import FloatingControls from "./components/FloatingControls"
 import DimensionTransition from "./components/DimensionTransition"
 import SpiderverseLoader from "./components/SpiderverseLoader"
+import BrandLoader from "./components/BrandLoader"
 import DimensionTrigger from "./components/DimensionTrigger"
 import SEO from "./components/SEO"
+import CustomCursor from "./components/CustomCursor"
+import BrandStyleGuide from "./components/BrandStyleGuide"
 import { useDimension } from "./context/DimensionContext"
 import useScrollReveal from "./hooks/useScrollReveal"
 
@@ -100,17 +103,24 @@ const App = () => {
                 title={
                     isSpiderVerse
                         ? "Sumit Maurya | Spider-Verse Portfolio"
-                        : "Sumit Maurya | Portfolio"
+                        : "Sumit Maurya | Full-Stack Developer & Problem Solver"
                 }
                 description="Full-Stack Developer with a passion for competitive programming, algorithmic thinking, and efficient problem-solving."
                 keywords="developer, portfolio, full-stack, competitive programming, web development, algorithms, problem-solving"
             />
 
-            {/* Loading screen */}
-            <SpiderverseLoader
-                isLoading={isLoading}
-                setIsLoaded={setIsLoaded}
-            />
+            {/* Custom Cursor - only in normal mode */}
+            {!isSpiderVerse && <CustomCursor />}
+
+            {/* Loading screen - different loaders based on dimension */}
+            {isSpiderVerse ? (
+                <SpiderverseLoader
+                    isLoading={isLoading}
+                    setIsLoaded={setIsLoaded}
+                />
+            ) : (
+                <BrandLoader isLoading={isLoading} setIsLoaded={setIsLoaded} />
+            )}
 
             {/* Main app content */}
             {!isLoading && (
@@ -257,6 +267,9 @@ const App = () => {
                     <Suspense fallback={null}>
                         <SpiderversePostCredit />
                     </Suspense>
+
+                    {/* Brand Style Guide */}
+                    {!isSpiderVerse && <BrandStyleGuide />}
                 </div>
             )}
         </>

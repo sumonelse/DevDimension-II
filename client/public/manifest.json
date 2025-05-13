@@ -4,8 +4,8 @@
     "description": "Full-Stack Developer with a passion for competitive programming, algorithmic thinking, and efficient problem-solving.",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#080C1F",
-    "theme_color": "#8b5cf6",
+    "background_color": "#070A18",
+    "theme_color": "#7C3AED",
     "orientation": "portrait-primary",
     "icons": [
         {

@@ -1,0 +1,19 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background shape with gradient -->
+  <rect width="120" height="120" rx="24" fill="url(#paint0_linear)" />
+  
+  <!-- Code brackets -->
+  <path d="M40 80L25 60L40 40" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M80 40L95 60L80 80" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Slash representing coding/development -->
+  <path d="M65 30L55 90" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Gradient definitions -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED" />
+      <stop offset="1" stop-color="#EC4899" />
+    </linearGradient>
+  </defs>
+</svg>
