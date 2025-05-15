@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
+import personalInfo from "../utils/personalInfo"
 
 const Hero = () => {
     const typingTextRef = useRef(null)
@@ -96,11 +97,11 @@ const Hero = () => {
                                 style={{ animationDelay: "0.2s" }}
                             >
                                 <span className="text-gradient-purple relative inline-block">
-                                    Sumit
+                                    {personalInfo.name.split(" ")[0]}
                                     <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 transform origin-left animate-pulse-slow"></span>
                                 </span>{" "}
                                 <span className="relative inline-block">
-                                    Maurya
+                                    {personalInfo.name.split(" ")[1]}
                                     <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-amber rounded-full transform origin-left"></span>
                                 </span>
                             </h1>
@@ -218,9 +219,13 @@ const Hero = () => {
                                 style={{ animationDelay: "1s" }}
                             >
                                 <a
-                                    href="#"
+                                    href={personalInfo.social.github.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="group relative w-12 h-12 rounded-lg flex items-center justify-center glass border border-purple-500/30 text-purple-500 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
-                                    aria-label="GitHub"
+                                    aria-label={
+                                        personalInfo.social.github.label
+                                    }
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <svg
@@ -233,9 +238,13 @@ const Hero = () => {
                                     </svg>
                                 </a>
                                 <a
-                                    href="#"
+                                    href={personalInfo.social.linkedin.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="group relative w-12 h-12 rounded-lg flex items-center justify-center glass border border-cyan-500/30 text-cyan-500 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
-                                    aria-label="LinkedIn"
+                                    aria-label={
+                                        personalInfo.social.linkedin.label
+                                    }
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-cyan-600 to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <svg
@@ -248,9 +257,13 @@ const Hero = () => {
                                     </svg>
                                 </a>
                                 <a
-                                    href="#"
+                                    href={personalInfo.social.twitter.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="group relative w-12 h-12 rounded-lg flex items-center justify-center glass border border-pink-500/30 text-pink-500 hover:text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
-                                    aria-label="Twitter"
+                                    aria-label={
+                                        personalInfo.social.twitter.label
+                                    }
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-pink-600 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <svg

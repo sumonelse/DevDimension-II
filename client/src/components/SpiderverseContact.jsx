@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useDimension } from "../context/DimensionContext"
+import personalInfo from "../utils/personalInfo"
 
 const SpiderverseContact = () => {
     const { isSpiderVerse } = useDimension()
@@ -267,10 +268,12 @@ const SpiderverseContact = () => {
                                             Email
                                         </h4>
                                         <a
-                                            href="mailto:sumit.maurya@example.com"
+                                            href={
+                                                personalInfo.contact.emailLink
+                                            }
                                             className="text-spiderverse-blue hover:underline relative inline-block"
                                         >
-                                            sumit.maurya@example.com
+                                            {personalInfo.contact.email}
                                             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-spiderverse-blue group-hover:w-full transition-all duration-300"></span>
                                         </a>
                                     </div>
@@ -299,10 +302,17 @@ const SpiderverseContact = () => {
                                         </h4>
                                         <div className="flex space-x-3 mt-2">
                                             <a
-                                                href="#"
+                                                href={
+                                                    personalInfo.social.github
+                                                        .url
+                                                }
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="comic-border bg-black p-2 rounded-full transform hover:rotate-12 transition-transform duration-300 hover:scale-110"
+                                                aria-label={
+                                                    personalInfo.social.github
+                                                        .label
+                                                }
                                             >
                                                 <svg
                                                     className="w-4 h-4 text-white"
@@ -318,10 +328,17 @@ const SpiderverseContact = () => {
                                                 </svg>
                                             </a>
                                             <a
-                                                href="#"
+                                                href={
+                                                    personalInfo.social.linkedin
+                                                        .url
+                                                }
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="comic-border bg-blue-600 p-2 rounded-full transform hover:-rotate-12 transition-transform duration-300 hover:scale-110"
+                                                aria-label={
+                                                    personalInfo.social.linkedin
+                                                        .label
+                                                }
                                             >
                                                 <svg
                                                     className="w-4 h-4 text-white"
@@ -333,10 +350,17 @@ const SpiderverseContact = () => {
                                                 </svg>
                                             </a>
                                             <a
-                                                href="#"
+                                                href={
+                                                    personalInfo.social.twitter
+                                                        .url
+                                                }
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="comic-border bg-blue-400 p-2 rounded-full transform hover:rotate-12 transition-transform duration-300 hover:scale-110"
+                                                aria-label={
+                                                    personalInfo.social.twitter
+                                                        .label
+                                                }
                                             >
                                                 <svg
                                                     className="w-4 h-4 text-white"

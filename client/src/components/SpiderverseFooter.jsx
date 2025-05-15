@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useDimension } from "../context/DimensionContext"
+import personalInfo from "../utils/personalInfo"
 
 const SpiderverseFooter = () => {
     const currentYear = new Date().getFullYear()
@@ -234,7 +235,7 @@ const SpiderverseFooter = () => {
                         {/* Social links with enhanced comic styling */}
                         <div className="flex justify-center space-x-6 mb-8">
                             <a
-                                href="https://github.com/yourusername"
+                                href={personalInfo.social.github.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="comic-border bg-white p-3 rounded-full transform hover:rotate-12 transition-transform duration-300 relative group"
@@ -255,7 +256,7 @@ const SpiderverseFooter = () => {
                                 </svg>
                             </a>
                             <a
-                                href="https://linkedin.com/in/yourusername"
+                                href={personalInfo.social.linkedin.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="comic-border bg-white p-3 rounded-full transform hover:-rotate-12 transition-transform duration-300 relative group"
@@ -271,7 +272,7 @@ const SpiderverseFooter = () => {
                                 </svg>
                             </a>
                             <a
-                                href="https://twitter.com/yourusername"
+                                href={personalInfo.social.twitter.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="comic-border bg-white p-3 rounded-full transform hover:rotate-12 transition-transform duration-300 relative group"

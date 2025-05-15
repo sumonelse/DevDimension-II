@@ -1,4 +1,5 @@
 import React from "react"
+import personalInfo from "../utils/personalInfo"
 
 const Footer = () => {
     const currentYear = new Date().getFullYear()
@@ -25,8 +26,7 @@ const Footer = () => {
                             </span>
                         </a>
                         <p className="text-gray-400 text-center md:text-left max-w-xs">
-                            Full-stack developer passionate about creating
-                            exceptional digital experiences.
+                            {personalInfo.tagline}
                         </p>
                     </div>
 
@@ -72,9 +72,11 @@ const Footer = () => {
                         </h3>
                         <div className="flex gap-4">
                             <a
-                                href="#"
+                                href={personalInfo.social.github.url}
                                 className="w-10 h-10 bg-dark-900 rounded-full flex items-center justify-center text-gray-400 hover:text-purple-400 hover:shadow-neon transition-all duration-300 hover:-translate-y-1"
-                                aria-label="GitHub"
+                                aria-label={personalInfo.social.github.label}
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -86,9 +88,11 @@ const Footer = () => {
                                 </svg>
                             </a>
                             <a
-                                href="#"
+                                href={personalInfo.social.linkedin.url}
                                 className="w-10 h-10 bg-dark-900 rounded-full flex items-center justify-center text-gray-400 hover:text-cyan-400 hover:shadow-neon-cyan transition-all duration-300 hover:-translate-y-1"
-                                aria-label="LinkedIn"
+                                aria-label={personalInfo.social.linkedin.label}
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -100,9 +104,11 @@ const Footer = () => {
                                 </svg>
                             </a>
                             <a
-                                href="#"
+                                href={personalInfo.social.twitter.url}
                                 className="w-10 h-10 bg-dark-900 rounded-full flex items-center justify-center text-gray-400 hover:text-pink-400 hover:shadow-neon-pink transition-all duration-300 hover:-translate-y-1"
-                                aria-label="Twitter"
+                                aria-label={personalInfo.social.twitter.label}
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -120,9 +126,14 @@ const Footer = () => {
                 {/* Copyright */}
                 <div className="border-t border-dark-800 pt-8 flex flex-col md:flex-row justify-between items-center">
                     <div className="text-gray-500 text-sm mb-4 md:mb-0">
-                        &copy; {currentYear}{" "}
-                        <span className="text-purple-400">Sumit Maurya</span>.
-                        All rights reserved.
+                        &copy;{" "}
+                        {personalInfo.copyright.startYear === currentYear
+                            ? currentYear
+                            : `${personalInfo.copyright.startYear}-${currentYear}`}{" "}
+                        <span className="text-purple-400">
+                            {personalInfo.name}
+                        </span>
+                        . All rights reserved.
                     </div>
 
                     <div className="text-gray-500 text-sm">

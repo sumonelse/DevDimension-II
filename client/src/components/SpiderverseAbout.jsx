@@ -1,4 +1,5 @@
 import React from "react"
+import personalInfo from "../utils/personalInfo"
 
 const SpiderverseAbout = () => {
     return (
@@ -41,7 +42,7 @@ const SpiderverseAbout = () => {
                         <p className="text-black mb-4">
                             Hello! I'm{" "}
                             <span className="font-bold text-spiderverse-red">
-                                Sumit Maurya
+                                {personalInfo.name}
                             </span>
                             , a passionate full-stack developer with a knack for
                             solving complex problems and building user-friendly
@@ -202,7 +203,7 @@ const SpiderverseAbout = () => {
                         user-friendly."
                     </p>
                     <div className="text-right mt-2 font-bold text-spiderverse-red">
-                        - Sumit Maurya
+                        - {personalInfo.name}
                     </div>
                 </div>
 

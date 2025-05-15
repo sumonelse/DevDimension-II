@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
+import personalInfo from "../utils/personalInfo"
 
 const SpiderverseHero = () => {
     const typingTextRef = useRef(null)
@@ -128,13 +129,13 @@ const SpiderverseHero = () => {
                             {/* Name with comic book styling */}
                             <h1
                                 className="comic-title text-5xl md:text-7xl mb-2 glitch-text"
-                                data-text="Sumit Maurya"
+                                data-text={personalInfo.name}
                             >
                                 <span className="text-spiderverse-red">
-                                    Sumit
+                                    {personalInfo.name.split(" ")[0]}
                                 </span>{" "}
                                 <span className="text-spiderverse-blue">
-                                    Maurya
+                                    {personalInfo.name.split(" ")[1]}
                                 </span>
                             </h1>
 
@@ -230,7 +231,7 @@ const SpiderverseHero = () => {
                     {/* Comic book style social links */}
                     <div className="mt-12 flex space-x-6">
                         <a
-                            href="https://github.com/yourusername"
+                            href={personalInfo.social.github.url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="comic-border bg-white p-3 rounded-full transform hover:rotate-12 transition-transform duration-300"
@@ -249,7 +250,7 @@ const SpiderverseHero = () => {
                             </svg>
                         </a>
                         <a
-                            href="https://linkedin.com/in/yourusername"
+                            href={personalInfo.social.linkedin.url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="comic-border bg-white p-3 rounded-full transform hover:-rotate-12 transition-transform duration-300"
@@ -264,7 +265,7 @@ const SpiderverseHero = () => {
                             </svg>
                         </a>
                         <a
-                            href="mailto:your.email@example.com"
+                            href={personalInfo.contact.emailLink}
                             className="comic-border bg-white p-3 rounded-full transform hover:rotate-12 transition-transform duration-300"
                         >
                             <svg

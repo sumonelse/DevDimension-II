@@ -1,16 +1,17 @@
 import React, { useEffect } from "react"
+import personalInfo from "../utils/personalInfo"
 
 /**
  * SEO component for managing document head metadata
  */
 const SEO = ({
-    title = "Sumit Maurya | Full-Stack Developer & Problem Solver",
-    description = "Full-Stack Developer with a passion for competitive programming, algorithmic thinking, and efficient problem-solving.",
+    title = `${personalInfo.name} | ${personalInfo.title}`,
+    description = personalInfo.aboutShort,
     keywords = "developer, portfolio, full-stack, competitive programming, web development, algorithms, problem-solving",
-    author = "Sumit Maurya",
+    author = personalInfo.name,
     ogImage = "/og-image.jpg",
     ogUrl = "https://sumitmaurya.dev",
-    twitterHandle = "@sumitmaurya",
+    twitterHandle = personalInfo.social.twitter.username,
 }) => {
     useEffect(() => {
         // Update document title

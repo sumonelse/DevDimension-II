@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import personalInfo from "../utils/personalInfo"
 
 const BrandStyleGuide = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -126,7 +127,7 @@ const BrandStyleGuide = () => {
                                 </div>
                             </div>
                             <h1 className="font-heading text-3xl font-bold text-gradient-purple mb-2">
-                                Sumit Maurya
+                                {personalInfo.name}
                             </h1>
                             <p className="text-gray-400">Brand Style Guide</p>
                         </div>
@@ -253,8 +254,8 @@ const BrandStyleGuide = () => {
                         </section>
 
                         <div className="text-center text-gray-500 text-sm mt-8">
-                            © {new Date().getFullYear()} Sumit Maurya •
-                            Full-Stack Developer
+                            © {new Date().getFullYear()} {personalInfo.name} •
+                            {personalInfo.title}
                         </div>
                     </div>
                 </div>
