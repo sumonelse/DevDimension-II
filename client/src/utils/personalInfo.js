@@ -35,7 +35,16 @@ const personalInfo = {
             label: "Twitter",
             username: "@yourusername",
         },
-        // Add more social platforms as needed
+        codechef: {
+            url: "https://www.codechef.com/users/sumonelse",
+            label: "CodeChef",
+            username: "sumonelse",
+        },
+        codeforces: {
+            url: "https://codeforces.com/profile/sumDev",
+            label: "CodeForces",
+            username: "sumonelse",
+        },
     },
 
     // Contact Information
