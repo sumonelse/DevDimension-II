@@ -1,4 +1,11 @@
-import React, { createContext, useState, useEffect, useContext } from "react"
+import React, {
+    createContext,
+    useState,
+    useEffect,
+    useContext,
+    useMemo,
+    useCallback,
+} from "react"
 
 // Create the theme context
 const ThemeContext = createContext()
@@ -31,19 +38,19 @@ export const ThemeProvider = ({ children }) => {
         }, 100)
     }, [])
 
-    const applyDarkTheme = () => {
+    const applyDarkTheme = useCallback(() => {
         document.documentElement.classList.remove("light-theme")
         document.documentElement.style.colorScheme = "dark"
         document.body.style.backgroundColor = "#080C1F" // dark.950
-    }
+    }, [])
 
-    const applyLightTheme = () => {
+    const applyLightTheme = useCallback(() => {
         document.documentElement.classList.add("light-theme")
         document.documentElement.style.colorScheme = "light"
         document.body.style.backgroundColor = "#f8fafc" // light bg
-    }
+    }, [])
 
-    const toggleTheme = () => {
+    const toggleTheme = useCallback(() => {
         if (isDarkTheme) {
             // Switch to light mode
             applyLightTheme()
@@ -53,11 +60,20 @@ export const ThemeProvider = ({ children }) => {
             applyDarkTheme()
             localStorage.setItem("theme", "dark")
         }
-        setIsDarkTheme(!isDarkTheme)
-    }
+        setIsDarkTheme((prevState) => !prevState)
+    }, [isDarkTheme, applyLightTheme, applyDarkTheme])
+
+    // Memoize the context value to prevent unnecessary re-renders
+    const contextValue = useMemo(
+        () => ({
+            isDarkTheme,
+            toggleTheme,
+        }),
+        [isDarkTheme, toggleTheme]
+    )
 
     return (
-        <ThemeContext.Provider value={{ isDarkTheme, toggleTheme }}>
+        <ThemeContext.Provider value={contextValue}>
             {children}
         </ThemeContext.Provider>
     )

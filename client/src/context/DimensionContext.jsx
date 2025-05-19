@@ -1,4 +1,11 @@
-import React, { createContext, useState, useContext, useEffect } from "react"
+import React, {
+    createContext,
+    useState,
+    useContext,
+    useEffect,
+    useMemo,
+    useCallback,
+} from "react"
 
 // Create the dimension context
 const DimensionContext = createContext()
@@ -30,7 +37,7 @@ export const DimensionProvider = ({ children }) => {
     const [showPostCredit, setShowPostCredit] = useState(false)
 
     // Function to toggle between dimensions with transition effect
-    const toggleDimension = () => {
+    const toggleDimension = useCallback(() => {
         if (isTransitioning) return // Prevent multiple transitions
 
         // Start transition
@@ -57,7 +64,7 @@ export const DimensionProvider = ({ children }) => {
 
         // Increase multiverse awareness
         setMultiverseAwareness((prev) => Math.min(prev + 1, 10))
-    }
+    }, [isTransitioning])
 
     // Random dimension glitches
     useEffect(() => {
@@ -97,7 +104,7 @@ export const DimensionProvider = ({ children }) => {
     }, [isSpiderVerse])
 
     // Spider-sense feature
-    const activateSpiderSense = () => {
+    const activateSpiderSense = useCallback(() => {
         if (!isSpiderVerse || spiderSenseActive) return
 
         setSpiderSenseActive(true)
@@ -106,25 +113,28 @@ export const DimensionProvider = ({ children }) => {
         setTimeout(() => {
             setSpiderSenseActive(false)
         }, 5000)
-    }
+    }, [isSpiderVerse, spiderSenseActive])
 
     // Toggle audio mute
-    const toggleAudioMute = () => {
-        setIsAudioMuted((prev) => !prev)
+    const toggleAudioMute = useCallback(() => {
+        setIsAudioMuted((prev) => {
+            const newValue = !prev
+            // Store preference in localStorage
+            localStorage.setItem("spiderverse-audio-muted", String(newValue))
 
-        // Store preference in localStorage
-        localStorage.setItem("spiderverse-audio-muted", !isAudioMuted)
+            // If we're unmuting, play a sound to confirm audio is working
+            if (prev && window.spiderverseAudio) {
+                setTimeout(() => {
+                    window.spiderverseAudio.playClick()
+                }, 100)
+            }
 
-        // If we're unmuting, play a sound to confirm audio is working
-        if (isAudioMuted && window.spiderverseAudio) {
-            setTimeout(() => {
-                window.spiderverseAudio.playClick()
-            }, 100)
-        }
-    }
+            return newValue
+        })
+    }, [])
 
     // Trigger post-credit scene with enhanced functionality
-    const triggerPostCredit = () => {
+    const triggerPostCredit = useCallback(() => {
         if (!isSpiderVerse) return
 
         // Play special sound effect if available
@@ -144,7 +154,7 @@ export const DimensionProvider = ({ children }) => {
 
         // Store in localStorage that post-credit has been shown
         localStorage.setItem("post-credit-shown", "true")
-    }
+    }, [isSpiderVerse])
 
     // Check for saved preferences
     useEffect(() => {
@@ -176,27 +186,40 @@ export const DimensionProvider = ({ children }) => {
         localStorage.setItem("multiverse-awareness", multiverseAwareness)
     }, [multiverseAwareness])
 
-    // Context value
-    const value = {
-        isSpiderVerse,
-        isTransitioning,
-        toggleDimension,
-        dimensionGlitches,
-        spiderSenseActive,
-        activateSpiderSense,
-        multiverseAwareness,
-        isAudioMuted,
-        toggleAudioMute,
-        showPostCredit,
-        triggerPostCredit,
-    }
+    // Memoize the context value to prevent unnecessary re-renders
+    const contextValue = useMemo(
+        () => ({
+            isSpiderVerse,
+            isTransitioning,
+            toggleDimension,
+            dimensionGlitches,
+            spiderSenseActive,
+            activateSpiderSense,
+            multiverseAwareness,
+            isAudioMuted,
+            toggleAudioMute,
+            showPostCredit,
+            triggerPostCredit,
+        }),
+        [
+            isSpiderVerse,
+            isTransitioning,
+            toggleDimension,
+            dimensionGlitches,
+            spiderSenseActive,
+            activateSpiderSense,
+            multiverseAwareness,
+            isAudioMuted,
+            toggleAudioMute,
+            showPostCredit,
+            triggerPostCredit,
+        ]
+    )
 
-    return (
-        <DimensionContext.Provider value={value}>
-            {children}
-
-            {/* Render dimension glitches */}
-            {dimensionGlitches.map((glitch) => (
+    // Memoize the glitches rendering to prevent unnecessary re-renders
+    const glitchesRender = useMemo(
+        () =>
+            dimensionGlitches.map((glitch) => (
                 <div
                     key={glitch.id}
                     className="fixed pointer-events-none z-50"
@@ -212,14 +235,30 @@ export const DimensionProvider = ({ children }) => {
                         <div className="w-full h-full bg-white mix-blend-difference"></div>
                     )}
                 </div>
-            ))}
+            )),
+        [dimensionGlitches]
+    )
 
-            {/* Spider-sense overlay */}
-            {spiderSenseActive && (
+    // Memoize the spider-sense overlay to prevent unnecessary re-renders
+    const spiderSenseOverlay = useMemo(
+        () =>
+            spiderSenseActive && (
                 <div className="fixed inset-0 pointer-events-none z-40 bg-yellow-500/20 animate-pulse">
                     <div className="absolute inset-0 spider-web spider-web-full opacity-20"></div>
                 </div>
-            )}
+            ),
+        [spiderSenseActive]
+    )
+
+    return (
+        <DimensionContext.Provider value={contextValue}>
+            {children}
+
+            {/* Render dimension glitches */}
+            {glitchesRender}
+
+            {/* Spider-sense overlay */}
+            {spiderSenseOverlay}
         </DimensionContext.Provider>
     )
 }
