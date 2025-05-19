@@ -69,6 +69,7 @@ const SpiderverseProjects = () => {
         { id: "frontend", label: "Frontend", color: "cyan" },
         { id: "backend", label: "Backend", color: "pink" },
         { id: "fullstack", label: "Full Stack", color: "red" },
+        { id: "ai", label: "AI", color: "purple" },
     ]
 
     // Function to create random motion lines

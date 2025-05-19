@@ -54,6 +54,7 @@ const Projects = () => {
         { id: "frontend", label: "Frontend", color: "cyan" },
         { id: "backend", label: "Backend", color: "pink" },
         { id: "fullstack", label: "Full Stack", color: "purple" },
+        { id: "ai", label: "AI", color: "cyan" },
     ]
 
     return (
