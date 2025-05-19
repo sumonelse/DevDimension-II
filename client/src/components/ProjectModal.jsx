@@ -205,19 +205,33 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                         <h4 className="text-xl font-semibold text-white mb-4">
                             Project Overview
                         </h4>
-                        <p className="text-gray-300 leading-relaxed mb-4">
-                            This project demonstrates my ability to build
-                            complex applications with modern technologies. It
-                            showcases my skills in frontend development, backend
-                            integration, and creating intuitive user
-                            experiences.
-                        </p>
-                        <p className="text-gray-300 leading-relaxed">
-                            The development process involved careful planning,
-                            iterative implementation, and thorough testing to
-                            ensure a high-quality final product that meets user
-                            needs and provides a seamless experience.
-                        </p>
+                        {project.overview ? (
+                            project.overview.map((paragraph, idx) => (
+                                <p
+                                    key={idx}
+                                    className="text-gray-300 leading-relaxed mb-4"
+                                >
+                                    {paragraph}
+                                </p>
+                            ))
+                        ) : (
+                            <>
+                                <p className="text-gray-300 leading-relaxed mb-4">
+                                    This project demonstrates my ability to
+                                    build complex applications with modern
+                                    technologies. It showcases my skills in
+                                    frontend development, backend integration,
+                                    and creating intuitive user experiences.
+                                </p>
+                                <p className="text-gray-300 leading-relaxed">
+                                    The development process involved careful
+                                    planning, iterative implementation, and
+                                    thorough testing to ensure a high-quality
+                                    final product that meets user needs and
+                                    provides a seamless experience.
+                                </p>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

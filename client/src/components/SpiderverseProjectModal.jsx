@@ -379,22 +379,40 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                                     <h3 className="font-['Bangers'] text-2xl mb-3 text-black">
                                         Development Process
                                     </h3>
-                                    <p className="font-['Comic_Neue'] text-lg leading-relaxed text-black">
-                                        This project demonstrates my ability to
-                                        build complex applications with modern
-                                        technologies. It showcases my skills in
-                                        frontend development, backend
-                                        integration, and creating intuitive user
-                                        experiences.
-                                    </p>
-                                    <p className="font-['Comic_Neue'] text-lg leading-relaxed text-black mt-3">
-                                        The development process involved careful
-                                        planning, iterative implementation, and
-                                        thorough testing to ensure a
-                                        high-quality final product that meets
-                                        user needs and provides a seamless
-                                        experience.
-                                    </p>
+                                    {project.overview ? (
+                                        project.overview.map(
+                                            (paragraph, idx) => (
+                                                <p
+                                                    key={idx}
+                                                    className="font-['Comic_Neue'] text-lg leading-relaxed text-black mt-3"
+                                                >
+                                                    {paragraph}
+                                                </p>
+                                            )
+                                        )
+                                    ) : (
+                                        <>
+                                            <p className="font-['Comic_Neue'] text-lg leading-relaxed text-black mt-3">
+                                                This project demonstrates my
+                                                ability to build complex
+                                                applications with modern
+                                                technologies. It showcases my
+                                                skills in frontend development,
+                                                backend integration, and
+                                                creating intuitive user
+                                                experiences.
+                                            </p>
+                                            <p className="font-['Comic_Neue'] text-lg leading-relaxed text-black mt-3">
+                                                The development process involved
+                                                careful planning, iterative
+                                                implementation, and thorough
+                                                testing to ensure a high-quality
+                                                final product that meets user
+                                                needs and provides a seamless
+                                                experience.
+                                            </p>
+                                        </>
+                                    )}
                                 </div>
 
                                 <div className="comic-panel p-4 flex flex-col justify-center items-center">
@@ -403,8 +421,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                                             Development Time
                                         </div>
                                         <div className="font-['Comic_Neue'] text-4xl font-bold text-black">
-                                            {Math.floor(Math.random() * 4) + 2}{" "}
-                                            Weeks
+                                            {project.developmentTime}
                                         </div>
                                     </div>
 
@@ -420,7 +437,8 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         viewBox="0 0 24 24"
                                                         className={`w-6 h-6 ${
-                                                            i < 3
+                                                            i <
+                                                            project.difficulty
                                                                 ? `text-${projectColor}`
                                                                 : "text-gray-300"
                                                         }`}
