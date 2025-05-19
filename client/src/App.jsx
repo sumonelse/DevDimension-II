@@ -9,7 +9,6 @@ import Footer from "./components/Footer"
 import FloatingControls from "./components/FloatingControls"
 import DimensionTransition from "./components/DimensionTransition"
 import SpiderverseLoader from "./components/SpiderverseLoader"
-import BrandLoader from "./components/BrandLoader"
 import DimensionTrigger from "./components/DimensionTrigger"
 import SEO from "./components/SEO"
 import CustomCursor from "./components/CustomCursor"
@@ -48,7 +47,7 @@ const App = () => {
     const [isLoaded, setIsLoaded] = useState(false)
     const { isSpiderVerse, isTransitioning, toggleDimension } = useDimension()
 
-    // Handle initial loading
+    // Handle initial loading with optimized timing
     useEffect(() => {
         // Measure actual loading time instead of arbitrary delay
         const startTime = performance.now()
@@ -56,9 +55,8 @@ const App = () => {
         // Check if all critical resources are loaded
         window.addEventListener("load", () => {
             const loadTime = performance.now() - startTime
-            // Ensure minimum loading time of 1 second for visual feedback
-            // but don't make users wait unnecessarily long
-            const minLoadingTime = 1000
+            // Reduced minimum loading time for better performance
+            const minLoadingTime = 500
             const timeToWait = Math.max(0, minLoadingTime - loadTime)
 
             setTimeout(() => {
@@ -66,10 +64,10 @@ const App = () => {
             }, timeToWait)
         })
 
-        // Fallback in case load event doesn't fire
+        // Fallback in case load event doesn't fire - reduced timeout
         setTimeout(() => {
             setIsLoading(false)
-        }, 2000) // Reduced from 3 seconds to 2 seconds
+        }, 1000) // Reduced from 2 seconds to 1 second for better performance
     }, [])
 
     // Use the scroll reveal hook
@@ -112,15 +110,11 @@ const App = () => {
             {/* Custom Cursor - only in normal mode */}
             {!isSpiderVerse && <CustomCursor />}
 
-            {/* Loading screen - different loaders based on dimension */}
-            {isSpiderVerse ? (
-                <SpiderverseLoader
-                    isLoading={isLoading}
-                    setIsLoaded={setIsLoaded}
-                />
-            ) : (
-                <BrandLoader isLoading={isLoading} setIsLoaded={setIsLoaded} />
-            )}
+            {/* Loading screen - using SpiderverseLoader for better performance */}
+            <SpiderverseLoader
+                isLoading={isLoading}
+                setIsLoaded={setIsLoaded}
+            />
 
             {/* Main app content */}
             {!isLoading && (
@@ -166,7 +160,7 @@ const App = () => {
                             {/* Cyan glow in bottom right corner like in Contact section */}
                             <div className="absolute bottom-0 right-0 w-1/3 h-1/3 bg-cyan-500/10 rounded-tl-full blur-3xl"></div>
 
-                            {/* Interactive particles background similar to Contact section */}
+                            {/* Reduced particles for better performance */}
                             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                                 <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-purple-500 rounded-full animate-float opacity-70"></div>
                                 <div
@@ -174,16 +168,8 @@ const App = () => {
                                     style={{ animationDelay: "1s" }}
                                 ></div>
                                 <div
-                                    className="absolute top-1/2 right-1/4 w-2 h-2 bg-pink-500 rounded-full animate-float-slow opacity-70"
-                                    style={{ animationDelay: "2s" }}
-                                ></div>
-                                <div
                                     className="absolute bottom-1/4 right-1/3 w-2 h-2 bg-blue-500 rounded-full animate-float opacity-60"
                                     style={{ animationDelay: "0.5s" }}
-                                ></div>
-                                <div
-                                    className="absolute top-1/3 right-1/2 w-1 h-1 bg-yellow-500 rounded-full animate-float-slow opacity-80"
-                                    style={{ animationDelay: "1.5s" }}
                                 ></div>
                             </div>
                         </div>
