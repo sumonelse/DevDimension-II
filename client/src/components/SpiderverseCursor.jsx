@@ -8,13 +8,11 @@ const SpiderverseCursor = () => {
     const [isClicking, setIsClicking] = useState(false)
     const [isVisible, setIsVisible] = useState(false)
     const [trail, setTrail] = useState([])
-    const [webShot, setWebShot] = useState(null)
     const [cursorMode, setCursorMode] = useState("default") // 'default', 'spidey', 'miles', 'gwen'
     const [cursorSize, setCursorSize] = useState(40)
     const [spiderSense, setSpiderSense] = useState(false)
     const cursorRef = useRef(null)
     const lastUpdateTime = useRef(Date.now())
-    const webShotTimeout = useRef(null)
     const modeChangeInterval = useRef(null)
 
     // Calculate cursor velocity for effects
@@ -111,31 +109,7 @@ const SpiderverseCursor = () => {
         // Handle mouse events
         const handleMouseDown = (e) => {
             setIsClicking(true)
-
-            // Create web shot effect on click
-            if (Math.random() > 0.7) {
-                // 30% chance for web shot
-                const angle = Math.random() * 360
-                const length = 50 + Math.random() * 100
-
-                setWebShot({
-                    x: e.clientX,
-                    y: e.clientY,
-                    angle,
-                    length,
-                    id: Date.now(),
-                })
-
-                // Clear previous timeout
-                if (webShotTimeout.current) {
-                    clearTimeout(webShotTimeout.current)
-                }
-
-                // Remove web shot after animation
-                webShotTimeout.current = setTimeout(() => {
-                    setWebShot(null)
-                }, 1000)
-            }
+            // Web shot effect removed to prevent layout shifts
         }
 
         const handleMouseUp = () => setIsClicking(false)
@@ -168,9 +142,7 @@ const SpiderverseCursor = () => {
                 handleMouseEnter
             )
 
-            if (webShotTimeout.current) {
-                clearTimeout(webShotTimeout.current)
-            }
+            // Web shot timeout cleanup removed
         }
     }, [isSpiderVerse, position, prevPosition])
 
@@ -382,40 +354,7 @@ const SpiderverseCursor = () => {
                 )
             })}
 
-            {/* Web shot effect */}
-            {webShot && (
-                <div
-                    className="fixed pointer-events-none z-45 web-shooter"
-                    style={{
-                        left: `${webShot.x}px`,
-                        top: `${webShot.y}px`,
-                        width: `${webShot.length}px`,
-                        height: "3px",
-                        transformOrigin: "left center",
-                        transform: `rotate(${webShot.angle}deg)`,
-                        background: `repeating-linear-gradient(
-                            90deg,
-                            transparent,
-                            transparent 5px,
-                            ${getCursorColor()} 5px,
-                            ${getCursorColor()} 10px
-                        )`,
-                        animation: "web-shoot 0.5s ease-out forwards",
-                        opacity: 0.8,
-                    }}
-                >
-                    {/* Web end point */}
-                    <div
-                        className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 rounded-full"
-                        style={{
-                            width: "6px",
-                            height: "6px",
-                            backgroundColor: getCursorColor(),
-                            boxShadow: `0 0 5px ${getCursorColor()}`,
-                        }}
-                    ></div>
-                </div>
-            )}
+            {/* Web shot effect removed to prevent layout shifts */}
 
             {/* Custom cursor styles */}
             <style>

@@ -32,7 +32,6 @@ const SpiderverseBackground = React.memo(() => {
 
     // Refs for intervals to avoid recreating them on re-renders
     const glitchIntervalRef = useRef(null)
-    const webShooterIntervalRef = useRef(null)
     const resizeTimeoutRef = useRef(null)
 
     // Enable parallax effect
@@ -218,47 +217,9 @@ const SpiderverseBackground = React.memo(() => {
 
         // Add random web shooter effects
         const addWebShooterEffects = () => {
-            if (!backgroundRef.current) return
-
-            const container = backgroundRef.current
-
-            // Clear any existing interval
-            if (webShooterIntervalRef.current) {
-                clearInterval(webShooterIntervalRef.current)
-            }
-
-            webShooterIntervalRef.current = setInterval(() => {
-                // Reduce frequency for better performance (from 0.95 to 0.97)
-                if (Math.random() > 0.97) {
-                    const webShooter = document.createElement("div")
-                    webShooter.className = "web-shooter"
-
-                    // Random positioning and styling
-                    const top = Math.random() * 100
-                    const left = Math.random() * 50
-                    const width = 50 + Math.random() * 50 + "%"
-                    const rotation = -30 + Math.random() * 60
-
-                    webShooter.style.top = `${top}%`
-                    webShooter.style.left = `${left}%`
-                    webShooter.style.width = width
-                    webShooter.style.transform = `rotate(${rotation}deg)`
-
-                    container.appendChild(webShooter)
-
-                    // Remove after animation completes
-                    setTimeout(() => {
-                        if (container.contains(webShooter)) {
-                            container.removeChild(webShooter)
-                        }
-                    }, 1000)
-                }
-            }, 4000) // Increased interval for better performance
-
+            // Web shooter effects removed to prevent layout shifts
             return () => {
-                if (webShooterIntervalRef.current) {
-                    clearInterval(webShooterIntervalRef.current)
-                }
+                // No cleanup needed
             }
         }
 
@@ -274,9 +235,6 @@ const SpiderverseBackground = React.memo(() => {
             // Clean up any remaining intervals
             if (glitchIntervalRef.current) {
                 clearInterval(glitchIntervalRef.current)
-            }
-            if (webShooterIntervalRef.current) {
-                clearInterval(webShooterIntervalRef.current)
             }
         }
     }, [])
