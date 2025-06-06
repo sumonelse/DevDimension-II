@@ -15,6 +15,9 @@ import {
     WarningIcon,
 } from "../assets/icons"
 
+// Formspark form submission URL from environment variables
+const FORMSPARK_ACTION_URL = import.meta.env.VITE_FORMSPARK_ACTION_URL
+
 const Contact = () => {
     const [formData, setFormData] = useState({
         name: "",
@@ -138,7 +141,7 @@ const Contact = () => {
         return nameValid && emailValid && messageValid
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
         // Set all fields as touched to show validation errors
@@ -165,8 +168,23 @@ const Contact = () => {
             info: { error: false, msg: null },
         })
 
-        // Simulate form submission
-        setTimeout(() => {
+        try {
+            // Submit form data to Formspark
+            await fetch(FORMSPARK_ACTION_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    subject: formData.subject || "No Subject",
+                    message: formData.message,
+                }),
+            })
+
+            // Handle successful submission
             setFormStatus({
                 submitted: true,
                 submitting: false,
@@ -199,7 +217,18 @@ const Contact = () => {
                     info: { error: false, msg: null },
                 })
             }, 5000)
-        }, 1500)
+        } catch (error) {
+            // Handle submission error
+            console.error("Form submission error:", error)
+            setFormStatus({
+                submitted: false,
+                submitting: false,
+                info: {
+                    error: true,
+                    msg: "Oops! Something went wrong. Please try again later.",
+                },
+            })
+        }
     }
 
     return (

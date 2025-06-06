@@ -11,11 +11,12 @@ import {
     ChatIcon,
     ClockIcon,
     ErrorIcon,
-    SuccessIcon,
-    InfoIcon,
     LoadingIcon,
     SendIcon,
 } from "../assets/icons"
+
+// Formspark form submission URL from environment variables
+const FORMSPARK_ACTION_URL = import.meta.env.VITE_FORMSPARK_ACTION_URL
 
 const SpiderverseContact = () => {
     const { isSpiderVerse } = useDimension()
@@ -154,8 +155,24 @@ const SpiderverseContact = () => {
 
         setIsSubmitting(true)
 
-        // Simulate form submission
-        setTimeout(() => {
+        try {
+            // Submit form data to Formspark
+            await fetch(FORMSPARK_ACTION_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    message: formData.message,
+                    // Add a source field to identify which form was used
+                    source: "spiderverse-contact",
+                }),
+            })
+
+            // Handle successful submission
             setIsSubmitting(false)
             setSubmitStatus("success")
             setFormData({ name: "", email: "", message: "" })
@@ -171,7 +188,16 @@ const SpiderverseContact = () => {
             setTimeout(() => {
                 setSubmitStatus(null)
             }, 5000)
-        }, 1500)
+        } catch (error) {
+            console.error("Form submission error:", error)
+            setIsSubmitting(false)
+            setSubmitStatus("error")
+
+            // Reset error status after 5 seconds
+            setTimeout(() => {
+                setSubmitStatus(null)
+            }, 5000)
+        }
     }
 
     // Function to create random motion lines
@@ -652,6 +678,27 @@ const SpiderverseContact = () => {
                                                 />
                                             </svg>
                                             Message sent successfully!
+                                        </div>
+                                    </div>
+                                )}
+
+                                {submitStatus === "error" && (
+                                    <div className="mt-4 p-3 bg-red-100 border-2 border-black text-black font-bold animate-bounce-in">
+                                        <div className="flex items-center">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-5 w-5 mr-2 text-red-600"
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                            >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                            Oops! Something went wrong. Please
+                                            try again later.
                                         </div>
                                     </div>
                                 )}
