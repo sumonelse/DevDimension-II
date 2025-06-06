@@ -231,40 +231,6 @@ export const projects = [
         panelSize: "panel-tall",
         rotation: "2deg",
     },
-
-    {
-        title: "SecureAPI Service",
-        description:
-            "A production-ready RESTful API service with comprehensive security features including OAuth2 authentication, role-based access control, rate limiting, request validation, and detailed API documentation with Swagger.",
-        technologies: [
-            "Node.js",
-            "Express",
-            "MongoDB",
-            "JWT",
-            "OAuth2",
-            "Swagger",
-            "Jest",
-        ],
-        category: "backend",
-        color: "cyan",
-        demoLink: "https://api-docs.example.com",
-        codeLink: "https://github.com/sumitmaurya/secureapi",
-        image: "api-placeholder.jpg",
-        difficulty: 4,
-        developmentTime: "10 weeks",
-        overview: [
-            "SecureAPI Service was developed to provide a robust foundation for building secure and well-documented APIs. The project emphasizes security best practices and developer experience through comprehensive documentation.",
-            "The development process involved extensive research into security vulnerabilities and authentication protocols, followed by implementation of multiple layers of protection and thorough testing to ensure data integrity and access control.",
-        ],
-        highlights: [
-            "Implemented OAuth2 authentication flow",
-            "Built comprehensive test suite with Jest",
-            "Added rate limiting and request validation",
-            "Created detailed API documentation with Swagger",
-        ],
-        panelSize: "panel-tall",
-        rotation: "2deg",
-    },
 ]
 
 // Function to fetch projects - will be used in the future when API is implemented
