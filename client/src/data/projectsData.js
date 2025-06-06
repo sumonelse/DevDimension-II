@@ -197,6 +197,42 @@ export const projects = [
         rotation: "-1.5deg",
     },
     {
+        title: "Inrun - Knowledge Blog",
+        description:
+            "A responsive, feature-rich blog platform focused on sharing knowledge across multiple niches including technology, gaming, movies, and animation. The site features a clean, modern UI with light/dark mode toggle and mobile-friendly design.",
+        technologies: [
+            "HTML5",
+            "CSS3",
+            "JavaScript",
+            "Responsive Design",
+            "Local Storage",
+            "Google Analytics",
+            "SEO Optimization",
+        ],
+        category: "frontend",
+        color: "cyan",
+        demoLink: "https://inrun.netlify.app",
+        codeLink: "https://github.com/sumonelse/inrun",
+        image: "inrun-preview.jpg",
+        difficulty: 2,
+        developmentTime: "7 weeks",
+        overview: [
+            "inrun is a modern, responsive blog platform designed to share knowledge across various niches including technology, gaming, movies, and animation. The project demonstrates my ability to create a clean, user-friendly interface with attention to accessibility and user experience.",
+            "The site features a thoughtfully designed UI with both light and dark mode options that persist across sessions using local storage. The responsive design ensures a seamless experience across all device sizes, from mobile phones to large desktop screens.",
+        ],
+        highlights: [
+            "Implemented a persistent light/dark mode toggle using localStorage for enhanced user experience",
+            "Created a fully responsive design that adapts to various screen sizes using CSS media queries",
+            "Built a clean, modern UI with neumorphic design elements and subtle animations",
+            "Optimized performance with efficient CSS and JavaScript",
+            "Implemented SEO best practices including meta tags, semantic HTML, and proper heading structure",
+            "Integrated Google Analytics for visitor tracking and site performance monitoring",
+        ],
+        panelSize: "panel-tall",
+        rotation: "2deg",
+    },
+
+    {
         title: "SecureAPI Service",
         description:
             "A production-ready RESTful API service with comprehensive security features including OAuth2 authentication, role-based access control, rate limiting, request validation, and detailed API documentation with Swagger.",
