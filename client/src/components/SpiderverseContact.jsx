@@ -157,7 +157,7 @@ const SpiderverseContact = () => {
 
         try {
             // Submit form data to Formspark
-            await fetch(FORMSPARK_ACTION_URL, {
+            const response = await fetch(FORMSPARK_ACTION_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -171,6 +171,10 @@ const SpiderverseContact = () => {
                     source: "spiderverse-contact",
                 }),
             })
+
+            if (!response.ok) {
+                throw new Error("Form submission failed")
+            }
 
             // Handle successful submission
             setIsSubmitting(false)
