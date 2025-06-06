@@ -231,6 +231,15 @@ const Contact = () => {
                     msg: "Oops! Something went wrong. Please try again later.",
                 },
             })
+
+            // Clear error message after 5 seconds
+            setTimeout(() => {
+                setFormStatus({
+                    submitted: false,
+                    submitting: false,
+                    info: { error: false, msg: null },
+                })
+            }, 5000)
         }
     }
 
@@ -467,26 +476,6 @@ const Contact = () => {
                                 onSubmit={handleSubmit}
                                 ref={formRef}
                             >
-                                {/* Form status message */}
-                                {formStatus.info.msg && (
-                                    <div
-                                        className={`p-4 rounded-lg ${
-                                            formStatus.info.error
-                                                ? "bg-pink-500/10 text-pink-400 border border-pink-500/20"
-                                                : "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
-                                        } animate-fade-in`}
-                                    >
-                                        <div className="flex items-center">
-                                            {formStatus.info.error ? (
-                                                <ErrorIcon className="h-5 w-5 mr-2 text-pink-400" />
-                                            ) : (
-                                                <SuccessIcon className="h-5 w-5 mr-2 text-cyan-400" />
-                                            )}
-                                            {formStatus.info.msg}
-                                        </div>
-                                    </div>
-                                )}
-
                                 <div
                                     className={`group ${
                                         activeField === "name"
@@ -717,6 +706,27 @@ const Contact = () => {
                                         </span>
                                     )}
                                 </button>
+
+                                {/* Form status messages */}
+                                {formStatus.info.msg &&
+                                    !formStatus.info.error && (
+                                        <div className="mt-6 p-4 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 animate-fade-in transform transition-all duration-300 hover:scale-[1.02]">
+                                            <div className="flex items-center">
+                                                <SuccessIcon className="h-5 w-5 mr-2 text-cyan-400" />
+                                                {formStatus.info.msg}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                {formStatus.info.msg &&
+                                    formStatus.info.error && (
+                                        <div className="mt-6 p-4 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/20 animate-fade-in transform transition-all duration-300 hover:scale-[1.02]">
+                                            <div className="flex items-center">
+                                                <ErrorIcon className="h-5 w-5 mr-2 text-pink-400" />
+                                                {formStatus.info.msg}
+                                            </div>
+                                        </div>
+                                    )}
 
                                 {/* Form validation guidance */}
                                 {(errors.name ||
