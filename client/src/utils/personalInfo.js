@@ -23,17 +23,17 @@ const personalInfo = {
         github: {
             url: "https://github.com/sumonelse",
             label: "GitHub",
-            username: "yourusername",
+            username: "sumonelse",
         },
         linkedin: {
             url: "https://linkedin.com/in/sumitmaurya01",
             label: "LinkedIn",
-            username: "yourusername",
+            username: "sumitmaurya01",
         },
         twitter: {
             url: "https://x.com/sumonelse_",
             label: "Twitter",
-            username: "@yourusername",
+            username: "@sumonelse_",
         },
         codechef: {
             url: "https://www.codechef.com/users/sumonelse",
@@ -51,7 +51,7 @@ const personalInfo = {
     contact: {
         email: "sumdev34@gmail.com",
         emailLink: "mailto:sumdev34@gmail.com",
-        phone: "+91 98765 43210", // Optional
+        phone: "+91 95039 53868",
     },
 
     // Copyright Information

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import ProjectModal from "./ProjectModal"
 import { projects, fetchProjects } from "../data/projectsData"
+import personalInfo from "../utils/personalInfo.js"
 
 const Projects = () => {
     const [activeFilter, setActiveFilter] = useState("all")
@@ -245,9 +246,10 @@ const Projects = () => {
                 <div className="mt-16 text-center reveal">
                     <div className="inline-block">
                         <a
-                            href="https://github.com/yourusername"
+                            href={personalInfo.social.github.url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            aria-label={personalInfo.social.github.label}
                             className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 ease-in-out bg-dark-800 rounded-full hover:bg-dark-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                         >
                             <span className="absolute inset-0 w-full h-full -mt-1 -ml-1 transition-all duration-300 ease-in-out bg-gradient-purple rounded-full blur opacity-30 group-hover:opacity-100 group-hover:blur-md"></span>
