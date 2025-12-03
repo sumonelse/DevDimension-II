@@ -261,7 +261,7 @@ const Navbar = () => {
                             </a>
                         ))}
                         <a
-                            href="/resume.pdf"
+                            href="/resume-20251203.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
                             className={`px-4 lg:px-5 py-2 bg-gradient-purple text-white rounded-full shadow-sm hover:shadow-neon transition-all duration-500 hover:-translate-y-1 hover:scale-105 group relative overflow-hidden ${
@@ -358,7 +358,7 @@ const Navbar = () => {
                                 </a>
                             ))}
                             <a
-                                href="/resume.pdf"
+                                href="/resume-20251203.pdf"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="mt-4 px-8 py-3 bg-gradient-purple text-white rounded-lg shadow-neon transition-all duration-500 hover:scale-110 transform opacity-0 animate-slide-up group w-4/5 text-center"
