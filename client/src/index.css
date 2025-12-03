@@ -577,7 +577,9 @@
 
 /* Control Panel Styles */
 .control-panel {
-    position: absolute;
+    /* Use fixed so the panel is positioned relative to the viewport
+       and not constrained by any ancestor stacking context (e.g. .relative z-10). */
+    position: fixed;
     bottom: 5rem;
     right: 0;
     width: 16rem;

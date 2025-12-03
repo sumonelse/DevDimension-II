@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
+import { createPortal } from "react-dom"
 import { useTheme } from "../context/ThemeContext"
 import { useDimension } from "../context/DimensionContext"
 import {
@@ -151,32 +152,93 @@ const FloatingControls = () => {
                 </button>
             </div>
 
-            {/* Magic Box Panel */}
-            {isControlPanelOpen && (
-                <div
-                    className={`control-panel ${
-                        isSpiderVerse
-                            ? "bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                            : isDarkTheme
-                            ? "bg-dark-800/95 backdrop-blur-md border border-purple-500/30"
-                            : "bg-white/95 backdrop-blur-md border border-purple-500/20"
-                    }`}
-                >
-                    <h3
-                        className={`control-panel-header ${
+            {/* Magic Box Panel rendered via portal to avoid stacking-context issues */}
+            {isControlPanelOpen &&
+                createPortal(
+                    <div
+                        className={`control-panel ${
                             isSpiderVerse
-                                ? "text-black font-['Comic_Neue']"
+                                ? "bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                                 : isDarkTheme
-                                ? "text-white"
-                                : "text-gray-800"
+                                ? "bg-dark-800/95 backdrop-blur-md border border-purple-500/30"
+                                : "bg-white/95 backdrop-blur-md border border-purple-500/20"
                         }`}
+                        role="dialog"
+                        aria-label="Magic Box Panel"
                     >
-                        Magic Box
-                    </h3>
+                        <h3
+                            className={`control-panel-header ${
+                                isSpiderVerse
+                                    ? "text-black font-['Comic_Neue']"
+                                    : isDarkTheme
+                                    ? "text-white"
+                                    : "text-gray-800"
+                            }`}
+                        >
+                            Magic Box
+                        </h3>
 
-                    <div className="space-y-2">
-                        {/* Audio Controls (only in Spider-Verse) */}
-                        {isSpiderVerse && (
+                        <div className="space-y-2">
+                            {/* Audio Controls (only in Spider-Verse) */}
+                            {isSpiderVerse && (
+                                <div className="control-panel-item">
+                                    <span
+                                        className={`${
+                                            isSpiderVerse
+                                                ? "text-black font-['Comic_Neue']"
+                                                : isDarkTheme
+                                                ? "text-gray-200"
+                                                : "text-gray-700"
+                                        }`}
+                                    >
+                                        Audio Effects
+                                    </span>
+                                    <button
+                                        onClick={toggleAudioMute}
+                                        className="control-panel-button"
+                                        aria-label={
+                                            isAudioMuted
+                                                ? "Unmute sounds"
+                                                : "Mute sounds"
+                                        }
+                                    >
+                                        {isAudioMuted ? (
+                                            <AudioOffIcon
+                                                className={`h-5 w-5 ${
+                                                    isSpiderVerse
+                                                        ? "text-black"
+                                                        : isDarkTheme
+                                                        ? "text-gray-200"
+                                                        : "text-gray-700"
+                                                }`}
+                                            />
+                                        ) : (
+                                            <AudioOnIcon
+                                                className={`h-5 w-5 ${
+                                                    isSpiderVerse
+                                                        ? "text-black"
+                                                        : isDarkTheme
+                                                        ? "text-gray-200"
+                                                        : "text-gray-700"
+                                                }`}
+                                            />
+                                        )}
+                                        <span
+                                            className={`text-sm ${
+                                                isSpiderVerse
+                                                    ? "text-black"
+                                                    : isDarkTheme
+                                                    ? "text-gray-200"
+                                                    : "text-gray-700"
+                                            }`}
+                                        >
+                                            {isAudioMuted ? "Unmute" : "Mute"}
+                                        </span>
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Theme Toggle */}
                             <div className="control-panel-item">
                                 <span
                                     className={`${
@@ -187,35 +249,35 @@ const FloatingControls = () => {
                                             : "text-gray-700"
                                     }`}
                                 >
-                                    Audio Effects
+                                    Theme
                                 </span>
                                 <button
-                                    onClick={toggleAudioMute}
+                                    onClick={handleThemeToggle}
                                     className="control-panel-button"
                                     aria-label={
-                                        isAudioMuted
-                                            ? "Unmute sounds"
-                                            : "Mute sounds"
+                                        isDarkTheme
+                                            ? "Switch to Light Mode"
+                                            : "Switch to Dark Mode"
                                     }
                                 >
-                                    {isAudioMuted ? (
-                                        <AudioOffIcon
+                                    {isDarkTheme ? (
+                                        <SunIcon
                                             className={`h-5 w-5 ${
                                                 isSpiderVerse
                                                     ? "text-black"
                                                     : isDarkTheme
-                                                    ? "text-gray-200"
-                                                    : "text-gray-700"
+                                                    ? "text-amber-400"
+                                                    : "text-purple-600"
                                             }`}
                                         />
                                     ) : (
-                                        <AudioOnIcon
+                                        <MoonIcon
                                             className={`h-5 w-5 ${
                                                 isSpiderVerse
                                                     ? "text-black"
                                                     : isDarkTheme
-                                                    ? "text-gray-200"
-                                                    : "text-gray-700"
+                                                    ? "text-amber-400"
+                                                    : "text-purple-600"
                                             }`}
                                         />
                                     )}
@@ -228,112 +290,55 @@ const FloatingControls = () => {
                                                 : "text-gray-700"
                                         }`}
                                     >
-                                        {isAudioMuted ? "Unmute" : "Mute"}
+                                        {isDarkTheme
+                                            ? "Light Mode"
+                                            : "Dark Mode"}
                                     </span>
                                 </button>
                             </div>
-                        )}
 
-                        {/* Theme Toggle */}
-                        <div className="control-panel-item">
-                            <span
-                                className={`${
-                                    isSpiderVerse
-                                        ? "text-black font-['Comic_Neue']"
-                                        : isDarkTheme
-                                        ? "text-gray-200"
-                                        : "text-gray-700"
-                                }`}
-                            >
-                                Theme
-                            </span>
-                            <button
-                                onClick={handleThemeToggle}
-                                className="control-panel-button"
-                                aria-label={
-                                    isDarkTheme
-                                        ? "Switch to Light Mode"
-                                        : "Switch to Dark Mode"
-                                }
-                            >
-                                {isDarkTheme ? (
-                                    <SunIcon
-                                        className={`h-5 w-5 ${
-                                            isSpiderVerse
-                                                ? "text-black"
-                                                : isDarkTheme
-                                                ? "text-amber-400"
-                                                : "text-purple-600"
-                                        }`}
-                                    />
-                                ) : (
-                                    <MoonIcon
-                                        className={`h-5 w-5 ${
-                                            isSpiderVerse
-                                                ? "text-black"
-                                                : isDarkTheme
-                                                ? "text-amber-400"
-                                                : "text-purple-600"
-                                        }`}
-                                    />
-                                )}
+                            {/* Scroll to Top */}
+                            <div className="control-panel-item">
                                 <span
-                                    className={`text-sm ${
+                                    className={`${
                                         isSpiderVerse
-                                            ? "text-black"
+                                            ? "text-black font-['Comic_Neue']"
                                             : isDarkTheme
                                             ? "text-gray-200"
                                             : "text-gray-700"
                                     }`}
                                 >
-                                    {isDarkTheme ? "Light Mode" : "Dark Mode"}
+                                    Navigation
                                 </span>
-                            </button>
-                        </div>
-
-                        {/* Dimension Toggle removed - now using standalone component */}
-
-                        {/* Scroll to Top */}
-                        <div className="control-panel-item">
-                            <span
-                                className={`${
-                                    isSpiderVerse
-                                        ? "text-black font-['Comic_Neue']"
-                                        : isDarkTheme
-                                        ? "text-gray-200"
-                                        : "text-gray-700"
-                                }`}
-                            >
-                                Navigation
-                            </span>
-                            <button
-                                onClick={scrollToTop}
-                                className="control-panel-button"
-                                aria-label="Scroll to top"
-                            >
-                                <ArrowUpIcon
-                                    className={`h-5 w-5 ${
-                                        isSpiderVerse
-                                            ? "text-black"
-                                            : "text-purple-500"
-                                    }`}
-                                />
-                                <span
-                                    className={`text-sm ${
-                                        isSpiderVerse
-                                            ? "text-black"
-                                            : isDarkTheme
-                                            ? "text-gray-200"
-                                            : "text-gray-700"
-                                    }`}
+                                <button
+                                    onClick={scrollToTop}
+                                    className="control-panel-button"
+                                    aria-label="Scroll to top"
                                 >
-                                    Top of Page
-                                </span>
-                            </button>
+                                    <ArrowUpIcon
+                                        className={`h-5 w-5 ${
+                                            isSpiderVerse
+                                                ? "text-black"
+                                                : "text-purple-500"
+                                        }`}
+                                    />
+                                    <span
+                                        className={`text-sm ${
+                                            isSpiderVerse
+                                                ? "text-black"
+                                                : isDarkTheme
+                                                ? "text-gray-200"
+                                                : "text-gray-700"
+                                        }`}
+                                    >
+                                        Top of Page
+                                    </span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </div>,
+                    document.body
+                )}
 
             {/* Indicator dot for auto-hide feature */}
             <div
