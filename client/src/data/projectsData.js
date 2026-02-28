@@ -83,7 +83,7 @@ export const projects = [
             "Built a responsive UI that works across different screen sizes and devices",
         ],
         panelSize: "panel-medium",
-        rotation: "-1.5deg",
+        rotation: "1deg",
     },
     {
         title: "DevDimension - Interactive Portfolio with Multiverse Theme",
@@ -126,8 +126,8 @@ export const projects = [
             "Added creative animations and micro-interactions for engaging user experience",
             "Implemented SEO best practices with meta tags and semantic HTML",
         ],
-        panelSize: "panel-medium",
-        rotation: "1deg",
+        panelSize: "panel-small",
+        rotation: "-1deg",
     },
     {
         title: "Binance Futures Bot",
@@ -202,8 +202,8 @@ export const projects = [
             "Optimized performance with compression middleware",
         ],
 
-        panelSize: "panel-wide",
-        rotation: "0.5deg",
+        panelSize: "panel-medium",
+        rotation: "-1.5deg",
     },
     {
         title: "Hand Cricket Game",
@@ -231,8 +231,8 @@ export const projects = [
         ],
         difficulty: 3,
         developmentTime: "3 weeks",
-        panelSize: "panel-small",
-        rotation: "-1deg",
+        panelSize: "panel-tall",
+        rotation: "2deg",
     },
 ]
 
