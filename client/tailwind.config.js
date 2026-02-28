@@ -43,6 +43,28 @@ export default {
         "hover:border-emerald-500/50",
         "text-emerald-400",
         "bg-emerald-500/5",
+        "from-yellow-400",
+        "to-yellow-600",
+        "from-yellow-500",
+        "to-yellow-700",
+        "border-yellow-500/20",
+        "hover:border-yellow-500/50",
+        "text-yellow-400",
+        "bg-yellow-500/5",
+        "bg-yellow-500/10",
+        "bg-yellow-500/20",
+        "border-yellow-500/30",
+        "from-yellow-500",
+        "from-yellow-600",
+        "from-yellow-900/20",
+        "to-yellow-400",
+        "to-yellow-500",
+        "to-yellow-700",
+        "to-yellow-800/30",
+        "hover:from-yellow-500",
+        "hover:to-yellow-400",
+        "shadow-yellow-500/20",
+        "shadow-yellow-500/30",
         // Add more colors as needed
     ],
     theme: {
@@ -102,6 +124,17 @@ export default {
                     100: "#FCE7F3", // Lightest pink
                 },
                 // Supporting accent colors
+                yellow: {
+                    900: "#713F12", // Deepest yellow for accessibility
+                    800: "#854D0E", // Very deep yellow
+                    700: "#A16207", // Deep yellow
+                    600: "#CA8A04", // Vibrant yellow - ACCENT BRAND COLOR
+                    500: "#EAB308", // Bright yellow
+                    400: "#FACC15", // Light yellow
+                    300: "#FDE047", // Soft yellow
+                    200: "#FEF08A", // Very soft yellow
+                    100: "#FEF9C3", // Lightest yellow
+                },
                 amber: {
                     700: "#B45309", // Deep amber
                     600: "#D97706", // Vibrant amber
@@ -484,6 +517,8 @@ export default {
                     '0 0 5px theme("colors.cyan.400"), 0 0 20px theme("colors.cyan.500")',
                 "neon-pink":
                     '0 0 5px theme("colors.pink.400"), 0 0 20px theme("colors.pink.500")',
+                "neon-yellow":
+                    '0 0 5px theme("colors.yellow.400"), 0 0 20px theme("colors.yellow.500")',
             },
             backdropBlur: {
                 xs: "2px",
