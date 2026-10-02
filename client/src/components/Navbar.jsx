@@ -1,12 +1,23 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
+
+const NAV_LINKS = [
+    { href: "#about", label: "About" },
+    { href: "#skills", label: "Skills" },
+    { href: "#projects", label: "Projects" },
+    { href: "#contact", label: "Contact" },
+]
+
+const SECTION_IDS = ["hero", "about", "skills", "projects", "contact"]
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [activeSection, setActiveSection] = useState("hero")
     const [isVisible, setIsVisible] = useState(true)
-    const [lastScrollY, setLastScrollY] = useState(0)
     const [isLoaded, setIsLoaded] = useState(false)
+
+    const lastScrollYRef = useRef(0)
+    const frameRef = useRef(null)
 
     // Add entrance animation when component mounts
     useEffect(() => {
@@ -17,63 +28,108 @@ const Navbar = () => {
         return () => clearTimeout(timer)
     }, [])
 
+    // Hide on scroll down, reveal on scroll up.
+    //
+    // This listener used to live in an effect that depended on `lastScrollY`, so
+    // React removed and re-added it on every single scroll event. The scroll
+    // position is now read through a ref and the work is batched into one rAF.
     useEffect(() => {
-        const handleScroll = () => {
+        const update = () => {
+            frameRef.current = null
+
             const currentScrollY = window.scrollY
+            const lastScrollY = lastScrollYRef.current
 
-            // Hide navbar on scroll down, show on scroll up
-            if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                setIsVisible(false)
-            } else {
-                setIsVisible(true)
-            }
+            setIsVisible(!(currentScrollY > lastScrollY && currentScrollY > 100))
+            setIsScrolled(currentScrollY > 50)
 
-            // Update navbar background
-            if (currentScrollY > 50) {
-                setIsScrolled(true)
-            } else {
-                setIsScrolled(false)
-            }
-
-            // Update active section
-            const sections = ["hero", "about", "skills", "projects", "contact"]
-            const scrollPosition = currentScrollY + 100
-
-            for (const section of sections) {
-                const element = document.getElementById(section)
-                if (element) {
-                    const offsetTop = element.offsetTop
-                    const offsetHeight = element.offsetHeight
-
-                    if (
-                        scrollPosition >= offsetTop &&
-                        scrollPosition < offsetTop + offsetHeight
-                    ) {
-                        setActiveSection(section)
-                        break
-                    }
-                }
-            }
-
-            setLastScrollY(currentScrollY)
+            lastScrollYRef.current = currentScrollY
         }
 
-        // Close mobile menu when scrolling
-        if (isMenuOpen) {
-            window.addEventListener("scroll", () => setIsMenuOpen(false))
+        const handleScroll = () => {
+            if (frameRef.current) return
+            frameRef.current = requestAnimationFrame(update)
         }
 
-        window.addEventListener("scroll", handleScroll)
+        update()
+        window.addEventListener("scroll", handleScroll, { passive: true })
+
         return () => {
             window.removeEventListener("scroll", handleScroll)
-            window.removeEventListener("scroll", () => setIsMenuOpen(false))
+            if (frameRef.current) {
+                cancelAnimationFrame(frameRef.current)
+                frameRef.current = null
+            }
         }
-    }, [lastScrollY, isMenuOpen])
+    }, [])
+
+    // Scroll spy. An observer beats measuring `offsetTop` / `offsetHeight` for
+    // five sections on every scroll frame, and it stays correct when sections
+    // change height because fonts finish loading or content reflows.
+    useEffect(() => {
+        let observer = null
+        let frame = null
+
+        const connect = () => {
+            frame = null
+
+            const sections = SECTION_IDS.map((id) =>
+                document.getElementById(id)
+            ).filter(Boolean)
+
+            if (!sections.length) return
+
+            const ratios = new Map()
+
+            observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        ratios.set(entry.target.id, entry.intersectionRatio)
+                    })
+
+                    let bestId = null
+                    let bestRatio = 0
+
+                    ratios.forEach((ratio, id) => {
+                        if (ratio > bestRatio) {
+                            bestRatio = ratio
+                            bestId = id
+                        }
+                    })
+
+                    if (bestId && bestRatio > 0) setActiveSection(bestId)
+                },
+                { threshold: [0, 0.15, 0.35, 0.6, 0.85, 1] }
+            )
+
+            sections.forEach((section) => observer.observe(section))
+        }
+
+        // Defer one frame so the sections have been laid out.
+        frame = requestAnimationFrame(connect)
+
+        return () => {
+            if (frame) cancelAnimationFrame(frame)
+            if (observer) observer.disconnect()
+        }
+    }, [])
+
+    // Close the mobile menu on scroll
+    useEffect(() => {
+        if (!isMenuOpen) return
+
+        const handleScroll = () => setIsMenuOpen(false)
+        window.addEventListener("scroll", handleScroll, { passive: true })
+
+        return () => window.removeEventListener("scroll", handleScroll)
+    }, [isMenuOpen])
 
     // Close mobile menu when clicking outside
     useEffect(() => {
+        if (!isMenuOpen) return
+
         const handleClickOutside = (event) => {
-            if (isMenuOpen && !event.target.closest("nav")) {
+            if (!event.target.closest("nav")) {
                 setIsMenuOpen(false)
             }
         }
@@ -85,16 +141,11 @@ const Navbar = () => {
     }, [isMenuOpen])
 
     const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen)
+        setIsMenuOpen((open) => !open)
     }
 
-    const navLinks = [
-        { href: "#about", label: "About" },
-        { href: "#skills", label: "Skills" },
-        // { href: "#competitive-programming", label: "CP Skills" },
-        { href: "#projects", label: "Projects" },
-        { href: "#contact", label: "Contact" },
-    ]
+    const navLinks = NAV_LINKS
+    const isActive = (href) => activeSection === href.substring(1)
 
     return (
         <nav
@@ -184,17 +235,15 @@ const Navbar = () => {
                                         : undefined
                                 }
                                 className={`relative px-2 lg:px-3 py-2 font-medium transition-all duration-500 group overflow-hidden ${
-                                    !link.isExternal &&
-                                    activeSection === link.href.substring(1)
+                                    isActive(link.href)
                                         ? "text-purple-400"
                                         : "hover:text-purple-400"
-                                } ${
-                                    link.isExternal ? "flex items-center" : ""
                                 }`}
                                 style={{
                                     animationDelay: `${index * 100 + 200}ms`,
                                 }}
                                 aria-label={link.label}
+                                aria-current={isActive(link.href) ? "true" : undefined}
                             >
                                 {/* Text with staggered entrance animation */}
                                 <span
@@ -235,8 +284,7 @@ const Navbar = () => {
                                 {/* Animated underline */}
                                 <span
                                     className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-purple transform origin-left transition-transform duration-500 ${
-                                        !link.isExternal &&
-                                        activeSection === link.href.substring(1)
+                                        isActive(link.href)
                                             ? "scale-x-100"
                                             : "scale-x-0 group-hover:scale-x-100"
                                     }`}
@@ -250,14 +298,12 @@ const Navbar = () => {
                                 ></span>
 
                                 {/* Active indicator dot */}
-                                {!link.isExternal &&
-                                    activeSection ===
-                                        link.href.substring(1) && (
-                                        <span
-                                            className="absolute -right-1 -top-1 w-1.5 h-1.5 bg-purple-400 rounded-full"
-                                            aria-hidden="true"
-                                        ></span>
-                                    )}
+                                {isActive(link.href) && (
+                                    <span
+                                        className="absolute -right-1 -top-1 w-1.5 h-1.5 bg-purple-400 rounded-full"
+                                        aria-hidden="true"
+                                    ></span>
+                                )}
                             </a>
                         ))}
                         <a
@@ -330,10 +376,10 @@ const Navbar = () => {
                                 <a
                                     key={index}
                                     href={link.href}
-                                    className={`text-xl sm:text-2xl font-medium relative group transition-all duration-500 transform ${
+className={`text-xl sm:text-2xl font-medium relative group transition-all duration-500 transform ${
                                         isMenuOpen ? "animate-slide-up" : ""
                                     } opacity-0 ${
-                                        activeSection === link.href.substring(1)
+                                        isActive(link.href)
                                             ? "text-purple-400"
                                             : "hover:text-purple-400"
                                     } w-full text-center py-3`}
@@ -343,13 +389,15 @@ const Navbar = () => {
                                     }}
                                     onClick={toggleMenu}
                                     aria-label={link.label}
+                                    aria-current={
+                                        isActive(link.href) ? "true" : undefined
+                                    }
                                 >
                                     <div className="relative inline-block">
                                         {link.label}
                                         <span
-                                            className={`absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-purple transform origin-left transition-transform duration-500 ${
-                                                activeSection ===
-                                                link.href.substring(1)
+                                            className={`absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-purple transform origin-left transition-all duration-500 ${
+                                                isActive(link.href)
                                                     ? "scale-x-100"
                                                     : "scale-x-0 group-hover:scale-x-100"
                                             }`}

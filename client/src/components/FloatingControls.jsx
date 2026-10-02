@@ -12,44 +12,20 @@ import {
 } from "../assets/icons"
 
 const FloatingControls = () => {
-    // State for ScrollToTop
-    const [isScrollVisible, setIsScrollVisible] = useState(false)
-
     // States for ThemeToggle
     const { isDarkTheme, toggleTheme } = useTheme()
     const [isThemeAnimating, setIsThemeAnimating] = useState(false)
-    const [isInitialRender, setIsInitialRender] = useState(true)
 
     // States for audio and dimension context
-    const { isSpiderVerse, isTransitioning, isAudioMuted, toggleAudioMute } =
-        useDimension()
+    const { isSpiderVerse, isAudioMuted, toggleAudioMute } = useDimension()
 
     // State for controls panel
     const [isControlsVisible, setIsControlsVisible] = useState(true)
     const [isControlPanelOpen, setIsControlPanelOpen] = useState(false)
     const controlsTimeoutRef = useRef(null)
 
-    // Show scroll button when page is scrolled down
+    // Auto-hide the magic box after 5 seconds of inactivity
     useEffect(() => {
-        const toggleVisibility = () => {
-            if (window.pageYOffset > 500) {
-                setIsScrollVisible(true)
-            } else {
-                setIsScrollVisible(false)
-            }
-        }
-
-        window.addEventListener("scroll", toggleVisibility)
-        toggleVisibility() // Check initial scroll position
-
-        return () => window.removeEventListener("scroll", toggleVisibility)
-    }, [])
-
-    // Set initial render to false after component mounts
-    useEffect(() => {
-        setIsInitialRender(false)
-
-        // Auto-hide controls after 5 seconds of inactivity
         controlsTimeoutRef.current = setTimeout(() => {
             setIsControlsVisible(false)
         }, 5000)

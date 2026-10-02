@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react"
-import { useDimension } from "../context/DimensionContext"
 import personalInfo from "../utils/personalInfo"
 import {
     GithubIcon,
@@ -19,7 +18,6 @@ import {
 const FORMSPARK_ACTION_URL = import.meta.env.VITE_FORMSPARK_ACTION_URL
 
 const SpiderverseContact = () => {
-    const { isSpiderVerse } = useDimension()
     const [formData, setFormData] = useState({
         name: "",
         email: "",

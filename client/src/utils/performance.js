@@ -7,34 +7,32 @@ export const trackPerformance = () => {
     if (typeof window === "undefined" || !window.performance) return {}
 
     try {
-        // Get navigation timing data
-        const perfData = window.performance.timing
-        const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart
-        const domReadyTime = perfData.domComplete - perfData.domLoading
-        const networkLatency = perfData.responseEnd - perfData.requestStart
-        const redirectTime = perfData.redirectEnd - perfData.redirectStart
-        const dnsLookupTime =
-            perfData.domainLookupEnd - perfData.domainLookupStart
-        const serverResponseTime = perfData.responseEnd - perfData.requestStart
+        // `performance.timing` is deprecated and returns zeroes in several
+        // browsers; the Navigation Timing Level 2 entry is the supported source.
+        const [navigation] = performance.getEntriesByType("navigation")
 
-        // Log performance data
-        console.info("Performance Metrics:", {
-            pageLoadTime: `${pageLoadTime}ms`,
-            domReadyTime: `${domReadyTime}ms`,
-            networkLatency: `${networkLatency}ms`,
-            redirectTime: `${redirectTime}ms`,
-            dnsLookupTime: `${dnsLookupTime}ms`,
-            serverResponseTime: `${serverResponseTime}ms`,
-        })
+        if (!navigation) return {}
 
-        return {
-            pageLoadTime,
-            domReadyTime,
-            networkLatency,
-            redirectTime,
-            dnsLookupTime,
-            serverResponseTime,
+        const metrics = {
+            pageLoadTime: Math.round(navigation.loadEventEnd),
+            domReadyTime: Math.round(navigation.domContentLoadedEventEnd),
+            networkLatency: Math.round(
+                navigation.responseStart - navigation.requestStart
+            ),
+            redirectTime: Math.round(
+                navigation.redirectEnd - navigation.redirectStart
+            ),
+            dnsLookupTime: Math.round(
+                navigation.domainLookupEnd - navigation.domainLookupStart
+            ),
+            serverResponseTime: Math.round(
+                navigation.responseEnd - navigation.requestStart
+            ),
+            transferSize: navigation.transferSize,
         }
+
+        console.info("Performance Metrics:", metrics)
+        return metrics
     } catch (error) {
         console.error("Error tracking performance:", error)
         return {}
@@ -43,7 +41,7 @@ export const trackPerformance = () => {
 
 // Track component render time
 export const trackComponentRender = (componentName, callback) => {
-    if (process.env.NODE_ENV === "production") return callback()
+    if (import.meta.env.PROD) return callback()
 
     const startTime = performance.now()
     const result = callback()
@@ -100,7 +98,7 @@ export const initPerformanceMonitoring = () => {
             })
 
             observer.observe({ entryTypes: ["longtask"] })
-        } catch (e) {
+        } catch {
             console.error("PerformanceObserver for longtask not supported")
         }
     }

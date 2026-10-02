@@ -4,7 +4,7 @@ import { projects, fetchProjects } from "../data/projectsData"
 
 const SpiderverseProjects = () => {
     const [activeFilter, setActiveFilter] = useState("all")
-    const [animatedItems, setAnimatedItems] = useState([])
+    const [animationEpoch, setAnimationEpoch] = useState(0)
     const [selectedProject, setSelectedProject] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [windowWidth, setWindowWidth] = useState(
@@ -38,11 +38,13 @@ const SpiderverseProjects = () => {
 
     // Projects data is now imported from projectsData.js
 
-    // Animation when filter changes
+    // Replay the staggered panel entrance whenever the filter changes. The
+    // panels are keyed on `animationEpoch`, so bumping it remounts them and CSS
+    // animations start from the beginning. Previously this held a list of
+    // visible indexes that nothing ever read.
     useEffect(() => {
-        setAnimatedItems([])
         const timer = setTimeout(() => {
-            setAnimatedItems(filteredProjects.map((_, i) => i))
+            setAnimationEpoch((epoch) => epoch + 1)
         }, 100)
         return () => clearTimeout(timer)
     }, [activeFilter, projectsData])
@@ -198,7 +200,7 @@ const SpiderverseProjects = () => {
                 <div className="comic-panel-grid">
                     {filteredProjects.map((project, index) => (
                         <div
-                            key={index}
+                            key={`${project.title}-${animationEpoch}`}
                             className={`${project.panelSize} comic-panel bg-white`}
                             style={{
                                 "--panel-rotation": project.rotation,

@@ -25,7 +25,10 @@
   <meta property="og:title" content="Sumit Maurya | Full-Stack Developer & Problem Solver" />
   <meta property="og:description"
     content="Portfolio of Sumit Maurya, a passionate full-stack developer specializing in React, Node.js, and modern web technologies." />
-  <meta property="og:image" content="/og-image.jpg" />
+  <meta property="og:image" content="https://sumitmaurya.dev/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Sumit Maurya — Full-Stack Developer and Problem Solver" />
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
@@ -33,15 +36,24 @@
   <meta property="twitter:title" content="Sumit Maurya | Full-Stack Developer & Problem Solver" />
   <meta property="twitter:description"
     content="Portfolio of Sumit Maurya, a passionate full-stack developer specializing in React, Node.js, and modern web technologies." />
-  <meta property="twitter:image" content="/og-image.jpg" />
+  <meta property="twitter:image" content="https://sumitmaurya.dev/og-image.png" />
 
-  <!-- Fonts Preloading -->
+  <!-- Fonts
+       Loaded without blocking the first paint: the request is started immediately
+       but the stylesheet is only applied once it arrives, so a slow or unreachable
+       font server can never delay first contentful paint. `display=swap` inside the
+       query means text still renders in the fallback while the font loads. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
   <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&family=Comic+Neue:wght@400;700&family=Bangers&display=swap">
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&family=Comic+Neue:wght@400;700&family=Bangers&display=swap">
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&family=Comic+Neue:wght@400;700&family=Bangers&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&family=Comic+Neue:wght@400;700&family=Bangers&display=swap">
+  </noscript>
 
   <!-- Canonical URL -->
   <link rel="canonical" href="https://sumitmaurya.dev/" />
@@ -55,22 +67,57 @@
   <meta name="apple-mobile-web-app-title" content="Sumit Maurya" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-  <!-- Preload Critical Resources -->
-  <link rel="preload" href="/src/critical.css" as="style" />
-  <link rel="preload" href="/src/index.css" as="style" />
-  <link rel="preload" href="/src/main.jsx" as="script" />
+  <!-- Note: stylesheet and script preloads for `/src/*` were removed. Those paths
+       only exist in dev; a production build emits hashed files under /assets, so
+       every one of those hints was a guaranteed 404. Vite injects the correct
+       tags for the real hashed output. -->
 
-  <!-- DNS Prefetch for External Resources -->
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-
-  <!-- Preload Important Images -->
-  <link rel="preload" as="image" href="/profile-pic.webp" />
-
-  <!-- Prefetch Spiderverse Assets (lower priority) -->
-  <link rel="prefetch" href="/src/components/SpiderverseNavbar.jsx" as="script" />
-  <link rel="prefetch" href="/src/components/SpiderverseHero.jsx" as="script" />
-  <link rel="prefetch" href="/src/spiderverse.css" as="style" />
+  <!-- Structured data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://sumitmaurya.dev/#person",
+          "name": "Sumit Maurya",
+          "url": "https://sumitmaurya.dev/",
+          "image": "https://sumitmaurya.dev/og-image.png",
+          "jobTitle": "Full-Stack Developer",
+          "description": "Full-stack developer and competitive programmer specialising in React, Node.js and algorithmic problem solving.",
+          "email": "mailto:sumdev34@gmail.com",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Mumbai",
+            "addressCountry": "IN"
+          },
+          "knowsAbout": [
+            "JavaScript",
+            "React",
+            "Node.js",
+            "Data Structures",
+            "Algorithms",
+            "Competitive Programming"
+          ],
+          "sameAs": [
+            "https://github.com/sumitmaurya-dev",
+            "https://www.linkedin.com/in/sumitmaurya-dev",
+            "https://x.com/sumitmaurya_dev",
+            "https://www.codechef.com/users/sumitmaurya"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://sumitmaurya.dev/#website",
+          "url": "https://sumitmaurya.dev/",
+          "name": "Sumit Maurya",
+          "description": "Portfolio of Sumit Maurya — projects, skills and contact information.",
+          "inLanguage": "en",
+          "publisher": { "@id": "https://sumitmaurya.dev/#person" }
+        }
+      ]
+    }
+  </script>
 </head>
 
 <body>

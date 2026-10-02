@@ -1,248 +1,99 @@
-import React, { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { useDimension } from "../context/DimensionContext"
+import soundEngine from "../utils/soundEngine"
 
+const isInteractiveTarget = (target) =>
+    target instanceof Element &&
+    Boolean(target.closest("button, a, [role='button'], input, textarea, select"))
+
+/**
+ * Wires the Spider-Verse soundscape to the dimension context.
+ *
+ * This component renders nothing and is mounted *only* while the Spider-Verse
+ * dimension is active, so no audio is fetched for visitors who stay in the
+ * normal dimension. The actual `Audio` elements are still created lazily by
+ * `soundEngine`, one sound at a time, on first use.
+ */
 const SpiderverseAudio = () => {
     const { isSpiderVerse, isTransitioning, isAudioMuted, triggerPostCredit } =
         useDimension()
-    const audioRefs = useRef({
-        transition: null,
-        background: null,
-        hover: null,
-        click: null,
-        webShoot: null,
-        glitch: null,
-    })
 
-    // Audio URLs
-    const audioSources = {
-        transition: "/audio/mixkit-sci-fi-interface-zoom-890.wav",
-        background:
-            "/audio/mixkit-futuristic-sci-fi-computer-ambience-2507.wav",
-        hover: "/audio/mixkit-fast-small-sweep-transition-166.wav",
-        click: "/audio/mixkit-electronic-retro-block-hit-2185.wav",
-        webShoot: "/audio/mixkit-fast-rocket-whoosh-1714.wav",
-        glitch: "/audio/mixkit-electronic-retro-block-hit-2185.wav", // Reusing click sound for glitch
-    }
-
-    // Initialize audio elements
+    // Dimension transition stinger.
     useEffect(() => {
-        // Create audio elements
-        Object.keys(audioSources).forEach((key) => {
-            const audio = new Audio(audioSources[key])
-
-            // Configure audio properties
-            switch (key) {
-                case "background":
-                    audio.loop = true
-                    audio.volume = 0.1
-                    break
-                case "transition":
-                    audio.volume = 0.3
-                    break
-                case "hover":
-                    audio.volume = 0.1
-                    break
-                case "click":
-                    audio.volume = 0.2
-                    break
-                case "webShoot":
-                    audio.volume = 0.2
-                    break
-                default:
-                    audio.volume = 0.2
-            }
-
-            audioRefs.current[key] = audio
-        })
-
-        return () => {
-            // Clean up audio elements
-            Object.values(audioRefs.current).forEach((audio) => {
-                if (audio) {
-                    audio.pause()
-                    audio.src = ""
-                }
-            })
-        }
-    }, [])
-
-    // Handle dimension transition sound
-    useEffect(() => {
-        if (isTransitioning && audioRefs.current.transition && !isAudioMuted) {
-            audioRefs.current.transition.currentTime = 0
-            audioRefs.current.transition
-                .play()
-                .catch((e) => console.log("Audio play failed:", e))
+        if (isTransitioning && !isAudioMuted) {
+            soundEngine.play("transition")
         }
     }, [isTransitioning, isAudioMuted])
 
-    // Handle background music
+    // Ambient bed, faded in and out with the dimension.
     useEffect(() => {
-        const bgAudio = audioRefs.current.background
-        if (!bgAudio) return
-
-        // Pause if muted or not in Spider-Verse
-        if (isAudioMuted || !isSpiderVerse) {
-            bgAudio.pause()
-            return
+        if (isAudioMuted) {
+            soundEngine.stopAmbient()
+        } else {
+            soundEngine.startAmbient()
         }
+    }, [isAudioMuted])
 
-        // Play if in Spider-Verse and not muted
-        if (isSpiderVerse && !isAudioMuted) {
-            bgAudio
-                .play()
-                .catch((e) => console.log("Background audio play failed:", e))
+    useEffect(() => () => soundEngine.stopAmbient(), [])
 
-            // Fade in
-            let volume = 0
-            const fadeIn = setInterval(() => {
-                volume += 0.01
-                if (volume >= 0.1) {
-                    volume = 0.1
-                    clearInterval(fadeIn)
-                }
-                bgAudio.volume = volume
-            }, 100)
-
-            return () => {
-                clearInterval(fadeIn)
-
-                // Fade out
-                let vol = bgAudio.volume
-                const fadeOut = setInterval(() => {
-                    vol -= 0.01
-                    if (vol <= 0) {
-                        vol = 0
-                        clearInterval(fadeOut)
-                        bgAudio.pause()
-                    }
-                    bgAudio.volume = vol
-                }, 100)
-
-                // Clean up fade out interval
-                setTimeout(() => clearInterval(fadeOut), 2000)
-            }
-        }
-    }, [isSpiderVerse, isAudioMuted])
-
-    // Add event listeners for interactive sounds
+    // Global mute state.
     useEffect(() => {
-        if (!isSpiderVerse || isAudioMuted) return
+        soundEngine.setMuted(isAudioMuted)
+    }, [isAudioMuted])
 
-        // Play hover sound on buttons and links
-        const handleMouseEnter = (e) => {
-            if (
-                e.target.tagName === "BUTTON" ||
-                e.target.tagName === "A" ||
-                e.target.closest("button") ||
-                e.target.closest("a")
-            ) {
-                if (audioRefs.current.hover) {
-                    audioRefs.current.hover.currentTime = 0
-                    audioRefs.current.hover
-                        .play()
-                        .catch((e) =>
-                            console.log("Hover audio play failed:", e)
-                        )
-                }
-            }
+    // Hover / click feedback across the whole dimension.
+    useEffect(() => {
+        if (isAudioMuted) return
+
+        const handleMouseOver = (event) => {
+            if (isInteractiveTarget(event.target)) soundEngine.play("hover")
         }
 
-        // Play click sound on buttons and links
-        const handleClick = (e) => {
-            if (
-                e.target.tagName === "BUTTON" ||
-                e.target.tagName === "A" ||
-                e.target.closest("button") ||
-                e.target.closest("a")
-            ) {
-                if (audioRefs.current.click) {
-                    audioRefs.current.click.currentTime = 0
-                    audioRefs.current.click
-                        .play()
-                        .catch((e) =>
-                            console.log("Click audio play failed:", e)
-                        )
-                }
-            }
+        const handleClick = (event) => {
+            if (isInteractiveTarget(event.target)) soundEngine.play("click")
         }
 
-        // Add event listeners
-        document.addEventListener("mouseenter", handleMouseEnter, true)
-        document.addEventListener("click", handleClick, true)
+        document.addEventListener("mouseover", handleMouseOver, {
+            capture: true,
+            passive: true,
+        })
+        document.addEventListener("click", handleClick, { capture: true })
 
         return () => {
-            document.removeEventListener("mouseenter", handleMouseEnter, true)
-            document.removeEventListener("click", handleClick, true)
+            document.removeEventListener("mouseover", handleMouseOver, {
+                capture: true,
+            })
+            document.removeEventListener("click", handleClick, { capture: true })
         }
-    }, [isSpiderVerse, isAudioMuted])
+    }, [isAudioMuted])
 
-    // Expose audio API to window for other components to use
+    // Keep the long-standing `window.spiderverseAudio` API available to the
+    // comic components that trigger sounds without sharing React state.
     useEffect(() => {
         if (!isSpiderVerse) return
 
         window.spiderverseAudio = {
-            playWebShoot: () => {
-                if (audioRefs.current.webShoot && !isAudioMuted) {
-                    audioRefs.current.webShoot.currentTime = 0
-                    audioRefs.current.webShoot
-                        .play()
-                        .catch((e) =>
-                            console.log("Web shoot audio play failed:", e)
-                        )
-                }
-            },
-            playClick: () => {
-                if (audioRefs.current.click && !isAudioMuted) {
-                    audioRefs.current.click.currentTime = 0
-                    audioRefs.current.click
-                        .play()
-                        .catch((e) =>
-                            console.log("Click audio play failed:", e)
-                        )
-                }
-            },
-            playHover: () => {
-                if (audioRefs.current.hover && !isAudioMuted) {
-                    audioRefs.current.hover.currentTime = 0
-                    audioRefs.current.hover
-                        .play()
-                        .catch((e) =>
-                            console.log("Hover audio play failed:", e)
-                        )
-                }
-            },
-            playGlitch: () => {
-                if (audioRefs.current.glitch && !isAudioMuted) {
-                    audioRefs.current.glitch.currentTime = 0
-                    audioRefs.current.glitch.playbackRate = 0.8 // Slower rate for glitch effect
-                    audioRefs.current.glitch
-                        .play()
-                        .catch((e) =>
-                            console.log("Glitch audio play failed:", e)
-                        )
-                }
-            },
-            isMuted: () => isAudioMuted,
-            // Expose post-credit trigger for console testing
-            showPostCredit: () => {
-                console.log("Triggering post-credit scene...")
-                triggerPostCredit()
-            },
+            playWebShoot: () => soundEngine.play("webShoot"),
+            playClick: () => soundEngine.play("click"),
+            playHover: () => soundEngine.play("hover"),
+            playGlitch: () => soundEngine.play("glitch"),
+            isMuted: () => soundEngine.isMuted(),
+            showPostCredit: () => triggerPostCredit(),
         }
 
-        // Add a console message for developers
-        console.log(
-            "%c🕸️ Spider-Verse Mode Active! Try window.spiderverseAudio.showPostCredit() to see the post-credit scene.",
-            "background: #FF1744; color: white; padding: 4px; border-radius: 4px;"
-        )
+        if (import.meta.env.DEV) {
+            console.log(
+                "%c🕸️ Spider-Verse Mode Active! Try window.spiderverseAudio.showPostCredit() to see the post-credit scene.",
+                "background: #FF1744; color: white; padding: 4px; border-radius: 4px;"
+            )
+        }
 
         return () => {
             delete window.spiderverseAudio
         }
-    }, [isSpiderVerse, isAudioMuted, triggerPostCredit])
+    }, [isSpiderVerse, triggerPostCredit])
 
-    return null // This component doesn't render anything
+    return null
 }
 
 export default SpiderverseAudio

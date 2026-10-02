@@ -1,44 +1,25 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useId } from "react"
+import useFocusTrap from "../hooks/useFocusTrap"
 
 const ProjectModal = ({ project, isOpen, onClose }) => {
     const modalRef = useRef(null)
+    const titleId = useId()
 
-    // Handle click outside to close
+    // Escape to dismiss, focus trapped inside the dialog, focus restored on close.
+    useFocusTrap(isOpen, modalRef, onClose)
+
+    // Lock background scrolling while the dialog is open, restoring whatever the
+    // page had before rather than forcing a value.
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
-                onClose()
-            }
-        }
+        if (!isOpen) return
 
-        if (isOpen) {
-            document.addEventListener("mousedown", handleClickOutside)
-            // Prevent scrolling when modal is open
-            document.body.style.overflow = "hidden"
-        }
+        const previousOverflow = document.body.style.overflow
+        document.body.style.overflow = "hidden"
 
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside)
-            document.body.style.overflow = "auto"
+            document.body.style.overflow = previousOverflow
         }
-    }, [isOpen, onClose])
-
-    // Handle escape key to close
-    useEffect(() => {
-        const handleEscKey = (event) => {
-            if (event.key === "Escape") {
-                onClose()
-            }
-        }
-
-        if (isOpen) {
-            document.addEventListener("keydown", handleEscKey)
-        }
-
-        return () => {
-            document.removeEventListener("keydown", handleEscKey)
-        }
-    }, [isOpen, onClose])
+    }, [isOpen])
 
     if (!isOpen || !project) return null
 
@@ -46,17 +27,23 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-950/80 backdrop-blur-sm transition-all duration-300">
             <div
                 ref={modalRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={titleId}
                 className="w-full max-w-4xl max-h-[90vh] overflow-y-auto glass-dark border border-purple-500/20 rounded-xl shadow-2xl animate-scale-up"
             >
                 {/* Modal header with close button */}
                 <div className="sticky top-0 z-10 glass-dark backdrop-blur-md border-b border-purple-500/20 px-6 py-4 flex justify-between items-center">
                     <h3
+                        id={titleId}
                         className={`text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-${project.color}-500 to-${project.color}-700`}
                     >
                         {project.title}
                     </h3>
                     <button
+                        type="button"
                         onClick={onClose}
+                        data-autofocus
                         className="p-2 rounded-full hover:bg-dark-800 transition-colors duration-300"
                         aria-label="Close modal"
                     >

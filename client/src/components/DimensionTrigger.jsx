@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useDimension } from "../context/DimensionContext"
+import emitParticles from "../utils/particles"
+import useReducedMotion from "../hooks/useReducedMotion"
 
 const DimensionTrigger = () => {
     const { isSpiderVerse, toggleDimension, isTransitioning } = useDimension()
@@ -12,6 +14,7 @@ const DimensionTrigger = () => {
     const messageIntervalRef = useRef(null)
     const randomMessageIntervalRef = useRef(null)
     const clickAttempts = useRef(0)
+    const prefersReducedMotion = useReducedMotion()
 
     // Fun warning messages for the button (mix of dev journey and Spider-Verse)
     const warningMessages = [
@@ -164,7 +167,7 @@ const DimensionTrigger = () => {
 
     // Handle hover effects with enhanced glitches
     useEffect(() => {
-        if (isHovering && !glitchInterval) {
+        if (isHovering && !glitchInterval && !prefersReducedMotion) {
             // Show a random message
             setCurrentMessage(getRandomMessage())
             setShowMessage(true)
@@ -246,69 +249,14 @@ const DimensionTrigger = () => {
 
                     // Occasionally create mini-particles around the button
                     if (Math.random() > 0.92) {
-                        const particleContainer = document.createElement("div")
-                        particleContainer.className =
-                            "absolute inset-0 pointer-events-none"
-
-                        // Create 3-8 particles
-                        const particleCount = 3 + Math.floor(Math.random() * 6)
-                        for (let i = 0; i < particleCount; i++) {
-                            const particle = document.createElement("div")
-                            const size = 2 + Math.random() * 6
-                            const angle = Math.random() * Math.PI * 2
-                            const distance = 30 + Math.random() * 50
-                            const duration = 0.5 + Math.random() * 1
-
-                            // Position particle around button
-                            const x = Math.cos(angle) * distance
-                            const y = Math.sin(angle) * distance
-
-                            // Random color
-                            const hue = Math.floor(Math.random() * 360)
-
-                            particle.style.cssText = `
-                                position: absolute;
-                                width: ${size}px;
-                                height: ${size}px;
-                                background-color: hsl(${hue}, 100%, 70%);
-                                border-radius: 50%;
-                                left: 50%;
-                                top: 50%;
-                                transform: translate(-50%, -50%);
-                                animation: particle-float ${duration}s ease-out forwards;
-                                opacity: 0.8;
-                            `
-
-                            particleContainer.appendChild(particle)
-
-                            // Custom animation for this particle
-                            const style = document.createElement("style")
-                            style.textContent = `
-                                @keyframes particle-float {
-                                    0% {
-                                        transform: translate(-50%, -50%);
-                                        opacity: 0.8;
-                                    }
-                                    100% {
-                                        transform: translate(calc(-50% + ${x}px), calc(-50% + ${y}px));
-                                        opacity: 0;
-                                    }
-                                }
-                            `
-                            document.head.appendChild(style)
-
-                            // Clean up after animation
-                            setTimeout(() => {
-                                if (particleContainer.parentNode) {
-                                    particleContainer.parentNode.removeChild(
-                                        particleContainer
-                                    )
-                                }
-                                document.head.removeChild(style)
-                            }, duration * 1000)
-                        }
-
-                        button.appendChild(particleContainer)
+                        emitParticles({
+                            container: button,
+                            count: 3 + Math.floor(Math.random() * 6),
+                            distance: [30, 80],
+                            size: [2, 8],
+                            duration: [0.5, 1.5],
+                            burst: false,
+                        })
                     }
                 }
             }, 100) // Faster interval for more erratic movement
@@ -476,69 +424,20 @@ const DimensionTrigger = () => {
                 button.style.transform = "scale(1.2)"
 
                 // Create particles bursting from the button
-                const particleCount = 20 + Math.floor(Math.random() * 15)
-                for (let i = 0; i < particleCount; i++) {
-                    setTimeout(() => {
-                        const particle = document.createElement("div")
-                        const size = 3 + Math.random() * 8
-                        const angle = Math.random() * Math.PI * 2
-                        const distance = 50 + Math.random() * 100
-                        const duration = 0.8 + Math.random() * 1.2
-
-                        // Position particle
-                        const buttonRect = button.getBoundingClientRect()
-                        const startX = buttonRect.left + buttonRect.width / 2
-                        const startY = buttonRect.top + buttonRect.height / 2
-
-                        // Random color based on dimension
-                        const hue = isSpiderVerse
-                            ? Math.floor(Math.random() * 60) + 180 // blues/cyans for exiting
-                            : Math.floor(Math.random() * 60) + 300 // purples/magentas for entering
-
-                        particle.style.cssText = `
-                            position: fixed;
-                            width: ${size}px;
-                            height: ${size}px;
-                            background-color: hsl(${hue}, 100%, 70%);
-                            border-radius: 50%;
-                            left: ${startX}px;
-                            top: ${startY}px;
-                            z-index: 9999;
-                            pointer-events: none;
-                            animation: dimension-particle ${duration}s ease-out forwards;
-                        `
-
-                        document.body.appendChild(particle)
-
-                        // Custom animation for this particle
-                        const style = document.createElement("style")
-                        style.textContent = `
-                            @keyframes dimension-particle {
-                                0% {
-                                    transform: translate(-50%, -50%) scale(0.5);
-                                    opacity: 1;
-                                }
-                                100% {
-                                    transform: translate(calc(-50% + ${
-                                        Math.cos(angle) * distance
-                                    }px), calc(-50% + ${
-                            Math.sin(angle) * distance
-                        }px)) scale(${0.5 + Math.random()});
-                                    opacity: 0;
-                                }
-                            }
-                        `
-                        document.head.appendChild(style)
-
-                        // Clean up after animation
-                        setTimeout(() => {
-                            if (particle.parentNode) {
-                                particle.parentNode.removeChild(particle)
-                            }
-                            document.head.removeChild(style)
-                        }, duration * 1000)
-                    }, Math.random() * 500) // Stagger particle creation
-                }
+                emitParticles({
+                    container: document.body,
+                    count: 20 + Math.floor(Math.random() * 15),
+                    distance: [50, 150],
+                    size: [3, 11],
+                    // Blues/cyans when leaving the dimension, purples/magentas
+                    // when entering it.
+                    hue: () =>
+                        isSpiderVerse
+                            ? Math.floor(Math.random() * 60) + 180
+                            : Math.floor(Math.random() * 60) + 300,
+                    duration: [0.8, 2],
+                    stagger: 500,
+                })
             }
 
             // Add a dramatic pause before transition

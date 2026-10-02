@@ -1,105 +1,118 @@
 import { useEffect, useRef } from "react"
+import useReducedMotion from "./useReducedMotion"
+import useMediaQuery from "./useMediaQuery"
 
 /**
- * Custom hook to add parallax effect to elements with performance optimizations
- * @param {boolean} enabled - Whether the parallax effect is enabled
+ * Pointer-driven parallax for `.parallax-layer` elements.
+ *
+ * Each layer's `--parallax-speed` decides how far it trails the cursor. Updates
+ * are batched into a single `requestAnimationFrame` so the transform writes all
+ * happen in one frame regardless of how many layers exist.
+ *
+ * Skipped entirely when the visitor prefers reduced motion, or when there is no
+ * fine pointer to track - touch devices have no hover position, so the work
+ * would be invisible.
+ *
+ * @param {boolean} enabled
  */
 const useParallax = (enabled = true) => {
-    // Use a ref to store the request animation frame ID
-    const requestRef = useRef(null)
-    // Use a ref to store the last mouse position
-    const mousePositionRef = useRef({ x: 0, y: 0 })
-    // Use a ref to store the layers to avoid querying the DOM on every mouse move
+    const prefersReducedMotion = useReducedMotion()
+    const hasFinePointer = useMediaQuery("(hover: hover) and (pointer: fine)")
+
+    const isActive = enabled && !prefersReducedMotion && hasFinePointer
+
+    const frameRef = useRef(null)
+    const mouseRef = useRef({ x: 0, y: 0 })
     const layersRef = useRef([])
-    // Use a ref to track if we need to update the layers reference
-    const shouldUpdateLayersRef = useRef(true)
-    // Use a throttle timer to limit updates
-    const throttleTimerRef = useRef(null)
+    const needsRescanRef = useRef(true)
 
     useEffect(() => {
-        if (!enabled) return
+        if (!isActive) return
 
-        // Function to update the parallax effect
-        const updateParallax = () => {
-            // Only query the DOM for layers when necessary
-            if (shouldUpdateLayersRef.current) {
-                layersRef.current = document.querySelectorAll(".parallax-layer")
-                shouldUpdateLayersRef.current = false
+        const rescanLayers = () => {
+            const layers = document.querySelectorAll(".parallax-layer")
+            layersRef.current = layers
 
-                // Set up the speed values once to avoid repeated getComputedStyle calls
-                layersRef.current.forEach((layer) => {
-                    if (!layer.dataset.parallaxSpeed) {
-                        layer.dataset.parallaxSpeed = parseFloat(
-                            getComputedStyle(layer).getPropertyValue(
-                                "--parallax-speed"
-                            ) || "0.05"
-                        )
-                    }
-                })
-            }
-
-            if (!layersRef.current.length) return
-
-            const mouseX = mousePositionRef.current.x / window.innerWidth - 0.5
-            const mouseY = mousePositionRef.current.y / window.innerHeight - 0.5
-
-            layersRef.current.forEach((layer) => {
-                const speed = layer.dataset.parallaxSpeed
-                const x = mouseX * 100 * speed
-                const y = mouseY * 100 * speed
-                layer.style.transform = `translate(${x}px, ${y}px)`
+            // Read the custom property once per layer rather than on every frame.
+            layers.forEach((layer) => {
+                if (!layer.dataset.parallaxSpeed) {
+                    const speed = parseFloat(
+                        getComputedStyle(layer)
+                            .getPropertyValue("--parallax-speed") || "0.05"
+                    )
+                    layer.dataset.parallaxSpeed = String(
+                        Number.isFinite(speed) ? speed : 0.05
+                    )
+                }
             })
+
+            needsRescanRef.current = false
         }
 
-        // Throttled mouse move handler
-        const handleMouseMove = (e) => {
-            mousePositionRef.current = { x: e.clientX, y: e.clientY }
+        const update = () => {
+            frameRef.current = null
 
-            // Throttle the updates to reduce performance impact
-            if (!throttleTimerRef.current) {
-                throttleTimerRef.current = setTimeout(() => {
-                    throttleTimerRef.current = null
+            if (needsRescanRef.current) rescanLayers()
 
-                    // Use requestAnimationFrame for smoother updates
-                    if (requestRef.current) {
-                        cancelAnimationFrame(requestRef.current)
-                    }
-                    requestRef.current = requestAnimationFrame(updateParallax)
-                }, 16) // ~60fps
+            const layers = layersRef.current
+            if (!layers.length) return
+
+            const offsetX = mouseRef.current.x / window.innerWidth - 0.5
+            const offsetY = mouseRef.current.y / window.innerHeight - 0.5
+
+            for (const layer of layers) {
+                const speed = parseFloat(layer.dataset.parallaxSpeed) || 0.05
+                layer.style.transform = `translate(${offsetX * 100 * speed}px, ${
+                    offsetY * 100 * speed
+                }px)`
             }
         }
 
-        // Listen for DOM changes that might add/remove parallax layers
+        const scheduleUpdate = () => {
+            if (frameRef.current) return
+            frameRef.current = requestAnimationFrame(update)
+        }
+
+        // A named reference so the listener can actually be removed.
+        const handleMouseMove = (event) => {
+            mouseRef.current = { x: event.clientX, y: event.clientY }
+            scheduleUpdate()
+        }
+
+        const handleResize = () => {
+            needsRescanRef.current = true
+            scheduleUpdate()
+        }
+
+        // Layers appear when a dimension swaps its background in.
         const mutationObserver = new MutationObserver(() => {
-            shouldUpdateLayersRef.current = true
+            needsRescanRef.current = true
+            scheduleUpdate()
         })
+        mutationObserver.observe(document.body, { childList: true, subtree: true })
 
-        mutationObserver.observe(document.body, {
-            childList: true,
-            subtree: true,
-        })
-
-        window.addEventListener("mousemove", handleMouseMove)
-        window.addEventListener("resize", () => {
-            shouldUpdateLayersRef.current = true
-        })
+        window.addEventListener("mousemove", handleMouseMove, { passive: true })
+        window.addEventListener("resize", handleResize, { passive: true })
 
         return () => {
             window.removeEventListener("mousemove", handleMouseMove)
-            window.removeEventListener("resize", () => {
-                shouldUpdateLayersRef.current = true
-            })
+            window.removeEventListener("resize", handleResize)
             mutationObserver.disconnect()
 
-            if (requestRef.current) {
-                cancelAnimationFrame(requestRef.current)
+            if (frameRef.current) {
+                cancelAnimationFrame(frameRef.current)
+                frameRef.current = null
             }
 
-            if (throttleTimerRef.current) {
-                clearTimeout(throttleTimerRef.current)
-            }
+            // Reset transforms so a disabled parallax doesn't leave layers stuck
+            // at their last offset.
+            layersRef.current.forEach((layer) => {
+                layer.style.transform = ""
+            })
+            layersRef.current = []
+            needsRescanRef.current = true
         }
-    }, [enabled])
+    }, [isActive])
 }
 
 export default useParallax

@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react"
-import ProjectModal from "./ProjectModal"
+import React, { useState, useEffect, lazy, Suspense } from "react"
 import { projects, fetchProjects } from "../data/projectsData"
 import personalInfo from "../utils/personalInfo.js"
 
+// ~11 kB that only matters once someone actually opens a project.
+const ProjectModal = lazy(() => import("./ProjectModal"))
+
 const Projects = () => {
     const [activeFilter, setActiveFilter] = useState("all")
-    const [animatedItems, setAnimatedItems] = useState([])
+    const [animationEpoch, setAnimationEpoch] = useState(0)
     const [selectedProject, setSelectedProject] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [projectsData, setProjectsData] = useState(projects)
@@ -34,11 +36,13 @@ const Projects = () => {
         }, 300)
     }
 
-    // Animation when filter changes
+    // Replay the staggered card entrance whenever the filter changes. Cards are
+    // keyed on `animationEpoch`, so bumping it remounts them and the CSS
+    // animation restarts. Previously this held a list of visible indexes that
+    // nothing ever read.
     useEffect(() => {
-        setAnimatedItems([])
         const timer = setTimeout(() => {
-            setAnimatedItems(filteredProjects.map((_, i) => i))
+            setAnimationEpoch((epoch) => epoch + 1)
         }, 100)
         return () => clearTimeout(timer)
     }, [activeFilter, projectsData])
@@ -108,10 +112,11 @@ const Projects = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {filteredProjects.map((project, index) => (
                         <div
-                            key={index}
-                            className={`reveal ${
-                                animatedItems.includes(index) ? "active" : ""
-                            }`}
+                            key={`${project.title}-${animationEpoch}`}
+                            // `reveal` is owned by `useScrollReveal`, which adds
+                            // `active` via the DOM. Computing the class here would
+                            // overwrite it on any re-render and hide the card again.
+                            className="reveal"
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
                             <div
@@ -277,11 +282,15 @@ const Projects = () => {
             </div>
 
             {/* Project Modal */}
-            <ProjectModal
-                project={selectedProject}
-                isOpen={isModalOpen}
-                onClose={closeProjectModal}
-            />
+            {isModalOpen && selectedProject && (
+                <Suspense fallback={null}>
+                    <ProjectModal
+                        project={selectedProject}
+                        isOpen={isModalOpen}
+                        onClose={closeProjectModal}
+                    />
+                </Suspense>
+            )}
         </section>
     )
 }

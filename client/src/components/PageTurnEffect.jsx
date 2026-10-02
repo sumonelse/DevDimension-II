@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useDimension } from "../context/DimensionContext"
 
 const PageTurnEffect = () => {
-    const { isSpiderVerse, toggleDimension } = useDimension()
+    const { isSpiderVerse } = useDimension()
     const [isAnimating, setIsAnimating] = useState(false)
     const [direction, setDirection] = useState("right") // right or left
 

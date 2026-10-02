@@ -1,199 +1,300 @@
 import React, {
     createContext,
-    useState,
+    useCallback,
     useContext,
     useEffect,
     useMemo,
-    useCallback,
+    useRef,
+    useState,
 } from "react"
+import soundEngine from "../utils/soundEngine"
+import { ensureDimensionStyles } from "../utils/dimensionStyles"
 
 // Create the dimension context
-const DimensionContext = createContext()
+const DimensionContext = createContext(null)
 
 // Custom hook to use the dimension context
 export const useDimension = () => useContext(DimensionContext)
 
+const STORAGE_KEYS = {
+    dimension: "spiderverse-dimension",
+    awareness: "multiverse-awareness",
+    muted: "spiderverse-audio-muted",
+    postCredit: "post-credit-shown",
+}
+
+const GLITCH_INTERVAL_MS = 5000
+const GLITCH_CHANCE = 0.95
+const SPIDER_SENSE_MS = 5000
+const TRANSITION_SWITCH_MS = 1500
+const TRANSITION_SETTLE_MS = 1000
+const POST_CREDIT_MS = 35000
+const MAX_AWARENESS = 10
+
+/** `localStorage` throws in some private-browsing modes; never let it break render. */
+const readStorage = (key, fallback = null) => {
+    try {
+        return window.localStorage.getItem(key) ?? fallback
+    } catch {
+        return fallback
+    }
+}
+
+const writeStorage = (key, value) => {
+    try {
+        window.localStorage.setItem(key, value)
+    } catch {
+        // Preference simply will not persist.
+    }
+}
+
+/**
+ * Ambient glitch flashes and the spider-sense overlay.
+ *
+ * This is a separate component on purpose. These effects fire on their own
+ * timers, and while they lived in the provider they were part of the context
+ * value - so every random glitch re-rendered every component subscribed to the
+ * context, including all six page sections. Owning the state here means a glitch
+ * only re-renders this subtree.
+ */
+const DimensionEffects = ({
+    isSpiderVerse,
+    isAudioMuted,
+    spiderSenseActive,
+}) => {
+    const [glitches, setGlitches] = useState([])
+    const timersRef = useRef(new Set())
+
+    const later = useCallback((fn, delay) => {
+        const id = setTimeout(() => {
+            timersRef.current.delete(id)
+            fn()
+        }, delay)
+        timersRef.current.add(id)
+    }, [])
+
+    useEffect(() => {
+        const timers = timersRef.current
+        return () => {
+            timers.forEach(clearTimeout)
+            timers.clear()
+        }
+    }, [])
+
+    // Random glitches, only while the Spider-Verse dimension is on screen.
+    useEffect(() => {
+        if (!isSpiderVerse) return
+
+        let interval = null
+
+        const start = () => {
+            interval = setInterval(() => {
+                if (Math.random() <= GLITCH_CHANCE) return
+
+                const id = `${Date.now()}-${Math.random()}`
+                const duration = Math.random() * 2 + 0.5
+
+                setGlitches((previous) => [
+                    ...previous,
+                    {
+                        id,
+                        x: Math.random() * 100,
+                        y: Math.random() * 100,
+                        duration,
+                        size: Math.random() * 100 + 50,
+                    },
+                ])
+
+                later(
+                    () =>
+                        setGlitches((previous) =>
+                            previous.filter((glitch) => glitch.id !== id)
+                        ),
+                    duration * 1000
+                )
+
+                if (!isAudioMuted && window.spiderverseAudio) {
+                    window.spiderverseAudio.playClick()
+                }
+            }, GLITCH_INTERVAL_MS)
+        }
+
+        const handleVisibility = () => {
+            if (document.hidden) {
+                clearInterval(interval)
+                interval = null
+            } else if (!interval) {
+                start()
+            }
+        }
+
+        // Don't burn cycles generating effects for a backgrounded tab.
+        if (!document.hidden) start()
+        document.addEventListener("visibilitychange", handleVisibility)
+
+        return () => {
+            clearInterval(interval)
+            document.removeEventListener("visibilitychange", handleVisibility)
+        }
+    }, [isSpiderVerse, isAudioMuted, later])
+
+    // Spider-sense stays on for a few seconds, then releases.
+    return (
+        <>
+            {glitches.map((glitch) => (
+                <div
+                    key={glitch.id}
+                    aria-hidden="true"
+                    className="fixed pointer-events-none z-50 bg-white mix-blend-difference"
+                    style={{
+                        left: `${glitch.x}%`,
+                        top: `${glitch.y}%`,
+                        width: `${glitch.size}px`,
+                        height: `${glitch.size}px`,
+                        animation: `dimensionGlitch ${glitch.duration}s ease-in-out`,
+                    }}
+                />
+            ))}
+
+            {spiderSenseActive && (
+                <div
+                    aria-hidden="true"
+                    className="fixed inset-0 pointer-events-none z-40 bg-yellow-500/20 animate-pulse"
+                >
+                    <div className="absolute inset-0 spider-web spider-web-full opacity-20" />
+                </div>
+            )}
+        </>
+    )
+}
+
 // Provider component
 export const DimensionProvider = ({ children }) => {
-    // State to track which dimension we're in
     const [isSpiderVerse, setIsSpiderVerse] = useState(false)
-
-    // State to track if transition is happening
     const [isTransitioning, setIsTransitioning] = useState(false)
-
-    // State for dimension glitches
-    const [dimensionGlitches, setDimensionGlitches] = useState([])
-
-    // State for spider-sense
-    const [spiderSenseActive, setSpiderSenseActive] = useState(false)
-
-    // State for multiverse awareness (easter egg)
     const [multiverseAwareness, setMultiverseAwareness] = useState(0)
-
-    // State for audio mute
     const [isAudioMuted, setIsAudioMuted] = useState(false)
-
-    // State for post-credit scene
     const [showPostCredit, setShowPostCredit] = useState(false)
 
-    // Function to toggle between dimensions with transition effect
-    const toggleDimension = useCallback(() => {
-        if (isTransitioning) return // Prevent multiple transitions
+    // Deliberately *not* part of the context value. Nothing outside the provider
+    // reads it, and including it would re-render every subscribed component.
+    const [spiderSenseActive, setSpiderSenseActive] = useState(false)
 
-        // Start transition
-        setIsTransitioning(true)
+    // Every pending timeout is tracked so unmounting mid-transition cannot leave
+    // one to flip state on a torn-down tree.
+    const timersRef = useRef(new Set())
+    const isTransitioningRef = useRef(false)
+    const isSpiderVerseRef = useRef(false)
 
-        // Play glitch sound effect if available
-        const glitchSound = document.getElementById("dimension-glitch-sound")
-        if (glitchSound) {
-            glitchSound.currentTime = 0
-            glitchSound
-                .play()
-                .catch((e) => console.log("Audio play failed:", e))
-        }
-
-        // After a delay, change the dimension
-        setTimeout(() => {
-            setIsSpiderVerse((prev) => !prev)
-
-            // End transition after dimension change with a delay
-            setTimeout(() => {
-                setIsTransitioning(false)
-            }, 1000)
-        }, 1500)
-
-        // Increase multiverse awareness
-        setMultiverseAwareness((prev) => Math.min(prev + 1, 10))
-    }, [isTransitioning])
-
-    // Random dimension glitches
     useEffect(() => {
-        if (!isSpiderVerse) return
-
-        // Create random glitches in the Spider-Verse dimension
-        const glitchInterval = setInterval(() => {
-            // 5% chance of a glitch
-            if (Math.random() > 0.95) {
-                // Create a new glitch
-                const newGlitch = {
-                    id: Date.now(),
-                    x: Math.random() * 100, // Random position (0-100%)
-                    y: Math.random() * 100, // Random position (0-100%)
-                    duration: Math.random() * 2 + 0.5, // Random duration (0.5-2.5s)
-                    size: Math.random() * 100 + 50, // Random size (50-150px)
-                    type: Math.random() > 0.5 ? "visual" : "audio", // Random type
-                }
-
-                setDimensionGlitches((prev) => [...prev, newGlitch])
-
-                // Remove glitch after it's done
-                setTimeout(() => {
-                    setDimensionGlitches((prev) =>
-                        prev.filter((glitch) => glitch.id !== newGlitch.id)
-                    )
-                }, newGlitch.duration * 1000)
-
-                // Play glitch sound if it's an audio glitch
-                if (newGlitch.type === "audio" && window.spiderverseAudio) {
-                    window.spiderverseAudio.playClick()
-                }
-            }
-        }, 5000) // Check every 5 seconds
-
-        return () => clearInterval(glitchInterval)
-    }, [isSpiderVerse])
-
-    // Spider-sense feature
-    const activateSpiderSense = useCallback(() => {
-        if (!isSpiderVerse || spiderSenseActive) return
-
-        setSpiderSenseActive(true)
-
-        // Deactivate after 5 seconds
-        setTimeout(() => {
-            setSpiderSenseActive(false)
-        }, 5000)
-    }, [isSpiderVerse, spiderSenseActive])
-
-    // Toggle audio mute
-    const toggleAudioMute = useCallback(() => {
-        setIsAudioMuted((prev) => {
-            const newValue = !prev
-            // Store preference in localStorage
-            localStorage.setItem("spiderverse-audio-muted", String(newValue))
-
-            // If we're unmuting, play a sound to confirm audio is working
-            if (prev && window.spiderverseAudio) {
-                setTimeout(() => {
-                    window.spiderverseAudio.playClick()
-                }, 100)
-            }
-
-            return newValue
-        })
-    }, [])
-
-    // Trigger post-credit scene with enhanced functionality
-    const triggerPostCredit = useCallback(() => {
-        if (!isSpiderVerse) return
-
-        // Play special sound effect if available
-        if (window.spiderverseAudio) {
-            window.spiderverseAudio.playWebShoot()
-        }
-
-        setShowPostCredit(true)
-
-        // Hide after 35 seconds (extended to allow for more dialogue)
-        setTimeout(() => {
-            setShowPostCredit(false)
-        }, 35000)
-
-        // Increase multiverse awareness when post-credit scene is viewed
-        setMultiverseAwareness((prev) => Math.min(prev + 1, 10))
-
-        // Store in localStorage that post-credit has been shown
-        localStorage.setItem("post-credit-shown", "true")
-    }, [isSpiderVerse])
-
-    // Check for saved preferences
-    useEffect(() => {
-        const savedDimension = localStorage.getItem("spiderverse-dimension")
-        if (savedDimension) {
-            setIsSpiderVerse(savedDimension === "true")
-        }
-
-        // Check for saved multiverse awareness
-        const savedAwareness = localStorage.getItem("multiverse-awareness")
-        if (savedAwareness) {
-            setMultiverseAwareness(parseInt(savedAwareness, 10))
-        }
-
-        // Check for saved audio preference
-        const savedAudioMuted = localStorage.getItem("spiderverse-audio-muted")
-        if (savedAudioMuted !== null) {
-            setIsAudioMuted(savedAudioMuted === "true")
+        const timers = timersRef.current
+        return () => {
+            timers.forEach(clearTimeout)
+            timers.clear()
         }
     }, [])
 
-    // Save dimension preference when it changes
     useEffect(() => {
-        localStorage.setItem("spiderverse-dimension", isSpiderVerse)
+        isSpiderVerseRef.current = isSpiderVerse
     }, [isSpiderVerse])
 
-    // Save multiverse awareness when it changes
+    // Restore saved preferences.
     useEffect(() => {
-        localStorage.setItem("multiverse-awareness", multiverseAwareness)
+        setIsSpiderVerse(readStorage(STORAGE_KEYS.dimension) === "true")
+
+        const awareness = parseInt(readStorage(STORAGE_KEYS.awareness, "0"), 10)
+        if (Number.isFinite(awareness)) setMultiverseAwareness(awareness)
+
+        const muted = readStorage(STORAGE_KEYS.muted)
+        if (muted !== null) setIsAudioMuted(muted === "true")
+    }, [])
+
+    // Persist preferences.
+    useEffect(() => {
+        writeStorage(STORAGE_KEYS.dimension, String(isSpiderVerse))
+    }, [isSpiderVerse])
+
+    useEffect(() => {
+        writeStorage(STORAGE_KEYS.awareness, String(multiverseAwareness))
     }, [multiverseAwareness])
 
-    // Memoize the context value to prevent unnecessary re-renders
+    // Spider-Verse styles are loaded on demand so they stay out of the initial
+    // render-blocking payload for everyone who starts in the normal dimension.
+    useEffect(() => {
+        if (isSpiderVerse) ensureDimensionStyles()
+    }, [isSpiderVerse])
+
+    const later = useCallback((fn, delay) => {
+        const id = setTimeout(() => {
+            timersRef.current.delete(id)
+            fn()
+        }, delay)
+        timersRef.current.add(id)
+    }, [])
+
+    const toggleDimension = useCallback(() => {
+        if (isTransitioningRef.current) return
+
+        isTransitioningRef.current = true
+        setIsTransitioning(true)
+        soundEngine.play("transition")
+
+        setMultiverseAwareness((previous) =>
+            Math.min(previous + 1, MAX_AWARENESS)
+        )
+
+        later(() => {
+            setIsSpiderVerse((previous) => {
+                const next = !previous
+                isSpiderVerseRef.current = next
+                if (next) ensureDimensionStyles()
+                return next
+            })
+
+            later(() => {
+                isTransitioningRef.current = false
+                setIsTransitioning(false)
+            }, TRANSITION_SETTLE_MS)
+        }, TRANSITION_SWITCH_MS)
+    }, [later])
+
+    const activateSpiderSense = useCallback(() => {
+        if (!isSpiderVerseRef.current || spiderSenseActive) return
+
+        setSpiderSenseActive(true)
+        later(() => setSpiderSenseActive(false), SPIDER_SENSE_MS)
+    }, [later, spiderSenseActive])
+
+    const toggleAudioMute = useCallback(() => {
+        setIsAudioMuted((previous) => {
+            const next = !previous
+            writeStorage(STORAGE_KEYS.muted, String(next))
+
+            // Confirmation blip when coming back on.
+            if (previous) later(() => soundEngine.play("click"), 100)
+
+            return next
+        })
+    }, [later])
+
+    const triggerPostCredit = useCallback(() => {
+        if (!isSpiderVerseRef.current) return
+
+        soundEngine.play("webShoot")
+        setShowPostCredit(true)
+        setMultiverseAwareness((previous) =>
+            Math.min(previous + 1, MAX_AWARENESS)
+        )
+        writeStorage(STORAGE_KEYS.postCredit, "true")
+
+        later(() => setShowPostCredit(false), POST_CREDIT_MS)
+    }, [later])
+
     const contextValue = useMemo(
         () => ({
             isSpiderVerse,
             isTransitioning,
             toggleDimension,
-            dimensionGlitches,
-            spiderSenseActive,
             activateSpiderSense,
             multiverseAwareness,
             isAudioMuted,
@@ -205,8 +306,6 @@ export const DimensionProvider = ({ children }) => {
             isSpiderVerse,
             isTransitioning,
             toggleDimension,
-            dimensionGlitches,
-            spiderSenseActive,
             activateSpiderSense,
             multiverseAwareness,
             isAudioMuted,
@@ -216,49 +315,15 @@ export const DimensionProvider = ({ children }) => {
         ]
     )
 
-    // Memoize the glitches rendering to prevent unnecessary re-renders
-    const glitchesRender = useMemo(
-        () =>
-            dimensionGlitches.map((glitch) => (
-                <div
-                    key={glitch.id}
-                    className="fixed pointer-events-none z-50"
-                    style={{
-                        left: `${glitch.x}%`,
-                        top: `${glitch.y}%`,
-                        width: `${glitch.size}px`,
-                        height: `${glitch.size}px`,
-                        animation: `dimensionGlitch ${glitch.duration}s ease-in-out`,
-                    }}
-                >
-                    {glitch.type === "visual" && (
-                        <div className="w-full h-full bg-white mix-blend-difference"></div>
-                    )}
-                </div>
-            )),
-        [dimensionGlitches]
-    )
-
-    // Memoize the spider-sense overlay to prevent unnecessary re-renders
-    const spiderSenseOverlay = useMemo(
-        () =>
-            spiderSenseActive && (
-                <div className="fixed inset-0 pointer-events-none z-40 bg-yellow-500/20 animate-pulse">
-                    <div className="absolute inset-0 spider-web spider-web-full opacity-20"></div>
-                </div>
-            ),
-        [spiderSenseActive]
-    )
-
     return (
         <DimensionContext.Provider value={contextValue}>
             {children}
 
-            {/* Render dimension glitches */}
-            {glitchesRender}
-
-            {/* Spider-sense overlay */}
-            {spiderSenseOverlay}
+            <DimensionEffects
+                isSpiderVerse={isSpiderVerse}
+                isAudioMuted={isAudioMuted}
+                spiderSenseActive={spiderSenseActive}
+            />
         </DimensionContext.Provider>
     )
 }

@@ -2609,3 +2609,114 @@ code::-webkit-scrollbar-thumb {
 .clip-hexagon {
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
 }
+
+/* ==========================================================================
+   Performance: rendering budget
+   ========================================================================== */
+
+/* Sections far below the fold skip layout, paint and compositing until they
+   approach the viewport. `contain-intrinsic-size` keeps the scrollbar honest
+   instead of letting the page jump as each section is measured. */
+.defer-paint {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 800px;
+}
+
+/* The heavy, below-the-fold sections of the normal dimension. Each holds a few
+   hundred nodes that are invisible until scrolled to, so letting the browser
+   skip their layout and paint is the single cheapest win in this file. The
+   `auto` keyword in `contain-intrinsic-size` means the browser keeps learning
+   the real size, so the scrollbar settles instead of oscillating. */
+#about,
+#skills,
+#projects,
+#contact {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+}
+
+/* Only promote while the element is actually animating. A permanent
+   `will-change` keeps the layer alive for the life of the page and costs GPU
+   memory; `will-change-change` style hints in the animations themselves handle
+   the active case. */
+.animate-float,
+.animate-float-slow,
+.animate-pulse-slow,
+.animate-pulse,
+.animate-ping,
+.animate-spin-slow,
+.animate-spider-sense,
+.animate-float-particle,
+.animate-comic-panel-float {
+    will-change: transform, opacity;
+}
+
+/* ==========================================================================
+   Custom cursor
+   ========================================================================== */
+
+/* The native cursor is only hidden while a custom cursor is actually mounted,
+   so a failed chunk load or a reduced-motion preference always leaves a usable
+   pointer behind. Text fields are deliberately excluded so typing still shows a
+   caret. */
+html.has-custom-cursor,
+html.has-custom-cursor body,
+html.has-comic-cursor,
+html.has-comic-cursor body {
+    cursor: none;
+}
+
+html.has-custom-cursor a,
+html.has-custom-cursor button,
+html.has-custom-cursor [role="button"],
+html.has-custom-cursor label,
+html.has-custom-cursor summary,
+html.has-comic-cursor a,
+html.has-comic-cursor button,
+html.has-comic-cursor [role="button"],
+html.has-comic-cursor label,
+html.has-comic-cursor summary {
+    cursor: none;
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+/* Animated pseudo-elements have to be stopped explicitly, since the
+   `animation: none` on the element itself does not always override an
+   animation declared on `::before` / `::after`. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Anything that would otherwise translate or scale into place should just
+       be in its final state. */
+    .reveal,
+    .reveal.active {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .parallax-layer {
+        transform: none !important;
+    }
+
+    .animate-float,
+    .animate-float-slow,
+    .animate-float-particle,
+    .animate-comic-panel-float,
+    .animate-spider-sense,
+    .animate-web-swing,
+    .animate-spider-sense,
+    .animate-spider-sense-pulse {
+        animation: none !important;
+        transform: none !important;
+    }
+}
