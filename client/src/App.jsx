@@ -134,7 +134,13 @@ const App = () => {
             />
 
             {!isLoading && (
-                <div
+                <>
+                    {/* First tab stop: lets keyboard users jump straight past the
+                        nav, the background layers and the floating controls. */}
+                    <a href="#main-content" className="skip-to-content">
+                        Skip to content
+                    </a>
+                    <div
                     className={`min-h-screen text-white transition-colors duration-500 ${
                         isTransitioning ? "dimension-transition" : ""
                     } ${
@@ -198,7 +204,9 @@ const App = () => {
                         </Suspense>
                     )}
 
-                    <div
+                    <main
+                        id="main-content"
+                        tabIndex={-1}
                         className={`relative z-10 transition-opacity duration-1000 ${
                             isLoaded ? "opacity-100" : "opacity-0"
                         }`}
@@ -253,7 +261,7 @@ const App = () => {
                         )}
 
                         <FloatingControls />
-                    </div>
+                    </main>
 
                     <DimensionTrigger />
 
@@ -275,7 +283,8 @@ const App = () => {
                             <BrandStyleGuide />
                         </Suspense>
                     )}
-                </div>
+                    </div>
+                </>
             )}
         </>
     )

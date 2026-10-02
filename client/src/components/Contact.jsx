@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useRef } from "react"
+﻿import React, { useState, useEffect, useRef } from "react"
 import personalInfo from "../utils/personalInfo"
+import {
+    FIELD_NAMES,
+    selectVisibleErrors,
+    validateAll,
+    validateField,
+} from "../utils/validation"
 import {
     GithubIcon,
     LinkedInIcon,
@@ -18,6 +24,8 @@ import {
 // Formspark form submission URL from environment variables
 const FORMSPARK_ACTION_URL = import.meta.env.VITE_FORMSPARK_ACTION_URL
 
+const EMPTY_ERRORS = { name: "", email: "", message: "" }
+
 const Contact = () => {
     const [formData, setFormData] = useState({
         name: "",
@@ -32,17 +40,21 @@ const Contact = () => {
         info: { error: false, msg: null },
     })
 
-    const [errors, setErrors] = useState({
-        name: "",
-        email: "",
-        message: "",
-    })
+    const [errors, setErrors] = useState(EMPTY_ERRORS)
 
     const [touched, setTouched] = useState({
         name: false,
         email: false,
         message: false,
     })
+
+    // Once a submit has been attempted, errors update live while typing again.
+    const [hasSubmitted, setHasSubmitted] = useState(false)
+
+    // Spam guard: a hidden field only a bot would fill in, plus a minimum time
+    // on the form. Both are invisible to the visitor and cost nothing.
+    const mountedAtRef = useRef(Date.now())
+    const [honeypot, setHoneypot] = useState("")
 
     // Animation states
     const [activeField, setActiveField] = useState(null)
@@ -60,72 +72,35 @@ const Contact = () => {
             { threshold: 0.1 }
         )
 
-        if (formRef.current) {
-            observer.observe(formRef.current)
-        }
+        const section = formRef.current
+        if (section) observer.observe(section)
 
-        return () => {
-            if (formRef.current) {
-                observer.unobserve(formRef.current)
-            }
-        }
+        return () => observer.disconnect()
     }, [])
 
-    // Validate form on data change
+    // Re-evaluate which errors should be visible. Runs when a field is first
+    // blurred or after a submit attempt, not on every keystroke.
     useEffect(() => {
-        if (touched.name) validateName(formData.name)
-        if (touched.email) validateEmail(formData.email)
-        if (touched.message) validateMessage(formData.message)
-    }, [formData, touched])
-
-    const validateName = (name) => {
-        let error = ""
-        if (!name.trim()) {
-            error = "Name is required"
-        } else if (name.trim().length < 2) {
-            error = "Name must be at least 2 characters"
-        }
-        setErrors((prev) => ({ ...prev, name: error }))
-        return error === ""
-    }
-
-    const validateEmail = (email) => {
-        let error = ""
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!email.trim()) {
-            error = "Email is required"
-        } else if (!emailRegex.test(email)) {
-            error = "Please enter a valid email address"
-        }
-        setErrors((prev) => ({ ...prev, email: error }))
-        return error === ""
-    }
-
-    const validateMessage = (message) => {
-        let error = ""
-        if (!message.trim()) {
-            error = "Message is required"
-        } else if (message.trim().length < 10) {
-            error = "Message must be at least 10 characters"
-        }
-        setErrors((prev) => ({ ...prev, message: error }))
-        return error === ""
-    }
+        setErrors(selectVisibleErrors(touched, formData, hasSubmitted))
+    }, [touched, formData, hasSubmitted])
 
     const handleChange = (e) => {
         const { id, value } = e.target
-        setFormData({
-            ...formData,
-            [id]: value,
-        })
+        setFormData((previous) => ({ ...previous, [id]: value }))
+
+        // After a failed submit, correct a field as soon as it becomes valid
+        // rather than waiting for another blur.
+        if (hasSubmitted) {
+            setErrors((previous) => ({
+                ...previous,
+                [id]: id in EMPTY_ERRORS ? validateField(id, value) : "",
+            }))
+        }
     }
 
     const handleBlur = (e) => {
         const { id } = e.target
-        setTouched((prev) => ({
-            ...prev,
-            [id]: true,
-        }))
+        setTouched((previous) => ({ ...previous, [id]: true }))
         setActiveField(null)
     }
 
@@ -134,31 +109,51 @@ const Contact = () => {
         setActiveField(id)
     }
 
-    const isFormValid = () => {
-        const nameValid = validateName(formData.name)
-        const emailValid = validateEmail(formData.email)
-        const messageValid = validateMessage(formData.message)
-        return nameValid && emailValid && messageValid
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        // Set all fields as touched to show validation errors
-        setTouched({
-            name: true,
-            email: true,
-            message: true,
-        })
+        // Every field is now on screen, so flag them all and keep them live.
+        setHasSubmitted(true)
+        setTouched({ name: true, email: true, message: true })
 
-        if (!isFormValid()) {
-            // Shake the form on invalid submission
-            if (formRef.current) {
-                formRef.current.classList.add("shake-animation")
-                setTimeout(() => {
-                    formRef.current.classList.remove("shake-animation")
-                }, 500)
+        const nextErrors = validateAll(formData)
+        setErrors(nextErrors)
+
+        const firstInvalid = FIELD_NAMES.find((field) => nextErrors[field])
+
+        if (firstInvalid) {
+            // Shake the form and move focus to the first problem, so keyboard
+            // and screen-reader users are not left guessing.
+            const section = formRef.current
+            if (section) {
+                section.classList.add("shake-animation")
+                setTimeout(() => section.classList.remove("shake-animation"), 500)
             }
+
+            document.getElementById(firstInvalid)?.focus()
+            return
+        }
+
+        // A bot filled the hidden field, or submitted implausibly fast.
+        const elapsed = Date.now() - mountedAtRef.current
+        if (honeypot || elapsed < 2500) {
+            setFormStatus({
+                submitted: false,
+                submitting: false,
+                info: { error: false, msg: null },
+            })
+            return
+        }
+
+        if (!FORMSPARK_ACTION_URL) {
+            setFormStatus({
+                submitted: false,
+                submitting: false,
+                info: {
+                    error: true,
+                    msg: "The contact form is not configured yet. Please email me directly.",
+                },
+            })
             return
         }
 
@@ -211,6 +206,7 @@ const Contact = () => {
                 email: false,
                 message: false,
             })
+            setHasSubmitted(false)
 
             // Clear success message after 5 seconds
             setTimeout(() => {
@@ -475,7 +471,30 @@ const Contact = () => {
                                 className="space-y-6"
                                 onSubmit={handleSubmit}
                                 ref={formRef}
+                                noValidate
                             >
+                                {/* Spam trap: hidden from people, irresistible
+                                    to bots. Nothing is submitted when it is filled. */}
+                                <div
+                                    aria-hidden="true"
+                                    className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
+                                >
+                                    <label htmlFor="company-website">
+                                        Company website
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="company-website"
+                                        name="company_website"
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        value={honeypot}
+                                        onChange={(e) =>
+                                            setHoneypot(e.target.value)
+                                        }
+                                    />
+                                </div>
+
                                 <div
                                     className={`group ${
                                         activeField === "name"
@@ -486,7 +505,7 @@ const Contact = () => {
                                     <label
                                         htmlFor="name"
                                         className={`block mb-2 transition-colors duration-300 ${
-                                            errors.name && touched.name
+                                            errors.name
                                                 ? "text-pink-400"
                                                 : activeField === "name"
                                                 ? "text-cyan-400"
@@ -499,12 +518,22 @@ const Contact = () => {
                                         <input
                                             type="text"
                                             id="name"
+                                            name="name"
                                             value={formData.name}
                                             onChange={handleChange}
                                             onFocus={handleFocus}
                                             onBlur={handleBlur}
+                                            required
+                                            autoComplete="name"
+                                            aria-required="true"
+                                            aria-invalid={Boolean(errors.name)}
+                                            aria-describedby={
+                                                errors.name
+                                                    ? "name-error"
+                                                    : undefined
+                                            }
                                             className={`w-full bg-dark-900 border rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 transition-all duration-300 ${
-                                                errors.name && touched.name
+                                                errors.name
                                                     ? "border-pink-500/50 focus:ring-pink-500"
                                                     : "border-dark-600 focus:ring-cyan-500 focus:border-transparent"
                                             }`}
@@ -514,8 +543,12 @@ const Contact = () => {
                                             <div className="absolute inset-0 border-2 border-cyan-500 rounded-lg pointer-events-none animate-pulse-border"></div>
                                         )}
                                     </div>
-                                    {errors.name && touched.name && (
-                                        <p className="mt-1 text-pink-400 text-sm flex items-center">
+                                    {errors.name && (
+                                        <p
+                                            id="name-error"
+                                            role="alert"
+                                            className="mt-1 text-pink-400 text-sm flex items-center"
+                                        >
                                             <WarningIcon className="h-4 w-4 mr-1" />
                                             {errors.name}
                                         </p>
@@ -532,7 +565,7 @@ const Contact = () => {
                                     <label
                                         htmlFor="email"
                                         className={`block mb-2 transition-colors duration-300 ${
-                                            errors.email && touched.email
+                                            errors.email
                                                 ? "text-pink-400"
                                                 : activeField === "email"
                                                 ? "text-cyan-400"
@@ -545,12 +578,23 @@ const Contact = () => {
                                         <input
                                             type="email"
                                             id="email"
+                                            name="email"
                                             value={formData.email}
                                             onChange={handleChange}
                                             onFocus={handleFocus}
                                             onBlur={handleBlur}
+                                            required
+                                            autoComplete="email"
+                                            inputMode="email"
+                                            aria-required="true"
+                                            aria-invalid={Boolean(errors.email)}
+                                            aria-describedby={
+                                                errors.email
+                                                    ? "email-error"
+                                                    : undefined
+                                            }
                                             className={`w-full bg-dark-900 border rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 transition-all duration-300 ${
-                                                errors.email && touched.email
+                                                errors.email
                                                     ? "border-pink-500/50 focus:ring-pink-500"
                                                     : "border-dark-600 focus:ring-cyan-500 focus:border-transparent"
                                             }`}
@@ -560,8 +604,12 @@ const Contact = () => {
                                             <div className="absolute inset-0 border-2 border-cyan-500 rounded-lg pointer-events-none animate-pulse-border"></div>
                                         )}
                                     </div>
-                                    {errors.email && touched.email && (
-                                        <p className="mt-1 text-pink-400 text-sm flex items-center">
+                                    {errors.email && (
+                                        <p
+                                            id="email-error"
+                                            role="alert"
+                                            className="mt-1 text-pink-400 text-sm flex items-center"
+                                        >
                                             <WarningIcon className="h-4 w-4 mr-1" />
                                             {errors.email}
                                         </p>
@@ -612,7 +660,7 @@ const Contact = () => {
                                     <label
                                         htmlFor="message"
                                         className={`block mb-2 transition-colors duration-300 ${
-                                            errors.message && touched.message
+                                            errors.message
                                                 ? "text-pink-400"
                                                 : activeField === "message"
                                                 ? "text-cyan-400"
@@ -624,14 +672,24 @@ const Contact = () => {
                                     <div className="relative">
                                         <textarea
                                             id="message"
+                                            name="message"
                                             rows="5"
                                             value={formData.message}
                                             onChange={handleChange}
                                             onFocus={handleFocus}
                                             onBlur={handleBlur}
+                                            required
+                                            aria-required="true"
+                                            aria-invalid={Boolean(
+                                                errors.message
+                                            )}
+                                            aria-describedby={
+                                                errors.message
+                                                    ? "message-error"
+                                                    : undefined
+                                            }
                                             className={`w-full bg-dark-900 border rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 transition-all duration-300 ${
-                                                errors.message &&
-                                                touched.message
+                                                errors.message
                                                     ? "border-pink-500/50 focus:ring-pink-500"
                                                     : "border-dark-600 focus:ring-cyan-500 focus:border-transparent"
                                             }`}
@@ -641,42 +699,32 @@ const Contact = () => {
                                             <div className="absolute inset-0 border-2 border-cyan-500 rounded-lg pointer-events-none animate-pulse-border"></div>
                                         )}
                                     </div>
-                                    {errors.message && touched.message && (
-                                        <p className="mt-1 text-pink-400 text-sm flex items-center">
+                                    {errors.message && (
+                                        <p
+                                            id="message-error"
+                                            role="alert"
+                                            className="mt-1 text-pink-400 text-sm flex items-center"
+                                        >
                                             <WarningIcon className="h-4 w-4 mr-1" />
                                             {errors.message}
                                         </p>
                                     )}
                                 </div>
 
+                                {/* The button stays enabled when the form is
+                                    incomplete: a disabled button cannot explain
+                                    itself, and it would stop the visitor ever
+                                    reaching the submit handler that shows which
+                                    field needs attention. */}
                                 <button
                                     type="submit"
                                     className={`w-full text-white font-medium py-4 px-8 rounded-lg transition-all duration-500 flex items-center justify-center relative overflow-hidden group ${
-                                        formStatus.submitting ||
-                                        (touched.name &&
-                                            touched.email &&
-                                            touched.message &&
-                                            (!formData.name ||
-                                                !formData.email ||
-                                                !formData.message ||
-                                                errors.name ||
-                                                errors.email ||
-                                                errors.message))
-                                            ? "bg-gray-600 opacity-70 cursor-not-allowed transform-none hover:shadow-none"
+                                        formStatus.submitting
+                                            ? "bg-gray-600 opacity-70 cursor-wait transform-none hover:shadow-none"
                                             : "bg-gradient-to-r from-cyan-600 to-cyan-500 hover:shadow-lg hover:shadow-cyan-500/30 transform hover:-translate-y-1"
                                     }`}
-                                    disabled={
-                                        formStatus.submitting ||
-                                        (touched.name &&
-                                            touched.email &&
-                                            touched.message &&
-                                            (!formData.name ||
-                                                !formData.email ||
-                                                !formData.message ||
-                                                errors.name ||
-                                                errors.email ||
-                                                errors.message))
-                                    }
+                                    disabled={formStatus.submitting}
+                                    aria-disabled={formStatus.submitting}
                                 >
                                     <span className="absolute top-0 left-0 w-full h-full bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></span>
 
@@ -718,82 +766,63 @@ const Contact = () => {
                                         </div>
                                     )}
 
-                                {formStatus.info.msg &&
-                                    formStatus.info.error && (
-                                        <div className="mt-6 p-4 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/20 animate-fade-in transform transition-all duration-300 hover:scale-[1.02]">
-                                            <div className="flex items-center">
-                                                <ErrorIcon className="h-5 w-5 mr-2 text-pink-400" />
-                                                {formStatus.info.msg}
+                                {/* Success / error announcements. `aria-live`
+                                    means a screen reader reads the result without
+                                    the visitor having to go hunting for it. */}
+                                <div aria-live="polite" aria-atomic="true">
+                                    {formStatus.info.msg &&
+                                        formStatus.info.error && (
+                                            <div className="mt-6 p-4 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/20 animate-fade-in transform transition-all duration-300 hover:scale-[1.02]">
+                                                <div className="flex items-center">
+                                                    <ErrorIcon className="h-5 w-5 mr-2 text-pink-400" />
+                                                    {formStatus.info.msg}
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
+                                        )}
+
+                                    {formStatus.info.msg &&
+                                        !formStatus.info.error && (
+                                            <div className="mt-6 p-4 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-fade-in">
+                                                <div className="flex items-center">
+                                                    <SuccessIcon className="h-5 w-5 mr-2" />
+                                                    {formStatus.info.msg}
+                                                </div>
+                                            </div>
+                                        )}
+                                </div>
 
                                 {/* Form validation guidance */}
                                 {(errors.name ||
                                     errors.email ||
-                                    errors.message) &&
-                                    (touched.name ||
-                                        touched.email ||
-                                        touched.message) && (
-                                        <div className="text-gray-400 text-sm mt-4 flex items-start p-3 bg-dark-900/50 rounded-lg border border-cyan-500/20">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-5 w-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                            </svg>
-                                            <span>
-                                                Please fill out all required
-                                                fields correctly before
-                                                submitting the form.
-                                            </span>
-                                        </div>
-                                    )}
+                                    errors.message) && (
+                                    <div className="text-gray-400 text-sm mt-4 flex items-start p-3 bg-dark-900/50 rounded-lg border border-cyan-500/20">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                            />
+                                        </svg>
+                                        <span>
+                                            Please fill out all required
+                                            fields correctly before
+                                            submitting the form.
+                                        </span>
+                                    </div>
+                                )}
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* CSS for shake animation */}
-            <style jsx="true">{`
-                .shake-animation-container .shake-animation {
-                    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97)
-                        both;
-                }
-
-                @keyframes shake {
-                    0%,
-                    100% {
-                        transform: translateX(0);
-                    }
-                    10%,
-                    30%,
-                    50%,
-                    70%,
-                    90% {
-                        transform: translateX(-5px);
-                    }
-                    20%,
-                    40%,
-                    60%,
-                    80% {
-                        transform: translateX(5px);
-                    }
-                }
-
-                .active-field {
-                    transform: scale(1.01);
-                }
-            `}</style>
         </section>
     )
 }

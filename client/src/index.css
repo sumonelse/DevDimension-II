@@ -2652,6 +2652,33 @@ code::-webkit-scrollbar-thumb {
 }
 
 /* ==========================================================================
+   Skip link
+   ========================================================================== */
+
+/* First tab stop on the page. Off-screen until focused, then pinned to the top
+   left where it is hard to miss. */
+.skip-to-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    transform: translateY(-120%);
+    padding: 0.75rem 1.25rem;
+    border-bottom-right-radius: 0.75rem;
+    background: var(--color-purple-600, #7c3aed);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.2s ease;
+    outline-offset: 2px;
+}
+
+.skip-to-content:focus,
+.skip-to-content:focus-visible {
+    transform: translateY(0);
+}
+
+/* ==========================================================================
    Custom cursor
    ========================================================================== */
 
@@ -2677,6 +2704,42 @@ html.has-comic-cursor [role="button"],
 html.has-comic-cursor label,
 html.has-comic-cursor summary {
     cursor: none;
+}
+
+/* ==========================================================================
+   Contact form
+   ========================================================================== */
+
+/* Applied by the submit handler when validation fails. Lives here rather than
+   in a `<style jsx>` block in the component: styled-jsx is not a dependency of
+   this project, so that attribute did nothing and the rules only worked by
+   accident. */
+.shake-animation-container .shake-animation {
+    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+.active-field {
+    transform: scale(1.01);
 }
 
 /* ==========================================================================

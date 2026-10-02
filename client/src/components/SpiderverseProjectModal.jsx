@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState, useId } from "react"
 import { useDimension } from "../context/DimensionContext"
+import useFocusTrap from "../hooks/useFocusTrap"
 import SpiderverseCard from "./SpiderverseCard"
 import SoundEffect from "./SoundEffect"
 
 const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
     const modalRef = useRef(null)
+    const titleId = useId()
     const { activateSpiderSense } = useDimension()
     const [currentPanel, setCurrentPanel] = useState(0)
     const [isAnimating, setIsAnimating] = useState(false)
@@ -18,47 +20,25 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
         { title: "Links", type: "links" },
     ]
 
-    // Handle click outside to close
+    // Escape, focus trap and outside-click dismissal are all handled by the
+    // shared hook. The scroll lock restores whatever the page had before rather
+    // than forcing `auto`, and the opening sound still fires on the same change.
+    useFocusTrap(isOpen, modalRef, onClose)
+
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
-                onClose()
-            }
-        }
+        if (!isOpen) return
 
-        if (isOpen) {
-            document.addEventListener("mousedown", handleClickOutside)
-            // Prevent scrolling when modal is open
-            document.body.style.overflow = "hidden"
+        const previousOverflow = document.body.style.overflow
+        document.body.style.overflow = "hidden"
 
-            // Play sound effect using global audio settings
-            if (window.spiderverseAudio && !window.spiderverseAudio.isMuted()) {
-                window.spiderverseAudio.playWebShoot()
-            }
+        if (window.spiderverseAudio && !window.spiderverseAudio.isMuted()) {
+            window.spiderverseAudio.playWebShoot()
         }
 
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside)
-            document.body.style.overflow = "auto"
+            document.body.style.overflow = previousOverflow
         }
-    }, [isOpen, onClose])
-
-    // Handle escape key to close
-    useEffect(() => {
-        const handleEscKey = (event) => {
-            if (event.key === "Escape") {
-                onClose()
-            }
-        }
-
-        if (isOpen) {
-            document.addEventListener("keydown", handleEscKey)
-        }
-
-        return () => {
-            document.removeEventListener("keydown", handleEscKey)
-        }
-    }, [isOpen, onClose])
+    }, [isOpen])
 
     // Play sound using global audio settings
     const playSound = (soundType) => {
@@ -132,6 +112,9 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
             {/* Comic book style modal */}
             <div
                 ref={modalRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={titleId}
                 className="w-full max-w-5xl max-h-[90vh] flex flex-col comic-border bg-white relative"
                 style={{
                     boxShadow:
@@ -144,7 +127,10 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                     <div className="absolute inset-0 benday-dots opacity-30"></div>
 
                     {/* Title with comic font */}
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-['Bangers'] tracking-wider relative z-10 flex items-center">
+                    <h2
+                        id={titleId}
+                        className="text-xl sm:text-2xl md:text-3xl font-['Bangers'] tracking-wider relative z-10 flex items-center"
+                    >
                         <span className="mr-2">{project.title}</span>
                         <SoundEffect
                             text="WOW!"

@@ -42,22 +42,28 @@ const useScrollReveal = ({
         const observed = new Set()
         let scanFrame = null
 
+        /**
+         * The pixel threshold is encoded as a bottom `rootMargin` rather than
+         * tested against `boundingClientRect` in the callback.
+         *
+         * `threshold: 0` reports an element exactly once, when it crosses the
+         * viewport edge. Anything that peeks in below the reveal line would then
+         * be judged too early and never re-evaluated, so it would stay hidden
+         * forever. Insetting the observer's root by `threshold` instead makes
+         * `isIntersecting` mean precisely "is already within the reveal
+         * distance", which fires at the right moment and only once.
+         */
         const observer = new IntersectionObserver(
             (entries) => {
                 for (const entry of entries) {
                     if (!entry.isIntersecting) continue
 
-                    // The pixel threshold is evaluated here rather than encoded as
-                    // a `rootMargin`, because the margin depends on the viewport
-                    // height and would have to be rebuilt on every resize.
-                    if (entry.boundingClientRect.top < window.innerHeight - threshold) {
-                        entry.target.classList.add(activeClass)
-                        observer.unobserve(entry.target)
-                        observed.delete(entry.target)
-                    }
+                    entry.target.classList.add(activeClass)
+                    observer.unobserve(entry.target)
+                    observed.delete(entry.target)
                 }
             },
-            { threshold: 0 }
+            { rootMargin: `0px 0px -${Math.max(0, threshold)}px 0px` }
         )
 
         const scan = () => {

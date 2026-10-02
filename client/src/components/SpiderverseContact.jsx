@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useRef } from "react"
+﻿import React, { useState, useEffect, useRef } from "react"
 import personalInfo from "../utils/personalInfo"
+import {
+    FIELD_NAMES,
+    selectVisibleErrors,
+    validateAll,
+    validateField,
+} from "../utils/validation"
 import {
     GithubIcon,
     LinkedInIcon,
@@ -37,6 +43,11 @@ const SpiderverseContact = () => {
         email: false,
         message: false,
     })
+    // After a submit attempt, errors stay live while the visitor corrects them.
+    const [hasSubmitted, setHasSubmitted] = useState(false)
+    // Spam trap: hidden from people, irresistible to bots.
+    const [honeypot, setHoneypot] = useState("")
+    const mountedAtRef = useRef(Date.now())
 
     const formRef = useRef(null)
     const sectionRef = useRef(null)
@@ -63,50 +74,23 @@ const SpiderverseContact = () => {
         }
     }, [])
 
-    // Validate form on data change
+    // Re-evaluate which errors should be visible. Runs on blur and after a
+    // submit attempt, not on every keystroke.
     useEffect(() => {
-        if (touched.name) validateName(formData.name)
-        if (touched.email) validateEmail(formData.email)
-        if (touched.message) validateMessage(formData.message)
-    }, [formData, touched])
-
-    const validateName = (name) => {
-        let error = ""
-        if (!name.trim()) {
-            error = "Name is required"
-        } else if (name.trim().length < 2) {
-            error = "Name must be at least 2 characters"
-        }
-        setErrors((prev) => ({ ...prev, name: error }))
-        return error === ""
-    }
-
-    const validateEmail = (email) => {
-        let error = ""
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!email.trim()) {
-            error = "Email is required"
-        } else if (!emailRegex.test(email)) {
-            error = "Please enter a valid email address"
-        }
-        setErrors((prev) => ({ ...prev, email: error }))
-        return error === ""
-    }
-
-    const validateMessage = (message) => {
-        let error = ""
-        if (!message.trim()) {
-            error = "Message is required"
-        } else if (message.trim().length < 10) {
-            error = "Message must be at least 10 characters"
-        }
-        setErrors((prev) => ({ ...prev, message: error }))
-        return error === ""
-    }
+        setErrors(selectVisibleErrors(touched, formData, hasSubmitted))
+    }, [touched, formData, hasSubmitted])
 
     const handleChange = (e) => {
         const { name, value } = e.target
         setFormData((prev) => ({ ...prev, [name]: value }))
+
+        // After a failed submit, clear a field's error as soon as it is valid.
+        if (hasSubmitted) {
+            setErrors((prev) => ({
+                ...prev,
+                [name]: validateField(name, value),
+            }))
+        }
     }
 
     const handleFocus = (e) => {
@@ -123,31 +107,42 @@ const SpiderverseContact = () => {
         setActiveField(null)
     }
 
-    const isFormValid = () => {
-        const nameValid = validateName(formData.name)
-        const emailValid = validateEmail(formData.email)
-        const messageValid = validateMessage(formData.message)
-        return nameValid && emailValid && messageValid
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        // Set all fields as touched to show validation errors
+        setHasSubmitted(true)
         setTouched({
             name: true,
             email: true,
             message: true,
         })
 
-        if (!isFormValid()) {
-            // Shake the form on invalid submission
-            if (formRef.current) {
-                formRef.current.classList.add("shake-animation")
-                setTimeout(() => {
-                    formRef.current.classList.remove("shake-animation")
-                }, 500)
+        const nextErrors = validateAll(formData)
+        setErrors(nextErrors)
+
+        const firstInvalid = FIELD_NAMES.find((field) => nextErrors[field])
+
+        if (firstInvalid) {
+            // Shake the form and move focus to the first problem.
+            const form = formRef.current
+            if (form) {
+                form.classList.add("shake-animation")
+                setTimeout(() => form.classList.remove("shake-animation"), 500)
             }
+
+            document.getElementById(firstInvalid)?.focus()
+            return
+        }
+
+        // Spam trap: a bot filled the hidden field, or submitted implausibly fast.
+        const elapsed = Date.now() - mountedAtRef.current
+        if (honeypot || elapsed < 2500) {
+            return
+        }
+
+        if (!FORMSPARK_ACTION_URL) {
+            setIsSubmitting(false)
+            setSubmitStatus("error")
             return
         }
 
@@ -185,6 +180,7 @@ const SpiderverseContact = () => {
                 email: false,
                 message: false,
             })
+            setHasSubmitted(false)
 
             // Reset status after 5 seconds
             setTimeout(() => {
@@ -450,8 +446,34 @@ const SpiderverseContact = () => {
                                 Send a Message
                             </h3>
 
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div
+                            <form
+                                    onSubmit={handleSubmit}
+                                    className="space-y-4"
+                                    noValidate
+                                >
+                                    {/* Spam trap: hidden from people, irresistible
+                                        to bots. Nothing is submitted when filled. */}
+                                    <div
+                                        aria-hidden="true"
+                                        className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
+                                    >
+                                        <label htmlFor="sv-company">
+                                            Company website
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="sv-company"
+                                            name="company_website"
+                                            tabIndex={-1}
+                                            autoComplete="off"
+                                            value={honeypot}
+                                            onChange={(e) =>
+                                                setHoneypot(e.target.value)
+                                            }
+                                        />
+                                    </div>
+
+                                    <div
                                     className={`${
                                         activeField === "name"
                                             ? "transform scale-105 transition-transform duration-300"
@@ -461,7 +483,7 @@ const SpiderverseContact = () => {
                                     <label
                                         htmlFor="name"
                                         className={`block text-black font-bold mb-2 ${
-                                            errors.name && touched.name
+                                            errors.name
                                                 ? "text-spiderverse-red"
                                                 : ""
                                         }`}
@@ -482,8 +504,17 @@ const SpiderverseContact = () => {
                                             onChange={handleChange}
                                             onFocus={handleFocus}
                                             onBlur={handleBlur}
+                                            required
+                                            autoComplete="name"
+                                            aria-required="true"
+                                            aria-invalid={Boolean(errors.name)}
+                                            aria-describedby={
+                                                errors.name
+                                                    ? "sv-name-error"
+                                                    : undefined
+                                            }
                                             className={`comic-border w-full p-3 bg-white text-black transition-all duration-300 ${
-                                                errors.name && touched.name
+                                                errors.name
                                                     ? "border-spiderverse-red"
                                                     : activeField === "name"
                                                     ? "border-spiderverse-blue border-3"
@@ -501,8 +532,8 @@ const SpiderverseContact = () => {
                                             </div>
                                         )}
                                     </div>
-                                    {errors.name && touched.name && (
-                                        <p className="mt-1 text-spiderverse-red text-sm font-bold flex items-center">
+                                    {errors.name && (
+                                        <p id="sv-name-error" role="alert" className="mt-1 text-spiderverse-red text-sm font-bold flex items-center">
                                             <ErrorIcon />
                                             {errors.name}
                                         </p>
@@ -519,7 +550,7 @@ const SpiderverseContact = () => {
                                     <label
                                         htmlFor="email"
                                         className={`block text-black font-bold mb-2 ${
-                                            errors.email && touched.email
+                                            errors.email
                                                 ? "text-spiderverse-red"
                                                 : ""
                                         }`}
@@ -540,8 +571,18 @@ const SpiderverseContact = () => {
                                             onChange={handleChange}
                                             onFocus={handleFocus}
                                             onBlur={handleBlur}
+                                            required
+                                            autoComplete="email"
+                                            inputMode="email"
+                                            aria-required="true"
+                                            aria-invalid={Boolean(errors.email)}
+                                            aria-describedby={
+                                                errors.email
+                                                    ? "sv-email-error"
+                                                    : undefined
+                                            }
                                             className={`comic-border w-full p-3 bg-white text-black transition-all duration-300 ${
-                                                errors.email && touched.email
+                                                errors.email
                                                     ? "border-spiderverse-red"
                                                     : activeField === "email"
                                                     ? "border-spiderverse-blue border-3"
@@ -559,8 +600,8 @@ const SpiderverseContact = () => {
                                             </div>
                                         )}
                                     </div>
-                                    {errors.email && touched.email && (
-                                        <p className="mt-1 text-spiderverse-red text-sm font-bold flex items-center">
+                                    {errors.email && (
+                                        <p id="sv-email-error" role="alert" className="mt-1 text-spiderverse-red text-sm font-bold flex items-center">
                                             <ErrorIcon />
                                             {errors.email}
                                         </p>
@@ -577,7 +618,7 @@ const SpiderverseContact = () => {
                                     <label
                                         htmlFor="message"
                                         className={`block text-black font-bold mb-2 ${
-                                            errors.message && touched.message
+                                            errors.message
                                                 ? "text-spiderverse-red"
                                                 : ""
                                         }`}
@@ -598,9 +639,16 @@ const SpiderverseContact = () => {
                                             onFocus={handleFocus}
                                             onBlur={handleBlur}
                                             rows="4"
+                                            required
+                                            aria-required="true"
+                                            aria-invalid={Boolean(errors.message)}
+                                            aria-describedby={
+                                                errors.message
+                                                    ? "sv-message-error"
+                                                    : undefined
+                                            }
                                             className={`comic-border w-full p-3 bg-white text-black transition-all duration-300 ${
-                                                errors.message &&
-                                                touched.message
+                                                errors.message
                                                     ? "border-spiderverse-red"
                                                     : activeField === "message"
                                                     ? "border-spiderverse-blue border-3"
@@ -618,8 +666,8 @@ const SpiderverseContact = () => {
                                             </div>
                                         )}
                                     </div>
-                                    {errors.message && touched.message && (
-                                        <p className="mt-1 text-spiderverse-red text-sm font-bold flex items-center">
+                                    {errors.message && (
+                                        <p id="sv-message-error" role="alert" className="mt-1 text-spiderverse-red text-sm font-bold flex items-center">
                                             <ErrorIcon />
                                             {errors.message}
                                         </p>
@@ -628,24 +676,15 @@ const SpiderverseContact = () => {
 
                                 <button
                                     type="submit"
-                                    disabled={
-                                        isSubmitting ||
-                                        (touched.name &&
-                                            touched.email &&
-                                            touched.message &&
-                                            (errors.name ||
-                                                errors.email ||
-                                                errors.message))
-                                    }
+                                    // Stays enabled while incomplete: a disabled
+                                    // button cannot explain itself, and it would
+                                    // stop the visitor reaching the submit handler
+                                    // that points at the offending field.
+                                    disabled={isSubmitting}
+                                    aria-disabled={isSubmitting}
                                     className={`spiderverse-button ${
-                                        isSubmitting ||
-                                        (touched.name &&
-                                            touched.email &&
-                                            touched.message &&
-                                            (errors.name ||
-                                                errors.email ||
-                                                errors.message))
-                                            ? "bg-gray-400 cursor-not-allowed"
+                                        isSubmitting
+                                            ? "bg-gray-400 cursor-wait"
                                             : "bg-spiderverse-blue"
                                     } w-full relative overflow-hidden`}
                                 >
@@ -664,7 +703,9 @@ const SpiderverseContact = () => {
                                     </span>
                                 </button>
 
-                                {submitStatus === "success" && (
+                                {/* Announced without the visitor having to go looking for it. */}
+                                <div aria-live="polite" aria-atomic="true">
+                                    {submitStatus === "success" && (
                                     <div className="mt-4 p-3 bg-green-100 border-2 border-black text-black font-bold animate-bounce-in">
                                         <div className="flex items-center">
                                             <svg
@@ -704,14 +745,12 @@ const SpiderverseContact = () => {
                                         </div>
                                     </div>
                                 )}
+                                </div>
 
                                 {/* Form validation guidance */}
                                 {(errors.name ||
                                     errors.email ||
-                                    errors.message) &&
-                                    (touched.name ||
-                                        touched.email ||
-                                        touched.message) && (
+                                    errors.message) && (
                                         <div className="text-black text-sm mt-4 flex items-start p-3 bg-yellow-100 rounded-lg border-2 border-black">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -719,6 +758,7 @@ const SpiderverseContact = () => {
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
+                                                aria-hidden="true"
                                             >
                                                 <path
                                                     strokeLinecap="round"
