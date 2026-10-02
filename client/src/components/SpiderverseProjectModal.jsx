@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState, useId } from "react"
+﻿import React, { useEffect, useRef, useState, useId } from "react"
+import { createPortal } from "react-dom"
 import { useDimension } from "../context/DimensionContext"
 import useFocusTrap from "../hooks/useFocusTrap"
 import SpiderverseCard from "./SpiderverseCard"
@@ -107,8 +108,20 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
 
     const projectColor = getColorClass(project.color)
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-spiderverse-darker/90 backdrop-blur-sm transition-all duration-300">
+    /* Rendered into <body> so the dialog is centred against the viewport no matter
+     * what its ancestors do.
+     *
+     * The Spider-Verse Projects section was inheriting `content-visibility:
+     * auto` from an ID-based rule meant for the normal dimension, and paint
+     * containment makes an element the containing block for `position: fixed`
+     * descendants - the overlay was sizing itself to the section instead. The
+     * CSS rule is now scoped correctly, but a dialog should never depend on
+     * ancestor containment in the first place. */
+    return createPortal(
+        <div
+            data-dimension="spiderverse"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-spiderverse-darker/90 backdrop-blur-sm transition-all duration-300 overflow-y-auto overscroll-contain"
+        >
             {/* Comic book style modal */}
             <div
                 ref={modalRef}
@@ -176,7 +189,7 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                             {/* Scroll indicator for mobile */}
                             <div className="absolute -bottom-6 left-0 right-0 flex justify-center md:hidden">
                                 <div className="text-xs text-gray-500 animate-pulse">
-                                    ← swipe tabs →
+                                    â† swipe tabs â†’
                                 </div>
                             </div>
 
@@ -600,7 +613,8 @@ const SpiderverseProjectModal = ({ project, isOpen, onClose }) => {
                     {new Date().getFullYear()}
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     )
 }
 

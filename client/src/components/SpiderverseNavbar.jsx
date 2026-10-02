@@ -212,6 +212,10 @@ const SpiderverseNavbar = () => {
                             ? "opacity-100 max-h-[80vh] mt-4"
                             : "opacity-0 max-h-0 pointer-events-none"
                     }`}
+                    /* Same reason as the normal navbar: `pointer-events-none`
+                       leaves the links tabbable while the panel is invisible. */
+                    inert={!isMobileMenuOpen}
+                    aria-hidden={!isMobileMenuOpen}
                     style={{
                         top: isMobileMenuOpen ? "70px" : "60px",
                         backdropFilter: "blur(8px)",

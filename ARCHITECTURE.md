@@ -199,7 +199,45 @@ different form.
 
 ---
 
-## 9. Spider-Verse theming ("Night Run")
+## 9. Dialogs are portalled, and why that matters here
+
+Both project modals render through `createPortal(..., document.body)`.
+
+This is not decoration. `content-visibility: auto` implies paint containment, and
+an element with paint containment **becomes the containing block for its
+`position: fixed` descendants**. A dialog written as a `fixed inset-0` overlay
+in place therefore sizes itself to its ancestor section instead of the viewport:
+
+```
+normal dimension   overlay 1554px tall, top -100px  in a 900px window
+Spider-Verse       overlay 1966px tall, top -100px  in a 900px window
+```
+
+Both project modals sat well below centre and overflowed the bottom of the
+screen. Portalling escapes containment entirely, which is the correct structure
+for a dialog regardless.
+
+The underlying mistake was in the CSS, not the components. The optimisation was
+written as bare ID selectors:
+
+```css
+#about, #skills, #projects, #contact { content-visibility: auto; }
+```
+
+Both dimensions reuse the same section IDs, so this silently applied to the
+Spider-Verse sections too — an unintended side effect of an optimisation meant
+for the other dimension. It is now scoped:
+
+```css
+[data-dimension="default"] #about, ... { content-visibility: auto; }
+```
+
+Two lessons worth keeping: scope an optimisation to the thing it was measured
+on, and never let a dialog depend on ancestor containment.
+
+---
+
+## 10. Spider-Verse theming ("Night Run")
 
 The Spider-Verse dimension ignored the site theme entirely. It was hard-coded to
 white comic panels with black ink, so toggling dark mode left blazing white
@@ -243,7 +281,7 @@ grows.
 
 ---
 
-## 10. Generated assets
+## 11. Generated assets
 
 Two generators, both dependency-free, so the committed binaries can be
 reproduced rather than trusted:
@@ -259,7 +297,7 @@ so no build step is needed to serve it.
 
 ---
 
-## 11. Testing
+## 12. Testing
 
 The suite deliberately targets places where a regression is **silent**:
 
@@ -277,7 +315,7 @@ assertions above do not.
 
 ---
 
-## 12. Known trade-offs
+## 13. Known trade-offs
 
 - **Google Fonts over self-hosting.** Self-hosting removes a third-party
   connection and the render-blocking risk, at the cost of several hundred kB of

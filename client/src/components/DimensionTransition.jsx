@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react"
+﻿import React, { useEffect, useState, useRef } from "react"
 import { useDimension } from "../context/DimensionContext"
 
 const ENTERING_MESSAGES = [
@@ -127,6 +127,23 @@ const DimensionTransition = () => {
     const [particles, setParticles] = useState([])
     const containerRef = useRef(null)
 
+    /* Which way this particular transition is going.
+     *
+     * `isSpiderVerse` flips 1500 ms into the transition, but it flips to the
+     * *destination*. Reading it live meant the overlay announced "closing the
+     * rift / returning to normal dimension" at the exact moment it was opening
+     * the rift and entering Spider-Verse. The direction is therefore captured
+     * once, from the value we are leaving, and held for the duration. */
+    const [direction, setDirection] = useState("entering")
+    const isExiting = direction === "exiting"
+
+    // Mirrored so the transition effect can read the pre-flip value without
+    // depending on `isSpiderVerse`, which would restart the effect mid-way.
+    const currentDimensionRef = useRef(isSpiderVerse)
+    useEffect(() => {
+        currentDimensionRef.current = isSpiderVerse
+    }, [isSpiderVerse])
+
     // Enhanced messages for dimension transition (mix of creative mode and Spider-Verse)
 
 
@@ -229,8 +246,15 @@ const DimensionTransition = () => {
     // Change messages and transition phases
     useEffect(() => {
         if (isTransitioning) {
-            // Select base messages based on transition direction
-            const baseMessages = isSpiderVerse
+            /* The ref still holds the value we are leaving: `isSpiderVerse`
+               has not flipped yet at the moment this effect first runs. It is
+               also the only value that stays correct for the whole run, since
+               the live state flips 1500 ms in. */
+            const leavingSpiderVerse = currentDimensionRef.current
+
+            setDirection(leavingSpiderVerse ? "exiting" : "entering")
+
+            const baseMessages = leavingSpiderVerse
                 ? EXITING_MESSAGES
                 : ENTERING_MESSAGES
 
@@ -280,7 +304,7 @@ const DimensionTransition = () => {
             setMessage("")
             setTransitionPhase(0)
         }
-    }, [isTransitioning, isSpiderVerse])
+    }, [isTransitioning])
 
     // Render particle based on shape
     const renderParticle = (particle) => {
@@ -636,10 +660,10 @@ const DimensionTransition = () => {
                     style={{
                         textShadow: `0 0 10px #fff, 
                                     0 0 20px ${
-                                        isSpiderVerse ? "#304ffe" : "#ff1744"
+                                        isExiting ? "#304ffe" : "#ff1744"
                                     }, 
                                     0 0 30px ${
-                                        isSpiderVerse ? "#304ffe" : "#ff1744"
+                                        isExiting ? "#304ffe" : "#ff1744"
                                     }`,
                     }}
                 >
@@ -647,7 +671,7 @@ const DimensionTransition = () => {
                 </div>
 
                 <div className="text-white text-2xl animate-pulse font-['Comic_Neue'] mb-6">
-                    {isSpiderVerse
+                    {isExiting
                         ? `Closing dimensional portal... ${Math.min(
                               transitionPhase * 33,
                               99
@@ -671,14 +695,14 @@ const DimensionTransition = () => {
                             "warning-pulse 0.5s ease-in-out infinite alternate",
                     }}
                 >
-                    {isSpiderVerse
+                    {isExiting
                         ? "CAUTION: RETURNING TO NORMAL DIMENSION"
                         : "WARNING: ENTERING SPIDER-VERSE DIMENSION"}
                 </div>
 
                 {/* Additional warning details */}
                 <div className="text-white text-sm mt-4 max-w-md mx-auto opacity-80 font-mono">
-                    {isSpiderVerse ? (
+                    {isExiting ? (
                         <div className="grid grid-cols-2 gap-2 text-left">
                             <div>Reality Status:</div>
                             <div className="text-green-400">Stabilizing</div>

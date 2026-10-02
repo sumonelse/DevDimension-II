@@ -544,6 +544,21 @@
 }
 
 /* ==========================================================================
+   Night Run - portalled surfaces
+   ==========================================================================
+
+   The Magic Box control panel is rendered through a portal onto <body>, which
+   sits outside the `[data-dimension]` wrapper. Its surface and border are
+   therefore declared here from the same tokens, rather than as hard-coded
+   `bg-white` / `border-black` utilities that ignored the theme. */
+.sv-control-panel {
+    background-color: var(--sv-surface);
+    color: var(--sv-ink);
+    border: 2px solid var(--sv-edge);
+    box-shadow: 4px 4px 0 0 var(--sv-shadow-offset);
+}
+
+/* ==========================================================================
    Night Run - page surface
    ==========================================================================
 

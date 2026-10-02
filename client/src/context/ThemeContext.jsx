@@ -14,17 +14,33 @@ const ThemeContext = createContext()
 export const ThemeProvider = ({ children }) => {
     const [isDarkTheme, setIsDarkTheme] = useState(true)
 
+    /* Browser chrome tint. The static tag in `index.html` matches the dark
+       default; keeping it in sync means the address bar follows the site rather
+       than staying dark behind a white page. */
+    const applyThemeColor = useCallback((isDark) => {
+        const color = isDark ? "#080C1F" : "#f8fafc"
+        let meta = document.querySelector('meta[name="theme-color"]')
+        if (!meta) {
+            meta = document.createElement("meta")
+            meta.setAttribute("name", "theme-color")
+            document.head.appendChild(meta)
+        }
+        meta.setAttribute("content", color)
+    }, [])
+
     const applyDarkTheme = useCallback(() => {
         document.documentElement.classList.remove("light-theme")
         document.documentElement.style.colorScheme = "dark"
         document.body.style.backgroundColor = "#080C1F" // dark.950
-    }, [])
+        applyThemeColor(true)
+    }, [applyThemeColor])
 
     const applyLightTheme = useCallback(() => {
         document.documentElement.classList.add("light-theme")
         document.documentElement.style.colorScheme = "light"
         document.body.style.backgroundColor = "#f8fafc" // light bg
-    }, [])
+        applyThemeColor(false)
+    }, [applyThemeColor])
 
     // Apply the stored or system theme on mount.
     //
@@ -60,7 +76,7 @@ export const ThemeProvider = ({ children }) => {
         }, 100)
 
         return () => clearTimeout(timer)
-    }, [applyDarkTheme, applyLightTheme])
+    }, [applyDarkTheme, applyLightTheme, applyThemeColor])
 
     const toggleTheme = useCallback(() => {
         if (isDarkTheme) {

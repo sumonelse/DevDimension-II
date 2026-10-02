@@ -1,8 +1,67 @@
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
+import { readFileSync, writeFileSync } from "node:fs"
+import { resolve } from "node:path"
+
+/**
+ * Bakes the critical build output into the service worker's precache list.
+ *
+ * The worker lives in `public/` and is copied verbatim, so it cannot know the
+ * content-hashed filenames Vite is about to emit. This plugin runs after the
+ * bundle is written and substitutes the real list for a placeholder.
+ *
+ * Only what is needed to paint and hydrate the first screen is included: the
+ * entry chunk, the vendor chunk and the stylesheets. The ~20 lazy chunks are
+ * deliberately left out - they are cached opportunistically at runtime instead,
+ * which keeps install fast instead of pulling the whole app down on every first
+ * visit.
+ */
+const precacheManifest = () => ({
+    name: "precache-manifest",
+    apply: "build",
+    writeBundle(_options, bundle) {
+        const precache = new Set()
+
+        for (const [fileName, chunk] of Object.entries(bundle)) {
+            if (chunk.type !== "chunk" && chunk.type !== "asset") continue
+
+            // Stylesheets are small enough to always include, and the
+            // Spider-Verse one is what the second dimension needs offline.
+            if (fileName.endsWith(".css")) {
+                precache.add(`/${fileName}`)
+                continue
+            }
+
+            if (chunk.type === "chunk") {
+                if (chunk.isEntry || chunk.name === "react-vendor") {
+                    precache.add(`/${fileName}`)
+                }
+            }
+        }
+
+        const swPath = resolve(process.cwd(), "dist", "sw.js")
+        let source
+        try {
+            source = readFileSync(swPath, "utf8")
+        } catch {
+            // No public/sw.js in this build; nothing to do.
+            return
+        }
+
+        if (!source.includes("self.__DD2_PRECACHE__")) return
+
+        writeFileSync(
+            swPath,
+            source.replace(
+                "self.__DD2_PRECACHE__",
+                JSON.stringify([...precache].sort())
+            )
+        )
+    },
+})
 
 export default defineConfig(() => ({
-    plugins: [react()],
+    plugins: [react(), precacheManifest()],
 
     build: {
         // `target` is left at Vite's `baseline-widely-available` default on

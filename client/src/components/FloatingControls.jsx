@@ -128,13 +128,21 @@ const FloatingControls = () => {
                 </button>
             </div>
 
-            {/* Magic Box Panel rendered via portal to avoid stacking-context issues */}
+            {/* Magic Box Panel rendered via portal to avoid stacking-context issues.
+                The portal root carries `data-dimension` because it is attached to
+                <body>, *outside* the dimension wrapper - without it the
+                Spider-Verse colour remap (scoped to `[data-dimension]`) never
+                reached this panel, so it stayed white with black text even in
+                dark mode. */}
             {isControlPanelOpen &&
                 createPortal(
                     <div
+                        data-dimension={
+                            isSpiderVerse ? "spiderverse" : "default"
+                        }
                         className={`control-panel ${
                             isSpiderVerse
-                                ? "bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                                ? "sv-control-panel"
                                 : isDarkTheme
                                 ? "bg-dark-800/95 backdrop-blur-md border border-purple-500/30"
                                 : "bg-white/95 backdrop-blur-md border border-purple-500/20"
@@ -145,7 +153,7 @@ const FloatingControls = () => {
                         <h3
                             className={`control-panel-header ${
                                 isSpiderVerse
-                                    ? "text-black font-['Comic_Neue']"
+                                    ? "text-[var(--sv-ink)] font-['Comic_Neue']"
                                     : isDarkTheme
                                     ? "text-white"
                                     : "text-gray-800"

@@ -60,31 +60,57 @@ const isIdle = (callback) => {
     }
 }
 
+/**
+ * How long to wait before admitting the page is slow and showing the splash
+ * screen. Below this the loader never mounts at all, which is the common case.
+ */
+const LOADER_DELAY_MS = 250
+
 const App = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [isLoaded, setIsLoaded] = useState(false)
     const { isSpiderVerse, isTransitioning } = useDimension()
 
-    // Hold the loader just long enough to avoid a flash, then get out of the way.
+    // Show the loader only when loading is genuinely slow.
+    //
+    // This used to hold the content back for a flat 500 ms on every visit, warm
+    // cache included, and the hero then faded in over a further 300 ms - so the
+    // site sat behind a splash screen for ~800 ms regardless of how fast the
+    // network was. Inverting it fixes both: a fast load never renders the loader
+    // at all, and a slow one shows something honest rather than something
+    // arbitrarily delayed.
+    const [hasShownLoader, setHasShownLoader] = useState(false)
+
     useEffect(() => {
         const startedAt = performance.now()
+        let revealTimer
 
         const finish = () => {
             const elapsed = performance.now() - startedAt
-            const MIN_LOADER_MS = 500
-            setTimeout(() => setIsLoading(false), Math.max(0, MIN_LOADER_MS - elapsed))
+            const wait = Math.max(0, LOADER_DELAY_MS - elapsed)
+            revealTimer = setTimeout(() => setIsLoading(false), wait)
         }
+
+        // Only mount the loader if we are still waiting after the delay.
+        const loaderTimer = setTimeout(() => setHasShownLoader(true), LOADER_DELAY_MS)
 
         if (document.readyState === "complete") {
             finish()
         } else {
             window.addEventListener("load", finish, { once: true })
             // Safety net in case the load event never arrives.
-            const fallback = setTimeout(finish, 1200)
+            const fallback = setTimeout(finish, 3000)
             return () => {
                 clearTimeout(fallback)
+                clearTimeout(revealTimer)
+                clearTimeout(loaderTimer)
                 window.removeEventListener("load", finish)
             }
+        }
+
+        return () => {
+            clearTimeout(revealTimer)
+            clearTimeout(loaderTimer)
         }
     }, [])
 
@@ -102,11 +128,17 @@ const App = () => {
 
     useScrollReveal({ selector: ".reveal", threshold: 150, activeClass: "active" })
 
-    // Drives the content fade-in.
+    // Drives the content fade-in. Tied to the loader actually being dismissed
+    // rather than a fixed delay, so a fast load fades in as soon as the content
+    // exists instead of sitting at opacity 0 for 300 ms.
     useEffect(() => {
-        const timer = setTimeout(() => setIsLoaded(true), 300)
-        return () => clearTimeout(timer)
-    }, [])
+        if (isLoading) {
+            setIsLoaded(false)
+            return
+        }
+        const frame = requestAnimationFrame(() => setIsLoaded(true))
+        return () => cancelAnimationFrame(frame)
+    }, [isLoading])
 
     // Lets the transition effects react to a dimension change.
     useEffect(() => {
@@ -129,10 +161,13 @@ const App = () => {
 
             {!isSpiderVerse && <CustomCursor />}
 
-            <SpiderverseLoader
-                isLoading={isLoading}
-                setIsLoaded={setIsLoaded}
-            />
+            {/* Only mounted if loading turned out to be slow - see LOADER_DELAY_MS. */}
+            {isLoading && hasShownLoader && (
+                <SpiderverseLoader
+                    isLoading={isLoading}
+                    setIsLoaded={setIsLoaded}
+                />
+            )}
 
             {!isLoading && (
                 <>
@@ -178,10 +213,15 @@ const App = () => {
                         </Suspense>
                     )}
 
+                    {/* The fade was 1000 ms to smooth over the splash screen handing off to
+                        the content. The loader is now only mounted on a genuinely
+                        slow load, so a long fade just leaves the hero sitting at
+                        half opacity - it was taking ~1.4 s for the name to reach
+                        full contrast. */}
                     <main
                         id="main-content"
                         tabIndex={-1}
-                        className={`relative z-10 transition-opacity duration-1000 ${
+                        className={`relative z-10 transition-opacity duration-500 ${
                             isLoaded ? "opacity-100" : "opacity-0"
                         }`}
                     >

@@ -209,6 +209,61 @@ Build: `client/` · React 19.1 · Vite 6.3.5 · Tailwind 3.4.17
 
 ---
 
+## Phase 9 — Audit follow-ups
+
+All found by measuring a production build in Chromium at 4× CPU throttle, not by
+reading code.
+
+### Correctness bugs that were live
+
+- [x] P9.1 `og:image` / `twitter:image` pointed at `/og-image.jpg`, which has
+      never existed. `SEO.jsx` overwrote the correct value from `index.html` on
+      every page load, so every scraper that executes JS got a broken preview.
+- [x] P9.2 Duplicate `<meta name="theme-color">` — `#080C1F` won, `#7c3aed` was
+      dead, and the manifest disagreed with both. One tag now, and `ThemeContext`
+      keeps it in sync with the active theme.
+- [x] P9.3 The closed mobile menu was focusable. `pointer-events-none` does not
+      remove keyboard focusability, so its four links were invisible tab stops at
+      mobile widths. `inert` on both navbars.
+- [x] P9.4 The service worker only worked from the second visit, and its
+      `/index.html` offline fallback could never match because only `/` was ever
+      cached. Now precaches the shell plus a build-time asset manifest injected
+      by a Vite plugin.
+- [x] P9.5 The dimension transition announced "closing the rift / returning to
+      normal dimension" at the exact moment it opened one — `isSpiderVerse`
+      flips to the *destination* 1500 ms in, and the overlay read it live.
+- [x] P9.6 The project modal was not centred. `content-visibility: auto` on
+      `#projects` applies paint containment, which makes it the containing block
+      for `position: fixed` descendants — the overlay sized itself to the section
+      (1554 px tall at top −100 px in a 900 px window). Fixed by portalling the
+      dialog to `<body>`.
+- [x] P9.7 The Spider-Verse cursor stayed invisible until the pointer left and
+      re-entered the browser window, because `isVisible` only ever started from
+      a `mouseenter` — and it is mounted by a click, so the pointer is always
+      already inside. Now revealed on first mouse movement.
+- [x] P9.8 The Magic Box panel stayed white in dark mode. It renders through a
+      portal onto `<body>`, which sits outside the `[data-dimension]` wrapper, so
+      the Spider-Verse colour remap never reached it. The portal root now carries
+      the dimension attribute and the surface uses the shared tokens.
+
+### Core Web Vitals
+
+- [x] P9.9 **CLS 0.193 → 0.010.** Isolated the cause by blocking the font CDN:
+      shift dropped to 0.014, so 93% of it was the webfont swap re-flowing the
+      flex-centred hero. `display=swap` → `display=optional`.
+- [x] P9.10 Removed the artificial 500 ms loader floor and shortened the content
+      fade from 1000 ms to 500 ms. The hero now reaches full contrast at ~1.08 s
+      instead of ~1.42 s, and the splash screen does not appear at all on a fast
+      load.
+
+### Touch
+
+- [x] P9.11 Raised sub-44px tap targets behind `@media (pointer: coarse)`: the
+      contact email link was 19px tall, footer links 21px, filter chips 40px and
+      the card actions 36px. Desktop sizing is untouched.
+
+---
+
 ## Phase 7 — Verification
 
 - [x] P7.1 `npm run lint` clean (0 errors, 0 warnings, down from 10/12)

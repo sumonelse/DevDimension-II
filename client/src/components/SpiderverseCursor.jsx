@@ -152,6 +152,17 @@ const SpiderverseCursor = () => {
         const handleMouseMove = (event) => {
             pointer.x = event.clientX
             pointer.y = event.clientY
+
+            /* Reveal on the first movement rather than waiting for
+             * `mouseenter`.
+             *
+             * This cursor is mounted by clicking the dimension button, so the
+             * pointer is always *already inside* the window when it appears -
+             * which means no `mouseenter` ever fires, and the cursor stayed
+             * invisible until the visitor moved the pointer out of the browser
+             * and back in again. Moving the mouse is the thing that should
+             * summon it. */
+            setIsVisible(true)
         }
 
         const handleMouseDown = () => setIsClicking(true)

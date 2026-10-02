@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useId } from "react"
+import { createPortal } from "react-dom"
 import useFocusTrap from "../hooks/useFocusTrap"
 
 const ProjectModal = ({ project, isOpen, onClose }) => {
     const modalRef = useRef(null)
     const titleId = useId()
 
-    // Escape to dismiss, focus trapped inside the dialog, focus restored on close.
+    // Escape, focus trapped inside the dialog, focus restored on close.
     useFocusTrap(isOpen, modalRef, onClose)
 
     // Lock background scrolling while the dialog is open, restoring whatever the
@@ -23,8 +24,16 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
 
     if (!isOpen || !project) return null
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-950/80 backdrop-blur-sm transition-all duration-300">
+    /* Rendered into <body> rather than in place.
+     *
+     * The Projects section sets `content-visibility: auto`, and paint containment
+     * makes an element the containing block for `position: fixed` descendants.
+     * The overlay was therefore sizing itself to the section instead of the
+     * viewport - 1554px tall at top -100px in a 900px window - and the dialog
+     * sat well below centre. Portalling escapes that containment entirely, and
+     * is the right structure for a dialog regardless. */
+    return createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark-950/80 backdrop-blur-sm transition-all duration-300 overflow-y-auto overscroll-contain">
             <div
                 ref={modalRef}
                 role="dialog"
@@ -222,7 +231,8 @@ const ProjectModal = ({ project, isOpen, onClose }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     )
 }
 

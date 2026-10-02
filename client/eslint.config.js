@@ -61,7 +61,12 @@ export default [
     },
     {
         // Build tooling and tests run under Node.
-        files: ["scripts/**/*.mjs", "**/*.test.{js,jsx}", "vitest.config.js"],
+        files: [
+            "vite.config.js",
+            "vitest.config.js",
+            "scripts/**/*.mjs",
+            "**/*.test.{js,jsx}",
+        ],
         languageOptions: {
             globals: { ...globals.node },
         },

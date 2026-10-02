@@ -117,6 +117,41 @@ the scroll spy write transforms and CSS custom properties inside a single
 a bottom `rootMargin` — see the note in `useScrollReveal.js` for why testing it
 against the bounding rect instead silently breaks every element.
 
+**Web fonts use `display=optional`, not `swap`.** Measured on a throttled
+production build, blocking the font CDN entirely dropped CLS from 0.193 to
+0.014 — 93% of the layout shift was the swap re-flowing the flex-centred hero.
+`optional` lets the browser keep the fallback for that page view rather than
+swapping underneath the content; on a warm cache the font is there immediately
+and is used, so repeat visits keep the real typography.
+
+**The splash screen is conditional.** It used to hold the content back for a
+flat 500 ms on every visit. It now only mounts if loading is genuinely slow
+(250 ms), and the content fade was shortened from 1000 ms to 500 ms, taking the
+hero from ~1.42 s to ~1.08 s before full contrast.
+
+### Offline
+
+`sw.js` precaches the app shell — the HTML under both keys it can be requested
+as, plus the manifest, favicon and the critical build output. The asset list is
+injected at build time by a small Vite plugin (`precacheManifest`), because the
+worker lives in `public/` and cannot know the content-hashed filenames.
+
+Only what is needed to paint and hydrate the first screen is precached — the
+entry chunk, the vendor chunk and the stylesheets. The ~20 lazy chunks are
+picked up by the runtime cache instead, so install stays fast. Without the shell
+precache, offline only worked from the second visit onwards; with it but without
+the assets, it booted to a silent blank page.
+
+### Measured (Chromium, production build, 4× CPU throttle)
+
+| Metric | Value |
+| --- | --- |
+| CLS (normal / comic) | 0.010 / 0.005 |
+| LCP | ~790 ms |
+| FCP | ~640 ms |
+| TBT | 857 ms, longest task 228 ms |
+| Audio on first load | 0 bytes |
+
 ### Bundle budget
 
 Run `npm run check` after touching anything in the critical path. Current
@@ -124,11 +159,11 @@ production figures:
 
 | Artifact | Raw | gzip |
 | --- | --- | --- |
-| `index-*.js` (entry) | 79.75 kB | 23.67 kB |
+| `index-*.js` (entry) | 78.26 kB | 22.97 kB |
 | `react-vendor-*.js` | 182.90 kB | 57.69 kB |
-| `index-*.css` (critical) | 133.52 kB | 21.86 kB |
-| `spiderverse-*.css` (on demand) | 24.28 kB | 5.13 kB |
-| `index.html` | 6.61 kB | 2.09 kB |
+| `index-*.css` (critical) | 135.46 kB | 22.65 kB |
+| `spiderverse-*.css` (on demand) | 29.83 kB | 6.16 kB |
+| `index.html` | 6.6 kB | 2.1 kB |
 
 The entry chunk was 303.45 kB (84.90 kB gzip) before this work.
 
@@ -143,8 +178,13 @@ chunk that quietly grows fails the build review rather than shipping.
   disable the custom cursors, the parallax layers and the glitch loop.
 - The custom cursors only hide the native pointer while they are actually
   mounted, and never over text fields, so a caret is always visible.
-- Both project modals trap focus, restore it on close, and expose
-  `role="dialog"` / `aria-modal` / `aria-labelledby`.
+- Both project modals trap focus, restore it on close, expose
+  `role="dialog"` / `aria-modal` / `aria-labelledby`, and render through a
+  portal to `<body>` — `content-visibility` on their ancestor section would
+  otherwise make that section the containing block for `position: fixed`.
+- The closed mobile menu is `inert`, so it is not a set of invisible tab stops.
+- Touch targets meet 44px behind `@media (pointer: coarse)`; desktop sizing is
+  untouched.
 - There is a skip-to-content link and a real `<main>` landmark.
 - Form errors are wired to their inputs with `aria-invalid` /
   `aria-describedby`, marked `role="alert"`, and results are announced through

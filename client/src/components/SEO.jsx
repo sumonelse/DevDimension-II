@@ -9,8 +9,13 @@ const SEO = ({
     description = personalInfo.aboutShort,
     keywords = "developer, portfolio, full-stack, competitive programming, web development, algorithms, problem-solving",
     author = personalInfo.name,
-    ogImage = "/og-image.jpg",
-    ogUrl = "https://sumitmaurya.dev",
+    /* Must be absolute and must be the `.png` that actually exists. This used to
+       default to `/og-image.jpg`, which overwrote the correct value from
+       `index.html` on every page load, so every scraper that executes JS got a
+       broken preview image. */
+    ogImage = "https://sumitmaurya.dev/og-image.png",
+    /* Trailing slash to match the canonical URL in `index.html`. */
+    ogUrl = "https://sumitmaurya.dev/",
     twitterHandle = personalInfo.social.twitter.username,
 }) => {
     useEffect(() => {

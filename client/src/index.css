@@ -2626,11 +2626,18 @@ code::-webkit-scrollbar-thumb {
    hundred nodes that are invisible until scrolled to, so letting the browser
    skip their layout and paint is the single cheapest win in this file. The
    `auto` keyword in `contain-intrinsic-size` means the browser keeps learning
-   the real size, so the scrollbar settles instead of oscillating. */
-#about,
-#skills,
-#projects,
-#contact {
+   the real size, so the scrollbar settles instead of oscillating.
+
+   Scoped to `[data-dimension="default"]` deliberately. Both dimensions reuse the
+   same section IDs, and an unscoped `#projects` also matched the Spider-Verse
+   section - which then applied paint containment there too. That made the
+   section the containing block for `position: fixed` descendants, so the comic
+   project modal was sizing itself to the section rather than the viewport
+   (1966px tall at top -100px in a 900px window). */
+[data-dimension="default"] #about,
+[data-dimension="default"] #skills,
+[data-dimension="default"] #projects,
+[data-dimension="default"] #contact {
     content-visibility: auto;
     contain-intrinsic-size: auto 900px;
 }
@@ -2912,6 +2919,82 @@ html.has-comic-cursor summary {
         transparent 60%,
         rgba(148, 163, 184, 0.16) 100%
     );
+}
+
+/* ==========================================================================
+   Touch targets
+   ========================================================================== */
+
+/* WCAG 2.5.5 / Apple HIG want 44x44 CSS px for anything tappable. Several
+   controls here are visually correct but smaller than that: the contact email
+   link measured 19px tall, the footer nav links 21px, the project filter chips
+   40px and the "View Project Details" buttons 36px.
+
+   Rather than inflate the design at every breakpoint, the floor is applied
+   only where a finger is actually pointing - `pointer: coarse`. Desktop keeps
+   the original sizing untouched. */
+@media (pointer: coarse) {
+    /* Inline links in prose: keep the text looking like text, but give the
+       hit area a full row. */
+    a[href^="mailto:"],
+    a[href^="tel:"],
+    footer a[href^="#"]:not([class*="text-3xl"]) {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+    }
+
+    /* Pill-shaped filters. */
+    button[style*="animation-delay"] {
+        min-height: 44px;
+    }
+
+    /* Full-width card actions: `py-2.5` lands at 36px, so pad the box out
+       without changing the type size. */
+    button.w-full.px-5.py-2\.5,
+    button.w-full.px-4.py-2 {
+        min-height: 44px;
+    }
+
+    /* Brand wordmarks. */
+    nav a[href="#hero"],
+    footer a[href="#hero"] {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* The skip link. */
+    .skip-to-content {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Icon-only round controls, sized by the box rather than the glyph. */
+    button[aria-label="Enter Spider-Verse Mode"],
+    button[aria-label="Magic Box"],
+    button[aria-label="Toggle Brand Style Guide"],
+    button[aria-label="Toggle menu"],
+    button[aria-label*="mute" i],
+    button[aria-label*="audio" i] {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Social and platform icon links. */
+    a[href*="github.com"],
+    a[href*="linkedin.com"],
+    a[href*="twitter.com"],
+    a[href*="x.com"],
+    a[href*="codechef.com"],
+    a[href*="codeforces.com"] {
+        min-width: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 /* ==========================================================================

@@ -379,6 +379,13 @@ const Navbar = () => {
 
                 {/* Mobile menu - Enhanced Cinematic version */}
                 <div
+                    /* `pointer-events-none` does not remove keyboard
+                       focusability, so with the menu closed its four links stayed
+                       in the tab order as invisible stops. `inert` takes the
+                       whole subtree out of both the tab order and the
+                       accessibility tree, and leaves the CSS animation alone. */
+                    inert={!isMenuOpen}
+                    aria-hidden={!isMenuOpen}
                     className={`md:hidden fixed left-0 right-0 transition-all duration-500 ease-in-out ${
                         isMenuOpen
                             ? "opacity-100 top-[72px] h-[calc(100vh-72px)] z-50"
