@@ -1,18 +1,22 @@
 import React, { useEffect, useRef, useState } from "react"
 import personalInfo from "../utils/personalInfo"
 
+/* Hoisted so the reference is stable across renders; defined inside the
+   component it was a new array on every render, which is also why the typing
+   effect below had to leave it out of its dependency list. */
+const TITLES = [
+    "Full-Stack Developer",
+    "Problem Solver",
+    "UI/UX Enthusiast",
+    "Tech Explorer",
+]
+
 const Hero = () => {
     const typingTextRef = useRef(null)
     const [currentTextIndex, setCurrentTextIndex] = useState(0)
-    const titles = [
-        "Full-Stack Developer",
-        "Problem Solver",
-        "UI/UX Enthusiast",
-        "Tech Explorer",
-    ]
 
     useEffect(() => {
-        // Enhanced typing animation with multiple titles
+        // Enhanced typing animation with multiple TITLES
         const typingElement = typingTextRef.current
         let charIndex = 0
         let isDeleting = false
@@ -22,7 +26,7 @@ const Hero = () => {
             typingElement.textContent = ""
 
             const typeEffect = () => {
-                const currentText = titles[currentTextIndex]
+                const currentText = TITLES[currentTextIndex]
 
                 if (isDeleting) {
                     // Deleting text
@@ -35,7 +39,7 @@ const Hero = () => {
                     if (charIndex === 0) {
                         isDeleting = false
                         setCurrentTextIndex(
-                            (prevIndex) => (prevIndex + 1) % titles.length
+                            (prevIndex) => (prevIndex + 1) % TITLES.length
                         )
                         textTimeout = setTimeout(typeEffect, 500) // Pause before typing next title
                     } else {

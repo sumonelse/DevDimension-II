@@ -63,14 +63,13 @@ const SpiderverseContact = () => {
             { threshold: 0.1 }
         )
 
-        if (sectionRef.current) {
-            observer.observe(sectionRef.current)
-        }
+        const section = sectionRef.current
+        if (section) observer.observe(section)
 
         return () => {
-            if (sectionRef.current) {
-                observer.unobserve(sectionRef.current)
-            }
+            // Captured outside the cleanup: `sectionRef.current` may already be
+            // null by the time React tears the node down.
+            observer.disconnect()
         }
     }, [])
 

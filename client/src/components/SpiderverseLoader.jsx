@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react"
 
+/* Hoisted for a stable reference. */
+const LOADING_TEXTS = [
+    "Initializing...",
+    "Connecting to Spider-Verse...",
+    "Calibrating dimensional portal...",
+    "Scanning multiverse...",
+    "Locating Earth-616...",
+    "Establishing quantum connection...",
+    "Rendering comic panels...",
+    "Activating spider-sense...",
+    "Preparing web-shooters...",
+    "Almost there...",
+]
+
 const SpiderverseLoader = ({ isLoading, setIsLoaded }) => {
     const [progress, setProgress] = useState(0)
     const [loadingText, setLoadingText] = useState("Initializing...")
 
-    const loadingTexts = [
-        "Initializing...",
-        "Connecting to Spider-Verse...",
-        "Calibrating dimensional portal...",
-        "Scanning multiverse...",
-        "Locating Earth-616...",
-        "Establishing quantum connection...",
-        "Rendering comic panels...",
-        "Activating spider-sense...",
-        "Preparing web-shooters...",
-        "Almost there...",
-    ]
 
     useEffect(() => {
         if (!isLoading) return
@@ -38,10 +40,10 @@ const SpiderverseLoader = ({ isLoading, setIsLoaded }) => {
 
             // Update loading text based on progress
             const textIndex = Math.floor(
-                (currentProgress / 100) * loadingTexts.length
+                (currentProgress / 100) * LOADING_TEXTS.length
             )
             setLoadingText(
-                loadingTexts[Math.min(textIndex, loadingTexts.length - 1)]
+                LOADING_TEXTS[Math.min(textIndex, LOADING_TEXTS.length - 1)]
             )
         }, 150)
 

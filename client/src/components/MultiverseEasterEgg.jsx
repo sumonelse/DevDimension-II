@@ -3,23 +3,24 @@ import { useDimension } from "../context/DimensionContext"
 import SpeechBubble from "./SpeechBubble"
 import SoundEffect from "./SoundEffect"
 
+const KONAMI_CODE = [
+    "ArrowUp",
+    "ArrowUp",
+    "ArrowDown",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowLeft",
+    "ArrowRight",
+    "b",
+    "a",
+]
+
 const MultiverseEasterEgg = () => {
     const { isSpiderVerse, multiverseAwareness } = useDimension()
     const [showEasterEgg, setShowEasterEgg] = useState(false)
     const [easterEggPhase, setEasterEggPhase] = useState(0)
     const [konami, setKonami] = useState([])
-    const konamiCode = [
-        "ArrowUp",
-        "ArrowUp",
-        "ArrowDown",
-        "ArrowDown",
-        "ArrowLeft",
-        "ArrowRight",
-        "ArrowLeft",
-        "ArrowRight",
-        "b",
-        "a",
-    ]
 
     // Multiverse awareness messages
     const awarenessMessages = [
@@ -59,7 +60,7 @@ const MultiverseEasterEgg = () => {
     useEffect(() => {
         if (konami.length === 10) {
             const isKonamiCode = konami.every(
-                (key, index) => key === konamiCode[index]
+                (key, index) => key === KONAMI_CODE[index]
             )
 
             if (isKonamiCode && isSpiderVerse) {

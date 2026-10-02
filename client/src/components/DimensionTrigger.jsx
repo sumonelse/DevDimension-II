@@ -1,7 +1,135 @@
-import React, { useState, useEffect, useRef } from "react"
+﻿import React, { useState, useEffect, useRef, useCallback } from "react"
 import { useDimension } from "../context/DimensionContext"
 import emitParticles from "../utils/particles"
 import useReducedMotion from "../hooks/useReducedMotion"
+
+const WARNING_MESSAGES = [
+    "Don't click me!",
+    "Are you sure?",
+    "This might break the code...",
+    "Your dev-sense says NO",
+    "Stack overflow imminent",
+    "Click if you dare...",
+    "Codebase is fragile here",
+    "Merge conflict detected",
+    "This button is unstable",
+    "Warning: Buggy code ahead",
+    "Click to destabilize production",
+    "Senior devs would be cautious",
+    "Git conflict detected",
+    "This might get weird...",
+    "Proceed at your own risk",
+    "Runtime uncertainty activated",
+    "Code stability: 12%",
+    "Caution: CSS warping",
+    "CI/CD pipeline: Unstable",
+    "Danger! Database collapsing",
+
+    "Dimensional collapse imminent",
+    "Spider-sense tingling...",
+    "Reality is fragile here",
+    "Multiverse breach detected",
+    "Warning: Glitchy dimension ahead",
+    // More dev journey messages
+    "Resume not yet optimized...",
+    "Interview prep incomplete",
+    "Algorithm challenge loading...",
+    "Whiteboard interview detected",
+    "Warning: Technical test unfinished",
+    "Job application barrier thinning",
+    "LinkedIn profile incomplete",
+    "Portfolio stretching thin",
+    "Callback loops forming",
+    "Career divergence imminent",
+    "Parallel job offers converging",
+    "Work-life balance rupturing",
+    "Project deadline at risk",
+    "Butterfly effect in your GitHub",
+    "Tech stack expanding rapidly",
+    "Job security unstable",
+    "Impostor syndrome increasing",
+    "Technical debt threshold reached",
+]
+
+const TEASING_MESSAGES = [
+    "Miss your boring code editor?",
+    "Can't handle the creative mode?",
+    "Back to plain HTML?",
+    "Too colorful for you?",
+    "Leaving so soon?",
+    "The design world will miss you",
+    "UI/UX says stay a while",
+    "Running from creativity?",
+    "Afraid of a little design chaos?",
+    "The creative dimension chose you",
+
+    "Can't handle the Spider-Verse?",
+    "The multiverse will miss you",
+    "Spidey says stay a while",
+    "Running from adventure?",
+    "The Spider-Verse chose you",
+    // More creative mode messages
+    "One more minute in design land?",
+    "Your code is so... plain",
+    "But the fun just started!",
+    "This portfolio needs you",
+    "Creative tourist leaving?",
+    "Your design powers just activated",
+    "But you look good in creative mode",
+    "The web of design is comfy",
+    "A good developer would stay longer",
+    "UI/UX thinking is addictive",
+    // More Spider-Verse messages
+    "Your spider-powers just activated",
+    "But you look good in comic style",
+    "The web of reality is comfy",
+    "Spidey would stay longer",
+    // More creative mode messages
+    "Trading creativity for boring code?",
+    "Your frontend potential is just starting",
+    "The CSS is still fresh on your page",
+    "Animations and transitions suit you",
+    "Leaving before the portfolio is seen?",
+    "The creative side has cookies",
+    "Your developer story just began",
+    "Plain code is so last year",
+    "The design team will be disappointed",
+    "Recruiters would be pleased you're leaving",
+    "Tech leads will miss your creative touch",
+    "The UX designer was about to offer feedback",
+    "The senior dev was going to teach you React tricks",
+    "The product manager prepared a feature for you",
+    "The QA team found no bugs in your code",
+    "With great power comes great... oh nevermind",
+]
+
+const EASTER_EGG_MESSAGES = [
+    "Did you know this button was coded at 3 AM?",
+    "I've been clicked by 14,000,605 recruiters...",
+    "In another company, YOU are the CTO",
+    "The real dev journey was the bugs we fixed along the way",
+    "This portfolio exists in 616 GitHub repositories simultaneously",
+    // Spider-Verse Easter eggs
+    "Deadpool says hi from the fourth wall",
+    "This dimension smells like fresh ink",
+    "Thwip! Just practicing my web sounds",
+    // More dev journey Easter eggs
+    "The debugger says hi from the console",
+    "This codebase smells like fresh coffee",
+    "I'm not just a button, I'm a career pivot point",
+    "Beep! Just practicing my error sounds",
+    "Help! I'm trapped in a coding bootcamp!",
+    "Click me three times to unlock job offers... just kidding",
+    "SchrÃ¶dinger's code: this function is both working and not working",
+    // More Spider-Verse Easter eggs
+    "The multiverse theory states this button is both clicked and not clicked",
+    "In one universe, this website won an Oscar",
+    "Spider-sense tingling... or maybe that's just static electricity",
+    // Final dev journey Easter eggs
+    "In one timeline, this website won a Webby Award",
+    "Code-sense tingling... or maybe that's just caffeine",
+    "If you see this message, you're the developer we're looking for",
+]
 
 const DimensionTrigger = () => {
     const { isSpiderVerse, toggleDimension, isTransitioning } = useDimension()
@@ -17,148 +145,28 @@ const DimensionTrigger = () => {
     const prefersReducedMotion = useReducedMotion()
 
     // Fun warning messages for the button (mix of dev journey and Spider-Verse)
-    const warningMessages = [
-        "Don't click me!",
-        "Are you sure?",
-        "This might break the code...",
-        "Your dev-sense says NO",
-        "Stack overflow imminent",
-        "Click if you dare...",
-        "Codebase is fragile here",
-        "Merge conflict detected",
-        "This button is unstable",
-        "Warning: Buggy code ahead",
-        "Click to destabilize production",
-        "Senior devs would be cautious",
-        "Git conflict detected",
-        "This might get weird...",
-        "Proceed at your own risk",
-        "Runtime uncertainty activated",
-        "Code stability: 12%",
-        "Caution: CSS warping",
-        "CI/CD pipeline: Unstable",
-        "Danger! Database collapsing",
 
-        "Dimensional collapse imminent",
-        "Spider-sense tingling...",
-        "Reality is fragile here",
-        "Multiverse breach detected",
-        "Warning: Glitchy dimension ahead",
-        // More dev journey messages
-        "Resume not yet optimized...",
-        "Interview prep incomplete",
-        "Algorithm challenge loading...",
-        "Whiteboard interview detected",
-        "Warning: Technical test unfinished",
-        "Job application barrier thinning",
-        "LinkedIn profile incomplete",
-        "Portfolio stretching thin",
-        "Callback loops forming",
-        "Career divergence imminent",
-        "Parallel job offers converging",
-        "Work-life balance rupturing",
-        "Project deadline at risk",
-        "Butterfly effect in your GitHub",
-        "Tech stack expanding rapidly",
-        "Job security unstable",
-        "Impostor syndrome increasing",
-        "Technical debt threshold reached",
-    ]
 
     // Teasing messages when in Spider-Verse (mix of creative mode and Spider-Verse)
-    const teasingMessages = [
-        "Miss your boring code editor?",
-        "Can't handle the creative mode?",
-        "Back to plain HTML?",
-        "Too colorful for you?",
-        "Leaving so soon?",
-        "The design world will miss you",
-        "UI/UX says stay a while",
-        "Running from creativity?",
-        "Afraid of a little design chaos?",
-        "The creative dimension chose you",
 
-        "Can't handle the Spider-Verse?",
-        "The multiverse will miss you",
-        "Spidey says stay a while",
-        "Running from adventure?",
-        "The Spider-Verse chose you",
-        // More creative mode messages
-        "One more minute in design land?",
-        "Your code is so... plain",
-        "But the fun just started!",
-        "This portfolio needs you",
-        "Creative tourist leaving?",
-        "Your design powers just activated",
-        "But you look good in creative mode",
-        "The web of design is comfy",
-        "A good developer would stay longer",
-        "UI/UX thinking is addictive",
-        // More Spider-Verse messages
-        "Your spider-powers just activated",
-        "But you look good in comic style",
-        "The web of reality is comfy",
-        "Spidey would stay longer",
-        // More creative mode messages
-        "Trading creativity for boring code?",
-        "Your frontend potential is just starting",
-        "The CSS is still fresh on your page",
-        "Animations and transitions suit you",
-        "Leaving before the portfolio is seen?",
-        "The creative side has cookies",
-        "Your developer story just began",
-        "Plain code is so last year",
-        "The design team will be disappointed",
-        "Recruiters would be pleased you're leaving",
-        "Tech leads will miss your creative touch",
-        "The UX designer was about to offer feedback",
-        "The senior dev was going to teach you React tricks",
-        "The product manager prepared a feature for you",
-        "The QA team found no bugs in your code",
-        "With great power comes great... oh nevermind",
-    ]
 
     // Rare Easter egg messages (mix of dev journey and Spider-Verse)
-    const easterEggMessages = [
-        "Did you know this button was coded at 3 AM?",
-        "I've been clicked by 14,000,605 recruiters...",
-        "In another company, YOU are the CTO",
-        "The real dev journey was the bugs we fixed along the way",
-        "This portfolio exists in 616 GitHub repositories simultaneously",
-        // Spider-Verse Easter eggs
-        "Deadpool says hi from the fourth wall",
-        "This dimension smells like fresh ink",
-        "Thwip! Just practicing my web sounds",
-        // More dev journey Easter eggs
-        "The debugger says hi from the console",
-        "This codebase smells like fresh coffee",
-        "I'm not just a button, I'm a career pivot point",
-        "Beep! Just practicing my error sounds",
-        "Help! I'm trapped in a coding bootcamp!",
-        "Click me three times to unlock job offers... just kidding",
-        "Schrödinger's code: this function is both working and not working",
-        // More Spider-Verse Easter eggs
-        "The multiverse theory states this button is both clicked and not clicked",
-        "In one universe, this website won an Oscar",
-        "Spider-sense tingling... or maybe that's just static electricity",
-        // Final dev journey Easter eggs
-        "In one timeline, this website won a Webby Award",
-        "Code-sense tingling... or maybe that's just caffeine",
-        "If you see this message, you're the developer we're looking for",
-    ]
 
-    // Function to get a random message
-    const getRandomMessage = () => {
+
+    // Function to get a random message.
+    // `useCallback` so the effects that call it can list it as a dependency:
+    // as a bare function literal it was a new reference on every render.
+    const getRandomMessage = useCallback(() => {
         // 5% chance to show an Easter egg message
-        if (Math.random() < 0.05 && easterEggMessages.length > 0) {
-            return easterEggMessages[
-                Math.floor(Math.random() * easterEggMessages.length)
+        if (Math.random() < 0.05 && EASTER_EGG_MESSAGES.length > 0) {
+            return EASTER_EGG_MESSAGES[
+                Math.floor(Math.random() * EASTER_EGG_MESSAGES.length)
             ]
         }
 
-        const messages = isSpiderVerse ? teasingMessages : warningMessages
+        const messages = isSpiderVerse ? TEASING_MESSAGES : WARNING_MESSAGES
         return messages[Math.floor(Math.random() * messages.length)]
-    }
+    }, [isSpiderVerse])
 
     // No cleanup needed for component mount
     useEffect(() => {
@@ -294,7 +302,7 @@ const DimensionTrigger = () => {
                 clearInterval(messageIntervalRef.current)
             }
         }
-    }, [isHovering, glitchInterval, isSpiderVerse])
+    }, [isHovering, glitchInterval, isSpiderVerse, getRandomMessage, prefersReducedMotion])
 
     // Function removed: runAway
 
@@ -509,7 +517,7 @@ const DimensionTrigger = () => {
                 clearInterval(randomMessageIntervalRef.current)
             }
         }
-    }, [isTransitioning, showMessage, isHovering, isSpiderVerse])
+    }, [isTransitioning, showMessage, isHovering, isSpiderVerse, getRandomMessage])
 
     // Clean up on unmount
     useEffect(() => {

@@ -14,30 +14,6 @@ const ThemeContext = createContext()
 export const ThemeProvider = ({ children }) => {
     const [isDarkTheme, setIsDarkTheme] = useState(true)
 
-    useEffect(() => {
-        // Check for system preference
-        const prefersDarkMode = window.matchMedia(
-            "(prefers-color-scheme: dark)"
-        ).matches
-
-        // Check for saved theme preference or use system preference as default
-        const savedTheme = localStorage.getItem("theme")
-
-        if (savedTheme === "light" || (!savedTheme && !prefersDarkMode)) {
-            setIsDarkTheme(false)
-            applyLightTheme()
-        } else {
-            setIsDarkTheme(true)
-            applyDarkTheme()
-        }
-
-        // Add transition class after initial load to prevent flash
-        setTimeout(() => {
-            document.body.classList.add("transition-colors")
-            document.documentElement.classList.add("transition-colors")
-        }, 100)
-    }, [])
-
     const applyDarkTheme = useCallback(() => {
         document.documentElement.classList.remove("light-theme")
         document.documentElement.style.colorScheme = "dark"
@@ -50,15 +26,59 @@ export const ThemeProvider = ({ children }) => {
         document.body.style.backgroundColor = "#f8fafc" // light bg
     }, [])
 
+    // Apply the stored or system theme on mount.
+    //
+    // Declared after `applyDarkTheme` / `applyLightTheme` so both can be listed
+    // as dependencies; as a bare function reference the rule could not tell
+    // whether the effect was safe to re-run.
+    useEffect(() => {
+        const prefersDarkMode = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+        ).matches
+
+        // localStorage throws in some private-browsing modes, and failing to
+        // read a preference must never stop the theme from applying.
+        let savedTheme = null
+        try {
+            savedTheme = window.localStorage.getItem("theme")
+        } catch {
+            savedTheme = null
+        }
+
+        if (savedTheme === "light" || (!savedTheme && !prefersDarkMode)) {
+            setIsDarkTheme(false)
+            applyLightTheme()
+        } else {
+            setIsDarkTheme(true)
+            applyDarkTheme()
+        }
+
+        // Add transition class after initial load to prevent flash
+        const timer = setTimeout(() => {
+            document.body.classList.add("transition-colors")
+            document.documentElement.classList.add("transition-colors")
+        }, 100)
+
+        return () => clearTimeout(timer)
+    }, [applyDarkTheme, applyLightTheme])
+
     const toggleTheme = useCallback(() => {
         if (isDarkTheme) {
             // Switch to light mode
             applyLightTheme()
-            localStorage.setItem("theme", "light")
+            try {
+                localStorage.setItem("theme", "light")
+            } catch {
+                // Preference simply will not persist.
+            }
         } else {
             // Switch to dark mode
             applyDarkTheme()
-            localStorage.setItem("theme", "dark")
+            try {
+                localStorage.setItem("theme", "dark")
+            } catch {
+                // Preference simply will not persist.
+            }
         }
         setIsDarkTheme((prevState) => !prevState)
     }, [isDarkTheme, applyLightTheme, applyDarkTheme])

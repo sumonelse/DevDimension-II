@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client"
 import "./critical.css" // Load critical CSS first
 import "./index.css"
 import App from "./App.jsx"
+import ErrorBoundary from "./components/ErrorBoundary"
 import { ThemeProvider } from "./context/ThemeContext"
 import { DimensionProvider } from "./context/DimensionContext"
 import { initPerformanceMonitoring } from "./utils/performance"
@@ -24,12 +25,17 @@ loadDimensionStyles()
 
 registerServiceWorker()
 
+// Outermost so it also covers a failure while a lazy chunk is being resolved -
+// the whole point being that a renamed chunk after a deploy shows a reload
+// button instead of a blank page.
 createRoot(document.getElementById("root")).render(
     <StrictMode>
-        <ThemeProvider>
-            <DimensionProvider>
-                <App />
-            </DimensionProvider>
-        </ThemeProvider>
+        <ErrorBoundary>
+            <ThemeProvider>
+                <DimensionProvider>
+                    <App />
+                </DimensionProvider>
+            </ThemeProvider>
+        </ErrorBoundary>
     </StrictMode>
 )

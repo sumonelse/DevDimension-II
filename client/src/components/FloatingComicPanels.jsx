@@ -1,6 +1,101 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useDimension } from "../context/DimensionContext"
 
+const PANEL_CONTENTS = [
+    // Action words with different styles
+    {
+        type: "text",
+        content: "THWIP!",
+        color: "spiderverse-red",
+        size: "text-4xl",
+        style: "font-bold transform -rotate-3 drop-shadow-lg",
+    },
+    {
+        type: "text",
+        content: "POW!",
+        color: "spiderverse-yellow",
+        size: "text-5xl",
+        style: "font-extrabold transform rotate-2 drop-shadow-xl",
+    },
+    {
+        type: "text",
+        content: "BANG!",
+        color: "spiderverse-blue",
+        size: "text-4xl",
+        style: "font-bold transform -rotate-1 drop-shadow-lg",
+    },
+    {
+        type: "text",
+        content: "ZOOM!",
+        color: "spiderverse-purple",
+        size: "text-5xl",
+        style: "font-extrabold transform rotate-3 drop-shadow-xl",
+    },
+    {
+        type: "text",
+        content: "WHAM!",
+        color: "spiderverse-cyan",
+        size: "text-6xl",
+        style: "font-black transform -rotate-2 drop-shadow-2xl",
+    },
+    {
+        type: "text",
+        content: "CRASH!",
+        color: "spiderverse-green",
+        size: "text-5xl",
+        style: "font-extrabold transform rotate-1 drop-shadow-xl",
+    },
+    // Comic style images
+    {
+        type: "image",
+        content:
+            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,0 C55,25 75,40 100,50 C75,60 55,75 50,100 C45,75 25,60 0,50 C25,40 45,25 50,0 Z' fill='%23ff0000'/%3E%3C/svg%3E",
+        size: "w-16 h-16",
+        style: "filter: drop-shadow(0 0 8px rgba(255,0,0,0.5))",
+    },
+    {
+        type: "image",
+        content:
+            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M50,5 L50,95 M5,50 L95,50 M15,15 L85,85 M15,85 L85,15' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E",
+        size: "w-20 h-20",
+        style: "filter: drop-shadow(0 0 5px rgba(255,255,255,0.5))",
+    },
+    // Spider-Man logo
+    {
+        type: "image",
+        content:
+            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,10 C60,30 80,40 90,40 C80,50 80,70 90,90 C70,80 50,80 50,90 C50,80 30,80 10,90 C20,70 20,50 10,40 C20,40 40,30 50,10 Z' fill='%23ff0000' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E",
+        size: "w-24 h-24",
+        style: "filter: drop-shadow(0 0 10px rgba(255,0,0,0.7))",
+    },
+    // Web pattern
+    {
+        type: "web",
+        size: "w-24 h-24",
+        style: "opacity-70",
+    },
+    // Comic speech bubble
+    {
+        type: "speech",
+        content: "Hello!",
+        size: "w-32 h-24",
+        style: "font-comic text-black",
+    },
+    // Thought bubble
+    {
+        type: "thought",
+        content: "Hmm...",
+        size: "w-32 h-24",
+        style: "font-comic text-black",
+    },
+    // Comic panel with mini scene
+    {
+        type: "panel",
+        size: "w-40 h-32",
+        style: "",
+    },
+]
+
 const FloatingComicPanels = () => {
     const { isSpiderVerse } = useDimension()
     const [panels, setPanels] = useState([])
@@ -23,100 +118,6 @@ const FloatingComicPanels = () => {
     }, [])
 
     // Enhanced comic panel content options
-    const panelContents = [
-        // Action words with different styles
-        {
-            type: "text",
-            content: "THWIP!",
-            color: "spiderverse-red",
-            size: "text-4xl",
-            style: "font-bold transform -rotate-3 drop-shadow-lg",
-        },
-        {
-            type: "text",
-            content: "POW!",
-            color: "spiderverse-yellow",
-            size: "text-5xl",
-            style: "font-extrabold transform rotate-2 drop-shadow-xl",
-        },
-        {
-            type: "text",
-            content: "BANG!",
-            color: "spiderverse-blue",
-            size: "text-4xl",
-            style: "font-bold transform -rotate-1 drop-shadow-lg",
-        },
-        {
-            type: "text",
-            content: "ZOOM!",
-            color: "spiderverse-purple",
-            size: "text-5xl",
-            style: "font-extrabold transform rotate-3 drop-shadow-xl",
-        },
-        {
-            type: "text",
-            content: "WHAM!",
-            color: "spiderverse-cyan",
-            size: "text-6xl",
-            style: "font-black transform -rotate-2 drop-shadow-2xl",
-        },
-        {
-            type: "text",
-            content: "CRASH!",
-            color: "spiderverse-green",
-            size: "text-5xl",
-            style: "font-extrabold transform rotate-1 drop-shadow-xl",
-        },
-        // Comic style images
-        {
-            type: "image",
-            content:
-                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,0 C55,25 75,40 100,50 C75,60 55,75 50,100 C45,75 25,60 0,50 C25,40 45,25 50,0 Z' fill='%23ff0000'/%3E%3C/svg%3E",
-            size: "w-16 h-16",
-            style: "filter: drop-shadow(0 0 8px rgba(255,0,0,0.5))",
-        },
-        {
-            type: "image",
-            content:
-                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M50,5 L50,95 M5,50 L95,50 M15,15 L85,85 M15,85 L85,15' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E",
-            size: "w-20 h-20",
-            style: "filter: drop-shadow(0 0 5px rgba(255,255,255,0.5))",
-        },
-        // Spider-Man logo
-        {
-            type: "image",
-            content:
-                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,10 C60,30 80,40 90,40 C80,50 80,70 90,90 C70,80 50,80 50,90 C50,80 30,80 10,90 C20,70 20,50 10,40 C20,40 40,30 50,10 Z' fill='%23ff0000' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E",
-            size: "w-24 h-24",
-            style: "filter: drop-shadow(0 0 10px rgba(255,0,0,0.7))",
-        },
-        // Web pattern
-        {
-            type: "web",
-            size: "w-24 h-24",
-            style: "opacity-70",
-        },
-        // Comic speech bubble
-        {
-            type: "speech",
-            content: "Hello!",
-            size: "w-32 h-24",
-            style: "font-comic text-black",
-        },
-        // Thought bubble
-        {
-            type: "thought",
-            content: "Hmm...",
-            size: "w-32 h-24",
-            style: "font-comic text-black",
-        },
-        // Comic panel with mini scene
-        {
-            type: "panel",
-            size: "w-40 h-32",
-            style: "",
-        },
-    ]
 
     // Generate random panels with more variety
     useEffect(() => {
@@ -158,9 +159,9 @@ const FloatingComicPanels = () => {
                     // 40% chance for other elements
                     contentIndex =
                         6 +
-                        Math.floor(Math.random() * (panelContents.length - 6))
+                        Math.floor(Math.random() * (PANEL_CONTENTS.length - 6))
                 }
-                const content = panelContents[contentIndex]
+                const content = PANEL_CONTENTS[contentIndex]
 
                 // Random animation parameters
                 const duration = 15 + Math.random() * 25 // 15-40s

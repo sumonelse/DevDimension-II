@@ -1,18 +1,20 @@
 import React, { useEffect, useRef, useState } from "react"
 import personalInfo from "../utils/personalInfo"
 
+/* Hoisted for a stable reference; see the note in Hero.jsx. */
+const TITLES = [
+    "Full-Stack Developer",
+    "Problem Solver",
+    "UI/UX Enthusiast",
+    "Tech Explorer",
+]
+
 const SpiderverseHero = () => {
     const typingTextRef = useRef(null)
     const [currentTextIndex, setCurrentTextIndex] = useState(0)
-    const titles = [
-        "Full-Stack Developer",
-        "Problem Solver",
-        "UI/UX Enthusiast",
-        "Tech Explorer",
-    ]
 
     useEffect(() => {
-        // Enhanced typing animation with multiple titles
+        // Enhanced typing animation with multiple TITLES
         const typingElement = typingTextRef.current
         let charIndex = 0
         let isDeleting = false
@@ -22,7 +24,7 @@ const SpiderverseHero = () => {
             typingElement.textContent = ""
 
             const typeEffect = () => {
-                const currentText = titles[currentTextIndex]
+                const currentText = TITLES[currentTextIndex]
 
                 if (isDeleting) {
                     // Deleting text
@@ -35,7 +37,7 @@ const SpiderverseHero = () => {
                     if (charIndex === 0) {
                         isDeleting = false
                         setCurrentTextIndex(
-                            (prevIndex) => (prevIndex + 1) % titles.length
+                            (prevIndex) => (prevIndex + 1) % TITLES.length
                         )
                         textTimeout = setTimeout(typeEffect, 500) // Pause before typing next title
                     } else {

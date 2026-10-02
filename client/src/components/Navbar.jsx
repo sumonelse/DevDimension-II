@@ -69,6 +69,7 @@ const Navbar = () => {
     useEffect(() => {
         let observer = null
         let frame = null
+        let observedIds = ""
 
         const connect = () => {
             frame = null
@@ -78,6 +79,17 @@ const Navbar = () => {
             ).filter(Boolean)
 
             if (!sections.length) return
+
+            // `About` through `Contact` are mounted by `DeferredSection`, which
+            // only happens as they approach the viewport. Connecting once on
+            // mount therefore observed `#hero` alone, and the active link never
+            // updated for the rest of the page. Reconnect whenever the set of
+            // real sections changes.
+            const ids = sections.map((section) => section.id).join("|")
+            if (ids === observedIds) return
+
+            if (observer) observer.disconnect()
+            observedIds = ids
 
             const ratios = new Map()
 
@@ -105,11 +117,22 @@ const Navbar = () => {
             sections.forEach((section) => observer.observe(section))
         }
 
+        const scheduleConnect = () => {
+            if (frame) return
+            frame = requestAnimationFrame(connect)
+        }
+
+        // Section swapping is a childList change, so this is cheap - and unlike
+        // watching class attributes it does not fire on every animation frame.
+        const mutationObserver = new MutationObserver(scheduleConnect)
+        mutationObserver.observe(document.body, { childList: true, subtree: true })
+
         // Defer one frame so the sections have been laid out.
-        frame = requestAnimationFrame(connect)
+        scheduleConnect()
 
         return () => {
             if (frame) cancelAnimationFrame(frame)
+            mutationObserver.disconnect()
             if (observer) observer.disconnect()
         }
     }, [])

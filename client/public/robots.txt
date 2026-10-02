@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# The site is a single page, so there is nothing here worth crawling that the
+# root does not already expose.
+Disallow: /dist/
+
+Sitemap: https://sumitmaurya.dev/sitemap.xml

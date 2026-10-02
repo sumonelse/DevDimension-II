@@ -46,7 +46,13 @@ export default [
             "no-empty": ["error", { allowEmptyCatch: true }],
             "react-refresh/only-export-components": [
                 "warn",
-                { allowConstantExport: true },
+                {
+                    allowConstantExport: true,
+                    // A context file is expected to export both the provider and
+                    // the `useX` hook that consumes it; splitting them would mean
+                    // an import from two files for one concept.
+                    allowExportNames: ["useTheme", "useDimension"],
+                },
             ],
             // The audio and particle helpers read CSS custom properties that a
             // minifier cannot see; `no-unused-vars` on those params is noise.

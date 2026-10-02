@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+    // Test files contain string literals that are not markup. Scanning them
+    // only bloats the safelist resolution, and a class name in an assertion
+    // should never end up shipping styles.
+    blocklist: [/\.test\.(js|jsx|ts|tsx)$/],
     safelist: [
         // Color variants for dynamic classes
         "from-purple-400",

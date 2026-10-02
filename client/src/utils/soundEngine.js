@@ -200,6 +200,12 @@ const destroy = () => {
     })
     cache.clear()
     ambientElement = null
+
+    // Mute and the autoplay lock are per-session preferences, not per-player
+    // state. Leaving them set meant a `destroy()` left the engine permanently
+    // silent, with no way to get sound back short of a page reload.
+    isMuted = false
+    isUnlocked = false
 }
 
 export const soundEngine = {
