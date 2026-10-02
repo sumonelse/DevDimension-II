@@ -73,13 +73,14 @@ const Hero = () => {
     return (
         <section
             id="hero"
-            className="min-h-screen pt-24 flex items-center justify-center relative overflow-hidden transition-colors duration-500"
+            className="min-h-screen pt-24 flex items-center justify-center relative"
         >
-            {/* More subtle background gradient to allow the main gradient to show through */}
-            <div className="absolute inset-0 bg-gradient-radial opacity-30 transition-colors duration-500 animate-pulse-slow"></div>
-
-            {/* Grid pattern overlay with improved opacity */}
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMDIwMjAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djJoLTJ2LTJoMnptMC00aDJ2MmgtMnYtMnptLTQgMHYyaC0ydi0yaDJ6bTIgMGgydjJoLTJ2LTJ6bS02IDBoMnYyaC0ydi0yem0yLTRoMnYyaC0ydi0yem0yIDBIMzZ2Mmgtc3YtMnptMC00aDJ2MmgtMnYtMnptMiAwaDJ2MmgtMnYtMnptMi00aDJ2MmgtMnYtMnptMCAwaDJ2MmgtMnYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-15"></div>
+            {/* No background layer of its own. The hero previously carried a
+                radial gradient and a grid pattern clipped to this `min-h-screen`
+                box, which is what produced a hard horizontal edge at its bottom
+                edge. All ambience now comes from the page-wide fixed
+                `AmbientBackground`, which no section boundary can clip. The soft
+                wash below the copy is a mask on the content, not a background. */}
 
             {/* Main content with enhanced visual appeal */}
             <div className="container mx-auto px-4 md:px-6 relative z-10">

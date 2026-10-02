@@ -128,6 +128,59 @@ describe("mute", () => {
     })
 })
 
+describe("ambience fade", () => {
+    it("keeps volume inside [0, 1] when the frame timestamp predates scheduling", () => {
+        // `requestAnimationFrame` passes the frame's timestamp, which can be
+        // earlier than the `performance.now()` captured when it was scheduled.
+        // A one-sided clamp turned that into a negative volume and threw
+        // IndexSizeError on the media element.
+        const nowSpy = vi.spyOn(performance, "now").mockReturnValue(1000)
+        const frames = []
+
+        globalThis.requestAnimationFrame = (cb) => {
+            frames.push(cb)
+            return frames.length
+        }
+        globalThis.cancelAnimationFrame = () => {}
+
+        soundEngine.startAmbient()
+        const ambient = FakeAudio.instances[0]
+
+        // A frame stamped *before* the fade was scheduled.
+        frames[0](900)
+
+        expect(ambient.volume).toBeGreaterThanOrEqual(0)
+        expect(ambient.volume).toBeLessThanOrEqual(1)
+
+        // And a normal forward frame still lands on the target.
+        frames[frames.length - 1](1400)
+        expect(ambient.volume).toBeCloseTo(0.1, 5)
+
+        nowSpy.mockRestore()
+    })
+
+    it("never writes a volume outside [0, 1] at any point in the fade", () => {
+        const nowSpy = vi.spyOn(performance, "now").mockReturnValue(0)
+        const frames = []
+        globalThis.requestAnimationFrame = (cb) => {
+            frames.push(cb)
+            return frames.length
+        }
+        globalThis.cancelAnimationFrame = () => {}
+
+        soundEngine.startAmbient()
+        const ambient = FakeAudio.instances[0]
+
+        for (const stamp of [-500, -1, 0, 100, 200, 399, 400, 401, 5000]) {
+            for (const cb of frames.splice(0)) cb(stamp)
+            expect(ambient.volume).toBeGreaterThanOrEqual(0)
+            expect(ambient.volume).toBeLessThanOrEqual(1)
+        }
+
+        nowSpy.mockRestore()
+    })
+})
+
 describe("autoplay unlock", () => {
     it("stays locked until a gesture", () => {
         soundEngine.watchForFirstGesture()

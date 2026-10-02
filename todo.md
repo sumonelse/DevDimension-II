@@ -179,6 +179,36 @@ Build: `client/` · React 19.1 · Vite 6.3.5 · Tailwind 3.4.17
 
 ---
 
+## Phase 8 — Background continuity & Spider-Verse dark mode
+
+- [x] P8.1 Fix the normal dimension's hero→content seam. The hero carried its own
+      radial gradient and grid clipped to `min-h-screen`, so its bottom edge
+      showed as a hard horizontal line. Both now live in one page-wide fixed
+      `AmbientBackground` that no section boundary can clip.
+- [x] P8.2 Fix the Spider-Verse seam. `.spiderverse-bg` declared
+      `position: relative`, which silently beat Tailwind's `.fixed` (same
+      specificity, later source order), collapsing the background to zero height
+      and falling back to the page body colour.
+- [x] P8.3 Mask the grid and add a vignette so the ambient wash reads as depth
+      rather than as a panel with a border
+- [x] P8.4 Give Spider-Verse a real dark theme — "Night Run", in the spirit of
+      *Into the Spider-Verse*'s Miles Morales Brooklyn sequences: deep indigo
+      instead of neutral black, cyan neon panel edges instead of flat black
+      rules, a magenta offset shadow, light ink on night panels
+- [x] P8.5 Keep the classic white-paper comic for the light theme, out of the
+      same token block rather than a parallel set of rules
+- [x] P8.6 Remap the ~230 hard-coded Tailwind colour utilities in the twelve
+      Spider-Verse components onto the new tokens, once, centrally, scoped to
+      `[data-dimension="spiderverse"]`
+- [x] P8.7 Remove the audio toggle from the Spider-Verse navbar (the Magic Box
+      already owns muting)
+- [x] P8.8 Fix an `IndexSizeError` in the ambience fade: `requestAnimationFrame`
+      hands back the frame timestamp, which can predate the scheduling
+      `performance.now()`, and a one-sided `Math.min(1, …)` clamp turned that
+      into a negative volume. Clamped both ends, with regression tests.
+
+---
+
 ## Phase 7 — Verification
 
 - [x] P7.1 `npm run lint` clean (0 errors, 0 warnings, down from 10/12)
@@ -205,12 +235,18 @@ Build: `client/` · React 19.1 · Vite 6.3.5 · Tailwind 3.4.17
 | `react-dom` in entry chunk | yes | no (now in `react-vendor`) |
 | Scroll-reveal elements activating | 0 / 19 (bug) | 19 / 19 |
 | Nav active-link tracking | never updated | correct per section |
+| Hero→content seam | hard horizontal line | none |
+| Spider-Verse background | collapsed (0 height) | fixed, full viewport |
+| Spider-Verse themes | 1 (hard-coded white) | 2 (Night Run + classic) |
+| Audio toggle controls on screen | 2 (navbar + Magic Box) | 1 (Magic Box) |
 | Lint errors / warnings | 10 / 12 | **0 / 0** |
-| Tests | none | 65 passing |
+| Tests | none | 67 passing |
 | Requests on first load | — | 30, none for audio |
 
 ### Key changes
 
+- `src/components/AmbientBackground.jsx` — one continuous page-wide background
+- `src/components/ErrorBoundary.jsx` — chunk failures get a reload button
 - `src/utils/soundEngine.js` — lazy, shared, autoplay-aware sound engine
 - `src/components/DeferredSection.jsx` — mounts heavy sections near the viewport
 - `src/utils/particles.js` — keyframes declared once, driven by CSS variables
@@ -221,6 +257,7 @@ Build: `client/` · React 19.1 · Vite 6.3.5 · Tailwind 3.4.17
 - `scripts/optimize-audio.mjs` — reproducible WAV downsampler
 - `scripts/generate-icons.mjs` — dependency-free PNG rasteriser (SDF + zlib)
 - `scripts/og-image.html` — source for the 1200×630 social card
+- `spiderverse.css` — "Night Run" surface/ink tokens + the scoped colour remap
 
 ### Not done, deliberately
 

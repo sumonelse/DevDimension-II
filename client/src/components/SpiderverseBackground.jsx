@@ -376,8 +376,9 @@ const SpiderverseBackground = React.memo(() => {
             {/* Spider-Man mask pattern overlay */}
             <div className="spidey-mask-overlay"></div>
 
-            {/* Animated gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-spiderverse-darker to-spiderverse-dark animate-gradient-shift"></div>
+            {/* Night sky. Class-based rather than a Tailwind gradient so it can
+                read the surface tokens and follow the site theme. */}
+            <div className="sv-sky absolute inset-0"></div>
 
             {/* Parallax layers with enhanced styling */}
             {parallaxLayers}

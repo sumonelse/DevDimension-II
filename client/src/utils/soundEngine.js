@@ -100,8 +100,17 @@ const fadeAmbientTo = (target) => {
     const startedAt = performance.now()
 
     const step = (now) => {
-        const progress = Math.min(1, (now - startedAt) / AMBIENT_FADE_MS)
-        ambientElement.volume = from + (target - from) * progress
+        // `requestAnimationFrame` hands back the frame's own timestamp, which
+        // can predate the `performance.now()` captured above when the frame was
+        // scheduled. That yields a negative progress, and a one-sided
+        // `Math.min(1, ...)` clamp then extrapolates *past* the target - which
+        // is how a fade to silence ended up assigning a negative volume and
+        // throwing an IndexSizeError on the media element.
+        const progress = Math.min(1, Math.max(0, (now - startedAt) / AMBIENT_FADE_MS))
+        ambientElement.volume = Math.min(
+            1,
+            Math.max(0, from + (target - from) * progress)
+        )
 
         if (progress < 1) {
             ambientFadeFrame = requestAnimationFrame(step)

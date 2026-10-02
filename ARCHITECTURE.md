@@ -1,4 +1,4 @@
-# Architecture
+﻿# Architecture
 
 How DevDimension-II is put together, and why. The
 [README](./client/README.md) covers how to run it; this covers the decisions
@@ -13,7 +13,7 @@ The site has two complete visual identities that share nothing but a route:
 | | Normal | Spider-Verse |
 | --- | --- | --- |
 | Navbar | `Navbar` | `SpiderverseNavbar` |
-| Sections | `Hero` … `Footer` | `SpiderverseHero` … `SpiderverseFooter` |
+| Sections | `Hero` â€¦ `Footer` | `SpiderverseHero` â€¦ `SpiderverseFooter` |
 | Cursor | `CustomCursor` | `SpiderverseCursor` |
 | Modals | `ProjectModal` | `SpiderverseProjectModal` |
 | Stylesheet | `index.css` | `spiderverse.css` |
@@ -34,11 +34,11 @@ portfolio site where the two identities are meant to look nothing alike.
 
 Two contexts, both deliberately small.
 
-**`ThemeContext`** — `isDarkTheme` and `toggleTheme`. Applies classes to
+**`ThemeContext`** â€” `isDarkTheme` and `toggleTheme`. Applies classes to
 `<html>`; the preference is read once on mount from `localStorage` or
 `prefers-color-scheme`.
 
-**`DimensionContext`** — the dimension flag, the transition phase, the audio
+**`DimensionContext`** â€” the dimension flag, the transition phase, the audio
 mute, multiverse awareness, the post-credit trigger.
 
 The important property: **effect state is not in the context value.** An earlier
@@ -67,7 +67,7 @@ click -> lock out re-entry
 
 The 1500 ms is not arbitrary: it is long enough for the new dimension's
 component chunk to be fetched and swapped in without a blank frame, and long
-enough for the Spider-Verse stylesheet — also fetched on entry — to arrive.
+enough for the Spider-Verse stylesheet â€” also fetched on entry â€” to arrive.
 
 Every `setTimeout` is registered in a ref-backed set and cleared on unmount, so
 a navigation mid-transition cannot flip state on a torn-down tree.
@@ -94,7 +94,7 @@ a placeholder of the right height, watches with an `IntersectionObserver` at
 so it is `import()`ed during browser idle time.
 
 **Dynamic CSS for the second stylesheet.** `dimensionStyles.js` imports
-`spiderverse.css` on demand — immediately if the visitor was last in
+`spiderverse.css` on demand â€” immediately if the visitor was last in
 Spider-Verse, at idle otherwise. It is a real stylesheet rather than injected
 rules, so it stays in one place and the browser can cache it as a file.
 
@@ -136,7 +136,7 @@ in the source.
 `threshold: 0` on an `IntersectionObserver` reports an element **exactly once**,
 when it crosses the viewport edge. An element that first peeks in at the very
 bottom of the screen, above the 150 px reveal line, is judged too early and
-never re-evaluated — it stays at `opacity: 0` forever. The first version had
+never re-evaluated â€” it stays at `opacity: 0` forever. The first version had
 this bug and shipped 0 of 19 elements revealing.
 
 The fix is to encode the reveal distance in a bottom `rootMargin` instead, so
@@ -162,28 +162,104 @@ The engine:
 - fades the ambience with one rAF loop rather than an interval;
 - releases every player and resets mute state in `destroy()`.
 
-The WAVs are committed as 22.05 kHz mono (5.73 MB → 1.38 MB) via
+The WAVs are committed as 22.05 kHz mono (5.73 MB â†’ 1.38 MB) via
 `scripts/optimize-audio.mjs`.
 
 ---
 
-## 8. Generated assets
+## 8. Background continuity
+
+Both dimensions used to stack backgrounds per section, which produced a visible
+seam at the hero boundary.
+
+**Normal dimension.** `Hero.jsx` carried its own radial gradient and grid
+pattern inside a `min-h-screen overflow-hidden` section. Everything below sat
+on a different wash with no grid, so the hero's bottom edge read as a hard
+horizontal line across the page.
+
+**Spider-Verse dimension.** `.spiderverse-bg` declared `position: relative`.
+That is one class selector, and it comes *after* Tailwind's `.fixed` utility in
+source order, so it won â€” the full-viewport background collapsed to zero height
+and the dimension fell back to the page body colour, with the comic panels
+floating on a flat grey sheet.
+
+Both are now a **single fixed layer per dimension** that covers the viewport at
+every scroll position:
+
+| Dimension | Layer |
+| --- | --- |
+| Normal | `AmbientBackground` â€” base wash, five drifting colour fields, masked grid, vignette |
+| Spider-Verse | `.spiderverse-bg` + `.sv-sky` |
+
+Fixed positioning is the whole point: the layers are outside document flow, so
+no section boundary can clip them and no seam can exist. The grid is masked to
+fade out before the viewport edge and the vignette darkens the corners, because
+an unmasked grid terminates in a visible rectangle â€” the same seam in a
+different form.
+
+---
+
+## 9. Spider-Verse theming ("Night Run")
+
+The Spider-Verse dimension ignored the site theme entirely. It was hard-coded to
+white comic panels with black ink, so toggling dark mode left blazing white
+panels on a near-black page.
+
+**Design.** The dark palette is the Miles Morales night from *Into the
+Spider-Verse*: deep indigo rather than neutral black, cyan neon panel edges
+instead of flat black rules, a magenta offset shadow, and light ink on night
+panels. Light theme keeps the classic white-paper comic.
+
+**Implementation.** Everything resolves through a set of `--sv-*` surface and ink
+tokens defined once in `spiderverse.css`. `.light-theme` re-points the same
+tokens at the paper palette, so there is one set of rules and two themes.
+
+The hard part was that the twelve Spider-Verse components use literal Tailwind
+colour utilities rather than semantic classes: `text-black` 72 times, `bg-white`
+41, `text-white` 39, `bg-black` 18, `border-black` 17, plus a tail of greys and
+semantic callout colours â€” around 230 call sites.
+
+Editing 230 sites is a large diff with a real chance of missing one, and a
+missed one is invisible in review: the markup renders, just unstyled. So the
+remap is done **once, centrally**, in a block scoped to
+`[data-dimension="spiderverse"]`:
+
+```css
+[data-dimension="spiderverse"] .bg-white {
+    background-color: var(--sv-surface);
+}
+```
+
+Two class-level selectors beat Tailwind's single-class utility, so the remap
+wins without `!important`, and the `data-dimension` scope means nothing leaks
+into the normal dimension even though the stylesheet stays loaded after a switch.
+
+**Trade-off.** The components still carry the hard-coded utilities, so a future
+`bg-white` in a new Spider-Verse component needs a matching entry in the remap
+block. In exchange the block is the single auditable place where the dimension's
+palette lives. The alternative â€” converting all twelve components to semantic
+classes â€” is the better end state and is the right follow-up if the dimension
+grows.
+
+---
+
+## 10. Generated assets
 
 Two generators, both dependency-free, so the committed binaries can be
 reproduced rather than trusted:
 
-- `scripts/optimize-audio.mjs` — box-filtered downsampler and 16-bit WAV writer.
+- `scripts/optimize-audio.mjs` â€” box-filtered downsampler and 16-bit WAV writer.
   Idempotent, and handles the `WAVE_FORMAT_EXTENSIBLE` header Mixkit files use.
-- `scripts/generate-icons.mjs` — draws rounded rectangles and stroked glyphs
+- `scripts/generate-icons.mjs` â€” draws rounded rectangles and stroked glyphs
   from signed distance fields, composites a gradient, and writes RGBA PNG using
-  only `node:zlib`. 4×4 supersampling for antialiasing.
+  only `node:zlib`. 4Ã—4 supersampling for antialiasing.
 
 `scripts/og-image.html` is the source of the social card; the PNG is committed
 so no build step is needed to serve it.
 
 ---
 
-## 9. Testing
+## 11. Testing
 
 The suite deliberately targets places where a regression is **silent**:
 
@@ -201,7 +277,7 @@ assertions above do not.
 
 ---
 
-## 10. Known trade-offs
+## 12. Known trade-offs
 
 - **Google Fonts over self-hosting.** Self-hosting removes a third-party
   connection and the render-blocking risk, at the cost of several hundred kB of

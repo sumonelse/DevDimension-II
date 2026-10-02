@@ -1,4 +1,4 @@
-/* Spider-Verse Inspired Styles */
+﻿/* Spider-Verse Inspired Styles */
 
 /* Spider-Verse Color Palette */
 :root {
@@ -22,6 +22,104 @@
     --benday-dots: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1.5'/%3E%3Ccircle cx='13' cy='13' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
 }
 
+/* ==========================================================================
+   Night Run - surface and ink tokens
+   ==========================================================================
+
+   The Spider-Verse dimension ignored the site theme entirely: it was hard-coded
+   to white comic panels with black ink, so toggling dark mode left the panels
+   blazing white on a near-black page.
+
+   Every hard-coded `white` / `black` in the dimension now resolves through
+   these tokens instead. The Spider-Verse components contain around 230 literal
+   Tailwind colour utilities (`text-black`, `bg-white`, `border-black` and so
+   on) spread across twelve files; editing each one was not a reasonable trade
+   against the risk of missing some, so the remap is done once, centrally, in
+   the "Night Run" block further down. Those two blocks are the whole dark
+   mode.
+
+   The default (dark) palette is the Miles Morales night: deep indigo rather
+   than neutral black, cyan neon panel edges instead of flat black rules, and a
+   magenta bounce in the shadows. `.light-theme` below re-points the same tokens
+   at the classic white-paper comic, so there is one set of rules and two
+   themes. */
+:root {
+    /* Surfaces, darkest to lightest */
+    --sv-surface-void: #06060f; /* page background, behind everything */
+    --sv-surface-deep: #0c0c1e;
+    --sv-surface: #14142b; /* comic panel */
+    --sv-surface-raised: #1e1e3c; /* nested panel, hover, card */
+    --sv-surface-inset: #101024;
+
+    /* Ink */
+    --sv-ink: #ecebff; /* primary text on panels */
+    --sv-ink-muted: #a6a3d4;
+    --sv-ink-faint: #6f6c9c;
+    --sv-ink-inverse: #0b0b18; /* text on a light/accent fill */
+    --sv-ink-strong: #ffffff;
+
+    /* Panel edges. Cyan reads as neon rim light; the magenta shadow is the
+       offset "drop shadow" that gives the comic its printed feel. */
+    --sv-edge: #00e5ff;
+    --sv-edge-muted: rgba(0, 229, 255, 0.34);
+    --sv-shadow-offset: rgba(255, 23, 68, 0.42);
+    --sv-shadow-deep: rgba(0, 0, 0, 0.75);
+    --sv-hairline: rgba(0, 229, 255, 0.22);
+
+    /* Textures */
+    --sv-halftone-opacity: 0.14;
+    --sv-benday-opacity: 0.1;
+    --sv-dot-tint: rgba(0, 229, 255, 0.55);
+
+    /* Night sky behind the dimension */
+    --sv-sky-from: #1a0a33;
+    --sv-sky-to: #06060f;
+    --sv-sky-glow-1: rgba(255, 23, 68, 0.28);
+    --sv-sky-glow-2: rgba(48, 79, 254, 0.24);
+    --sv-sky-glow-3: rgba(170, 0, 255, 0.14);
+
+    /* Title drop shadows, which read as hard ink on paper but as a glow at
+       night. */
+    --sv-title-shadow: 3px 3px 0 var(--sv-shadow-offset);
+    --sv-glow-cyan: 0 0 18px rgba(0, 229, 255, 0.4);
+    --sv-glow-magenta: 0 0 22px rgba(255, 23, 68, 0.4);
+}
+
+/* Classic white-paper comic, for the light theme. */
+.light-theme {
+    --sv-surface-void: #eef1f7;
+    --sv-surface-deep: #e2e8f0;
+    --sv-surface: #ffffff;
+    --sv-surface-raised: #f8fafc;
+    --sv-surface-inset: #f1f5f9;
+
+    --sv-ink: #111827;
+    --sv-ink-muted: #4b5563;
+    --sv-ink-faint: #9ca3af;
+    --sv-ink-inverse: #ffffff;
+    --sv-ink-strong: #000000;
+
+    --sv-edge: #111111;
+    --sv-edge-muted: rgba(17, 17, 17, 0.25);
+    --sv-shadow-offset: rgba(0, 0, 0, 0.85);
+    --sv-shadow-deep: rgba(0, 0, 0, 0.7);
+    --sv-hairline: rgba(17, 17, 17, 0.2);
+
+    --sv-halftone-opacity: 0.2;
+    --sv-benday-opacity: 0.14;
+    --sv-dot-tint: rgba(17, 17, 17, 0.5);
+
+    --sv-sky-from: #ffffff;
+    --sv-sky-to: #dbe3ef;
+    --sv-sky-glow-1: rgba(255, 71, 126, 0.16);
+    --sv-sky-glow-2: rgba(48, 79, 254, 0.14);
+    --sv-sky-glow-3: rgba(170, 0, 255, 0.08);
+
+    --sv-title-shadow: 3px 3px 0 rgba(0, 0, 0, 0.9);
+    --sv-glow-cyan: none;
+    --sv-glow-magenta: none;
+}
+
 /* Comic Book Typography */
 @font-face {
     font-family: "Comic Neue";
@@ -33,7 +131,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.8));
+    filter: drop-shadow(3px 3px 0 var(--sv-shadow-offset));
     transform: rotate(-1deg);
 }
 
@@ -41,22 +139,30 @@
     font-family: "Comic Neue", sans-serif;
     font-weight: 700;
     letter-spacing: 0.5px;
-    filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.6));
+    filter: drop-shadow(2px 2px 0 var(--sv-shadow-offset));
 }
 
 /* Comic Panel Layouts */
 .comic-panel {
     position: relative;
-    border: 3px solid black;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
-    background-color: white;
+    /* Cyan neon edge plus a magenta offset shadow at night; a flat black rule
+       with a black drop shadow on white paper in the light theme. Both come
+       from the same tokens. */
+    border: 3px solid var(--sv-edge);
+    box-shadow:
+        5px 5px 0 var(--sv-shadow-offset),
+        0 0 24px var(--sv-glow-cyan);
+    background-color: var(--sv-surface);
+    color: var(--sv-ink);
     transform: rotate(var(--panel-rotation, 0deg));
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease,
+        border-color 0.3s ease;
     z-index: 1;
 }
 
 .comic-panel:hover {
     transform: rotate(calc(var(--panel-rotation, 0deg) - 1deg)) scale(1.02);
+    background-color: var(--sv-surface-raised);
     z-index: 2;
 }
 
@@ -216,12 +322,13 @@
 /* Thought Bubbles & Dialogue Boxes */
 .thought-bubble {
     position: relative;
-    background-color: white;
+    background-color: var(--sv-surface-raised);
     border-radius: 30px;
     padding: 20px;
     margin: 20px;
-    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.8);
-    border: 3px solid black;
+    color: var(--sv-ink);
+    box-shadow: 3px 3px 0 var(--sv-shadow-offset);
+    border: 3px solid var(--sv-edge);
 }
 
 .thought-bubble::before {
@@ -231,20 +338,21 @@
     left: 30px;
     width: 20px;
     height: 20px;
-    background-color: white;
-    border-right: 3px solid black;
-    border-bottom: 3px solid black;
+    background-color: var(--sv-surface-raised);
+    border-right: 3px solid var(--sv-edge);
+    border-bottom: 3px solid var(--sv-edge);
     transform: rotate(45deg);
 }
 
 .dialogue-box {
     position: relative;
-    background-color: white;
+    background-color: var(--sv-surface-raised);
     border-radius: 10px;
     padding: 15px;
     margin: 15px;
-    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.8);
-    border: 3px solid black;
+    color: var(--sv-ink);
+    box-shadow: 3px 3px 0 var(--sv-shadow-offset);
+    border: 3px solid var(--sv-edge);
 }
 
 .dialogue-box::after {
@@ -257,7 +365,7 @@
     height: 0;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-    border-top: 15px solid black;
+    border-top: 15px solid var(--sv-edge);
 }
 
 .dialogue-box::before {
@@ -270,7 +378,7 @@
     height: 0;
     border-left: 12px solid transparent;
     border-right: 12px solid transparent;
-    border-top: 12px solid white;
+    border-top: 12px solid var(--sv-surface-raised);
     z-index: 1;
 }
 
@@ -435,28 +543,224 @@
     --parallax-speed: 0.06;
 }
 
-/* Spider-Verse Background */
+/* ==========================================================================
+   Night Run - page surface
+   ==========================================================================
+
+   `.spiderverse-bg` is a fixed layer inside the page, so the page element
+   behind it still needs a base colour. Without this the dimension inherited the
+   normal dimension's body background, which is what made the comic panels look
+   like they were floating on a flat grey sheet. */
+.sv-page {
+    background-color: var(--sv-surface-void);
+    color: var(--sv-ink);
+}
+
+.sv-page main {
+    color: var(--sv-ink);
+}
+
+/* ==========================================================================
+   Night Run - night sky
+   ========================================================================== */
+
+.sv-sky {
+    background-image: linear-gradient(
+        160deg,
+        var(--sv-sky-from) 0%,
+        var(--sv-sky-to) 78%
+    );
+    animation: sv-sky-shift 26s ease-in-out infinite alternate;
+}
+
+@keyframes sv-sky-shift {
+    from {
+        background-position: 0% 0%;
+    }
+    to {
+        background-position: 100% 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sv-sky {
+        animation: none !important;
+    }
+}
+
+/* ==========================================================================
+   Night Run - colour remap
+   ==========================================================================
+
+   The Spider-Verse components use literal Tailwind colour utilities rather
+   than the semantic classes above: `text-black` 72 times, `bg-white` 41,
+   `text-white` 39, `bg-black` 18, `border-black` 17, plus a long tail of greys
+   and semantic callout colours, across twelve files.
+
+   Rather than edit 230+ call sites, each utility that actually appears in this
+   dimension is re-pointed at the surface and ink tokens. The selector is
+   scoped to `[data-dimension="spiderverse"]`, so nothing leaks into the normal
+   dimension even though this stylesheet stays loaded after a switch.
+
+   Because every value is a token, the light theme gets the classic
+   white-paper comic out of the same block with no extra rules.
+*/
+
+/* --- Surfaces: comic paper becomes night ink --- */
+[data-dimension="spiderverse"] .bg-white {
+    background-color: var(--sv-surface);
+}
+[data-dimension="spiderverse"] .bg-gray-100,
+[data-dimension="spiderverse"] .bg-gray-200 {
+    background-color: var(--sv-surface-raised);
+}
+[data-dimension="spiderverse"] .bg-gray-300 {
+    background-color: var(--sv-surface-inset);
+}
+[data-dimension="spiderverse"] .bg-gray-400,
+[data-dimension="spiderverse"] .bg-gray-600 {
+    background-color: var(--sv-surface-deep);
+}
+[data-dimension="spiderverse"] .bg-gray-700,
+[data-dimension="spiderverse"] .bg-gray-800,
+[data-dimension="spiderverse"] .bg-gray-900,
+[data-dimension="spiderverse"] .bg-black {
+    background-color: var(--sv-surface-void);
+}
+
+/* --- Ink: black text becomes light text --- */
+[data-dimension="spiderverse"] .text-black {
+    color: var(--sv-ink);
+}
+[data-dimension="spiderverse"] .text-gray-300,
+[data-dimension="spiderverse"] .text-gray-400,
+[data-dimension="spiderverse"] .text-gray-500,
+[data-dimension="spiderverse"] .text-gray-600,
+[data-dimension="spiderverse"] .text-gray-700 {
+    color: var(--sv-ink-muted);
+}
+/* On a dark surface, white is the resting colour and the dimmed variants carry
+   the hierarchy, so the plain utility is softened a touch. */
+[data-dimension="spiderverse"] .text-white {
+    color: var(--sv-ink-strong);
+}
+[data-dimension="spiderverse"] .text-white\/80 {
+    color: var(--sv-ink-muted);
+}
+[data-dimension="spiderverse"] .text-white\/60,
+[data-dimension="spiderverse"] .text-white\/40 {
+    color: var(--sv-ink-faint);
+}
+
+/* --- Borders: flat black rules become neon edges --- */
+[data-dimension="spiderverse"] .border-black {
+    border-color: var(--sv-edge);
+}
+[data-dimension="spiderverse"] .border-white {
+    border-color: var(--sv-edge-muted);
+}
+[data-dimension="spiderverse"] .border-gray-200,
+[data-dimension="spiderverse"] .border-gray-300,
+[data-dimension="spiderverse"] .border-gray-400,
+[data-dimension="spiderverse"] .border-gray-500,
+[data-dimension="spiderverse"] .border-gray-600,
+[data-dimension="spiderverse"] .border-gray-700 {
+    border-color: var(--sv-hairline);
+}
+
+/* --- Semantic callouts: the form's status boxes ---
+   These were pale paper fills carrying near-black text. At night they become
+   translucent tinted surfaces with light ink, keeping the same semantic read
+   without the glare of a white box on a dark page. */
+[data-dimension="spiderverse"] .bg-yellow-100 {
+    background-color: rgba(255, 234, 0, 0.14);
+}
+[data-dimension="spiderverse"] .bg-green-100 {
+    background-color: rgba(0, 230, 118, 0.14);
+}
+[data-dimension="spiderverse"] .bg-red-100 {
+    background-color: rgba(255, 23, 68, 0.16);
+}
+[data-dimension="spiderverse"] .text-green-600 {
+    color: #34d399;
+}
+[data-dimension="spiderverse"] .text-red-600 {
+    color: #fb7185;
+}
+
+/* --- Brand accents, brightened for a dark ground ---
+   The original 500/600 steps are tuned for white paper and go muddy at night. */
+[data-dimension="spiderverse"] .bg-blue-600 {
+    background-color: #4f6bff;
+}
+[data-dimension="spiderverse"] .bg-red-500 {
+    background-color: #ff2d55;
+}
+[data-dimension="spiderverse"] .text-red-400 {
+    color: #ff8095;
+}
+[data-dimension="spiderverse"] .fill-red-500 {
+    fill: #ff2d55;
+}
+[data-dimension="spiderverse"] .from-red-500\/60 {
+    --tw-gradient-from: #ff2d55;
+    --tw-gradient-from-opacity: 0.6;
+}
+[data-dimension="spiderverse"] .via-blue-500\/60 {
+    --tw-gradient-via: #4f6bff;
+    --tw-gradient-via-opacity: 0.6;
+}
+
+/* Panels and cards inherit the themed ink. */
+[data-dimension="spiderverse"] .comic-panel,
+[data-dimension="spiderverse"] .comic-border,
+[data-dimension="spiderverse"] .spiderverse-card {
+    color: var(--sv-ink);
+}
+
+/* Ben-Day dot overlays are white-on-white in the light theme and would be
+   invisible without this; at night they read as a faint cyan texture. */
+[data-dimension="spiderverse"] .spiderverse-card::before,
+[data-dimension="spiderverse"] .comic-strip::before {
+    opacity: var(--sv-benday-opacity);
+}
+
+/* ==========================================================================
+   Spider-Verse Background
+   ========================================================================== */
+
+/* Full-viewport, fixed, and behind everything.
+   The positioning used to be `position: relative` here, which silently beat
+   Tailwind's `.fixed` utility (same specificity, later source order) and made
+   the whole Spider-Verse background collapse to zero height - the dimension
+   then fell back to the page body colour, so the comic panels floated on a
+   flat wash with a hard edge where the hero ended. */
 .spiderverse-bg {
-    background-color: var(--spiderverse-dark);
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background-color: var(--sv-surface-void);
     background-image: radial-gradient(
             circle at 20% 30%,
-            rgba(255, 71, 126, 0.2) 0%,
+            var(--sv-sky-glow-1) 0%,
             transparent 40%
         ),
         radial-gradient(
             circle at 80% 70%,
-            rgba(48, 79, 254, 0.2) 0%,
+            var(--sv-sky-glow-2) 0%,
             transparent 40%
         ),
         radial-gradient(
             circle at 50% 50%,
-            rgba(170, 0, 255, 0.1) 0%,
+            var(--sv-sky-glow-3) 0%,
             transparent 60%
         );
-    position: relative;
 }
 
-.spiderverse-bg::before {
+/* Halftone shading. `filter` tints the white dot texture so it reads as
+   cyan light rather than grey paper grain; the light theme filters back to a
+   flat black dot pattern. */.spiderverse-bg::before {
     content: "";
     position: absolute;
     top: 0;
@@ -464,14 +768,17 @@
     width: 100%;
     height: 100%;
     background-image: var(--halftone-overlay);
-    opacity: 0.1;
+    opacity: var(--sv-halftone-opacity);
+    filter: drop-shadow(0 0 1px var(--sv-dot-tint));
     pointer-events: none;
 }
 
 /* Comic Book Border */
 .comic-border {
-    border: 3px solid black;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+    border: 3px solid var(--sv-edge);
+    box-shadow:
+        5px 5px 0 var(--sv-shadow-offset),
+        0 0 20px var(--sv-glow-cyan);
 }
 
 /* Spider-Verse Button */
@@ -483,8 +790,8 @@
     font-family: "Comic Neue", sans-serif;
     font-weight: bold;
     text-transform: uppercase;
-    border: 3px solid black;
-    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.8);
+    border: 3px solid var(--sv-edge);
+    box-shadow: 3px 3px 0 var(--sv-shadow-offset);
     transition: all 0.2s ease;
     transform: rotate(-1deg);
     overflow: hidden;
@@ -492,12 +799,12 @@
 
 .spiderverse-button:hover {
     transform: rotate(0deg) translate(-2px, -2px);
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+    box-shadow: 5px 5px 0 var(--sv-shadow-offset);
 }
 
 .spiderverse-button:active {
     transform: rotate(0deg) translate(1px, 1px);
-    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+    box-shadow: 2px 2px 0 var(--sv-shadow-offset);
 }
 
 .spiderverse-button::before {
@@ -524,9 +831,12 @@
 /* Spider-Verse Card */
 .spiderverse-card {
     position: relative;
-    background-color: white;
-    border: 3px solid black;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+    background-color: var(--sv-surface-raised);
+    border: 3px solid var(--sv-edge);
+    box-shadow:
+        5px 5px 0 var(--sv-shadow-offset),
+        0 0 20px var(--sv-glow-cyan);
+    color: var(--sv-ink);
     transform: rotate(var(--card-rotation, -1deg));
     transition: transform 0.3s ease;
     overflow: hidden;
@@ -859,7 +1169,7 @@
     background-color: var(--spiderverse-blue);
     top: 50%;
     transform: translateY(-50%);
-    border: 2px solid black;
+    border: 2px solid var(--sv-edge);
 }
 
 .spidey-divider::before {
@@ -991,12 +1301,12 @@
     font-family: "Bangers", cursive;
     font-size: 3rem;
     color: var(--spiderverse-red);
-    text-shadow: 3px 3px 0 #000;
+    text-shadow: var(--sv-title-shadow);
     transform: rotate(-2deg);
     padding: 0.5rem 2rem;
-    background-color: white;
-    border: 3px solid black;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+    background-color: var(--sv-surface);
+    border: 3px solid var(--sv-edge);
+    box-shadow: 5px 5px 0 var(--sv-shadow-offset);
     position: relative;
     z-index: 2;
 }
@@ -1008,7 +1318,7 @@
     left: 0;
     width: 100%;
     height: 5px;
-    background-color: black;
+    background-color: var(--sv-edge);
     transform: translateY(-50%);
     z-index: 1;
 }

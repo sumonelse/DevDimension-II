@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react"
-import { useDimension } from "../context/DimensionContext"
+﻿import React, { useState, useEffect } from "react"
 
 const SpiderverseNavbar = () => {
-    const { isAudioMuted, toggleAudioMute } = useDimension()
+    // No longer reads the audio preference: muting lives in the Magic Box, and
+    // the navbar was duplicating it.
     const [isScrolled, setIsScrolled] = useState(false)
     const [activeSection, setActiveSection] = useState("hero")
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -141,59 +141,11 @@ const SpiderverseNavbar = () => {
                         ))}
                     </div>
 
-                    {/* Audio toggle */}
-                    <button
-                        type="button"
-                        onClick={toggleAudioMute}
-                        aria-pressed={isAudioMuted}
-                        aria-label={
-                            isAudioMuted
-                                ? "Unmute Spider-Verse audio"
-                                : "Mute Spider-Verse audio"
-                        }
-                        title={
-                            isAudioMuted ? "Unmute audio" : "Mute audio"
-                        }
-                        className="p-2 rounded-full transition-all duration-300 hover:bg-spiderverse-red/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-spiderverse-yellow"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className={`h-6 w-6 ${
-                                isScrolled ? "text-black" : "text-white"
-                            }`}
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth="2.5"
-                            aria-hidden="true"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M11 5L6 9H3v6h3l5 4V5z"
-                                fill="currentColor"
-                            />
-                            {isAudioMuted ? (
-                                <>
-                                    <path
-                                        strokeLinecap="round"
-                                        d="M16 9l5 6M21 9l-5 6"
-                                    />
-                                </>
-                            ) : (
-                                <>
-                                    <path
-                                        strokeLinecap="round"
-                                        d="M16.5 8.5a5 5 0 010 7"
-                                    />
-                                    <path
-                                        strokeLinecap="round"
-                                        d="M19.5 5.5a9 9 0 010 13"
-                                    />
-                                </>
-                            )}
-                        </svg>
-                    </button>
+                        {/* No audio toggle here on purpose: the Magic Box
+                            control panel already owns muting, and a speaker
+                            icon sitting in the nav read as clutter. The
+                            dimension still honours the preference from the
+                            context, it is just not duplicated in the bar. */}
 
                     {/* Enhanced Mobile Menu Button */}
                     <button
