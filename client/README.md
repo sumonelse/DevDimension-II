@@ -42,6 +42,7 @@ cp .env.example .env
 | `npm run check` | **lint + test + build** — the one gate that matters |
 | `npm run optimize:audio` | Re-encode `public/audio/*.wav` to 22.05 kHz mono |
 | `npm run generate:icons` | Regenerate the manifest icons from geometry |
+| `npm run fetch:fonts` | Re-download the webfonts and regenerate `src/fonts.css` |
 | `npm run inspect:audio` | Report format and size of the sound effects |
 
 ---
@@ -53,6 +54,7 @@ client/
 ├── index.html                  Meta, JSON-LD, non-blocking font load
 ├── public/
 │   ├── audio/                  Sound effects (generated, see scripts/)
+│   ├── fonts/                  Self-hosted woff2 (generated)
 │   ├── icons/                  PWA icon set, including generated ones
 │   ├── manifest.json
 │   ├── og-image.png            1200x630 social card
@@ -60,6 +62,7 @@ client/
 │   ├── sitemap.xml
 │   └── sw.js                   Offline cache (runtime, not precached)
 ├── scripts/
+│   ├── fetch-fonts.mjs         Webfont downloader + @font-face generator
 │   ├── generate-icons.mjs      Dependency-free PNG rasteriser
 │   ├── inspect-audio.mjs       Audio format report
 │   ├── og-image.html           Source for og-image.png
@@ -70,6 +73,7 @@ client/
     ├── components/             ~45 components, two parallel sets
     ├── context/                ThemeContext, DimensionContext
     ├── data/projectsData.js    Project content
+    ├── fonts.css               Generated @font-face rules
     ├── hooks/                  Reusable behaviour
     ├── test/setup.js           Test environment shims
     └── utils/                  Pure helpers, no React
@@ -117,12 +121,19 @@ the scroll spy write transforms and CSS custom properties inside a single
 a bottom `rootMargin` — see the note in `useScrollReveal.js` for why testing it
 against the bounding rect instead silently breaks every element.
 
-**Web fonts use `display=optional`, not `swap`.** Measured on a throttled
-production build, blocking the font CDN entirely dropped CLS from 0.193 to
-0.014 — 93% of the layout shift was the swap re-flowing the flex-centred hero.
-`optional` lets the browser keep the fallback for that page view rather than
-swapping underneath the content; on a warm cache the font is there immediately
-and is used, so repeat visits keep the real typography.
+**Web fonts are self-hosted.** `scripts/fetch-fonts.mjs` pulls the latin subsets
+from Google Fonts into `public/fonts/` and generates `src/fonts.css`; the page
+loads no third-party resources at all. The three faces used above the fold are
+preloaded.
+
+This replaced a `display=optional` CDN setup, which eliminated layout shift but
+also meant a first-time visitor on a slow connection never saw the real
+typography — the wrong trade for a portfolio whose impression is largely type.
+Self-hosting gets both: same-origin files start downloading in parallel with the
+HTML rather than after a round trip to a third party, so with `swap` the fonts
+are normally in place before first paint and there is no visible swap to
+suppress. Measured at 4× CPU throttle on a cold cache: **CLS 0.013, LCP 1.16 s,
+FCP 0.82 s**, with all five families rendering in their real faces.
 
 **The splash screen is conditional.** It used to hold the content back for a
 flat 500 ms on every visit. It now only mounts if loading is genuinely slow
@@ -146,11 +157,12 @@ the assets, it booted to a silent blank page.
 
 | Metric | Value |
 | --- | --- |
-| CLS (normal / comic) | 0.010 / 0.005 |
-| LCP | ~790 ms |
-| FCP | ~640 ms |
+| CLS (normal / comic) | 0.013 / 0.005 |
+| LCP | 1.16 s |
+| FCP | 0.82 s |
 | TBT | 857 ms, longest task 228 ms |
 | Audio on first load | 0 bytes |
+| Third-party requests | 0 |
 
 ### Bundle budget
 
@@ -219,6 +231,10 @@ writes real PNGs using only Node's `zlib`.
 
 **The social card** is `scripts/og-image.html`. Render it at 1200×630 with a
 headless browser to reproduce `public/og-image.png`.
+
+**Fonts** are committed to `public/fonts/` (latin subset, ~293 kB across 15
+faces) and `src/fonts.css` is generated — edit neither by hand, re-run
+`npm run fetch:fonts`.
 
 ---
 

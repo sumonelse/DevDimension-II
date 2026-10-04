@@ -43,29 +43,31 @@
   <meta property="twitter:image" content="https://sumitmaurya.dev/og-image.png" />
 
 <!-- Fonts
-       Loaded without blocking the first paint: the request starts immediately
-       but the stylesheet is only applied once it arrives, so a slow or
-       unreachable font server can never delay first contentful paint.
+       Self-hosted, so `font-display: swap` is safe here.
 
-       `display=optional` rather than `swap` is deliberate and was the single
-       biggest CLS win available here. Measured on a throttled production build,
-       blocking the font CDN entirely dropped cumulative layout shift from 0.193
-       to 0.014 - 93% of the shift was the swap re-flowing the flex-centred hero
-       when the webfont changed the text metrics. `optional` lets the browser use
-       the fallback for that page view instead of swapping underneath the
-       content; on a warm cache the font is there immediately and is used, so
-       repeat visits (the common case for a portfolio) keep the real typography. -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-  <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&family=Comic+Neue:wght@400;700&family=Bangers&display=optional"
-    onload="this.onload=null;this.rel='stylesheet'">
-  <noscript>
-    <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&family=Comic+Neue:wght@400;700&family=Bangers&display=optional">
-  </noscript>
+       This used to link the Google Fonts CDN with `display=optional`, which
+       eliminated layout shift (CLS 0.193 -> 0.010) but meant a first-time
+       visitor on a slow connection never saw the real typography at all - the
+       wrong trade for a portfolio whose impression is largely type.
+
+       Self-hosting fixes both ends. The files are same-origin, so the four
+       faces needed for the first screen are preloaded below and start
+       downloading in parallel with the HTML rather than after a round trip to
+       a third party. With `swap` they are normally in place before first paint,
+       so there is no visible swap and therefore no shift to suppress.
+
+       `scripts/fetch-fonts.mjs` regenerates `src/fonts.css` and
+       `public/fonts/`. Only the latin subset is shipped. -->
+  <!-- Only the faces used above the fold are preloaded. The hero heading is
+       `font-heading` (Space Grotesk) at weight 700, and body copy is Poppins at
+       400/600. Preloading faces the first screen does not use just moves ~29 kB
+       ahead of the CSS and entry JS in the critical path. -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="/fonts/space-grotesk-700.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="/fonts/poppins-400.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="/fonts/poppins-600.woff2">
 
   <!-- Canonical URL -->
   <link rel="canonical" href="https://sumitmaurya.dev/" />

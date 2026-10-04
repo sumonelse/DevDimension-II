@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "check": "npm run lint && npm run test && npm run build",
+    "fetch:fonts": "node scripts/fetch-fonts.mjs",
     "optimize:audio": "node scripts/optimize-audio.mjs",
     "generate:icons": "node scripts/generate-icons.mjs",
     "inspect:audio": "node scripts/inspect-audio.mjs public/audio"

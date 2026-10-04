@@ -218,7 +218,17 @@ const SpiderverseCursor = () => {
                         trailRefs.current[index] = node
                     }}
                     aria-hidden="true"
-                    className="fixed left-0 top-0 pointer-events-none z-40 rounded-full"
+                    /* Above every overlay.
+                     *
+                     * The native cursor is hidden for the whole Spider-Verse
+                     * dimension (`html.has-comic-cursor { cursor: none }`), so if
+                     * this element sits behind something, the visitor has *no*
+                     * visible cursor at all rather than a fallback one. It was at
+                     * z-40, which put the Magic Box panel (z-50, portalled to
+                     * <body>, so later in paint order) and the project modal
+                     * (z-100) on top of it. `pointer-events-none` means it can
+                     * never intercept a click. */
+                    className="fixed left-0 top-0 pointer-events-none z-[9998] rounded-full"
                     style={{
                         width: 10,
                         height: 10,
@@ -238,7 +248,8 @@ const SpiderverseCursor = () => {
             <div
                 ref={rootRef}
                 aria-hidden="true"
-                className="fixed left-0 top-0 pointer-events-none z-50 will-change-transform"
+                /* Topmost layer in the document - see the trail comment. */
+                className="fixed left-0 top-0 pointer-events-none z-[9999] will-change-transform"
             >
                 <div className="-translate-x-1/2 -translate-y-1/2">
                     <div

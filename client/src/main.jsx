@@ -1,5 +1,6 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
+import "./fonts.css" // Self-hosted @font-face, must precede anything using it
 import "./critical.css" // Load critical CSS first
 import "./index.css"
 import App from "./App.jsx"

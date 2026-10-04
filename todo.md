@@ -264,6 +264,48 @@ reading code.
 
 ---
 
+## Phase 10 — Interaction bugs, fonts, and a sweep
+
+- [x] P10.1 Spider-Verse cursor rendered *behind* the project modal and the Magic
+      Box. Both were `z-index: 50`, and because the native cursor is hidden for
+      the whole dimension there was no visible cursor at all over them. Raised to
+      `z-index: 9999`; `pointer-events-none` means it still cannot intercept a
+      click.
+- [x] P10.2 Both contact forms blinked on first visit. The entrance animations
+      used `fill-mode: forwards` without `backwards` and are paired with inline
+      `animationDelay`, so during the delay the elements rendered at their normal
+      (fully visible) styles and then snapped back to `opacity: 0`. Added
+      `backwards` to all eight affected declarations.
+- [x] P10.3 `.animate-panel-in` was referenced three times in
+      `SpiderverseContact` and defined nowhere, so those panels had no animation.
+- [x] P10.4 Reverted fonts from `display=optional` to `swap` **and** eliminated
+      the layout shift it was hiding, by self-hosting. See below.
+- [x] P10.5 Swept both dimensions × both themes: zero console errors, zero hidden
+      reveal elements, no horizontal overflow, no broken images, correct font
+      applied in each dimension.
+
+### The font decision
+
+The user was right that `optional` was the wrong call: it fixed CLS but meant a
+first-time visitor on a slow connection never saw the real typography, which is
+the wrong thing to trade on a portfolio.
+
+Self-hosting resolves the tension rather than picking a side.
+`scripts/fetch-fonts.mjs` pulls the latin subsets into `public/fonts/` and
+generates `src/fonts.css`. Same-origin files preload in parallel with the HTML
+instead of after a third-party round trip, so with `swap` they are in place
+before first paint and there is no swap to suppress.
+
+| | CLS | LCP | FCP |
+| --- | --- | --- | --- |
+| CDN + `swap` (original) | 0.193 | — | — |
+| CDN + `optional` | 0.010 | 0.79 s | 0.64 s |
+| **self-hosted + `swap`** | **0.013** | **1.16 s** | **0.82 s** |
+
+Third-party requests on first load: **0**.
+
+---
+
 ## Phase 7 — Verification
 
 - [x] P7.1 `npm run lint` clean (0 errors, 0 warnings, down from 10/12)
@@ -282,18 +324,24 @@ reading code.
 | --- | --- | --- |
 | Audio downloaded on first load | **5.73 MB** | **0 bytes** |
 | Audio on disk | 5.73 MB | 1.38 MB |
-| Entry JS (raw) | 303.45 kB | 79.75 kB |
-| Entry JS (gzip) | 84.90 kB | 23.67 kB |
-| Critical CSS (raw) | 156.28 kB | 133.52 kB |
-| `spiderverse.css` in critical path | yes | no (24.28 kB, loaded on demand) |
+| Entry JS (raw) | 303.45 kB | 78.26 kB |
+| Entry JS (gzip) | 84.90 kB | 22.98 kB |
+| Critical CSS (raw) | 156.28 kB | 140.10 kB |
+| `spiderverse.css` in critical path | yes | no (29.83 kB, loaded on demand) |
 | Spider-Verse components | 1 shared 122 kB chunk | 11 independent chunks |
 | `react-dom` in entry chunk | yes | no (now in `react-vendor`) |
+| CLS, normal dimension | 0.193 (fails CWV) | **0.013** |
+| CLS, comic dimension | 0.016 | 0.005 |
+| LCP / FCP (4× CPU, cold cache) | — | 1.16 s / 0.82 s |
+| Third-party requests on first load | 2 (font CDN) | **0** |
 | Scroll-reveal elements activating | 0 / 19 (bug) | 19 / 19 |
 | Nav active-link tracking | never updated | correct per section |
 | Hero→content seam | hard horizontal line | none |
 | Spider-Verse background | collapsed (0 height) | fixed, full viewport |
 | Spider-Verse themes | 1 (hard-coded white) | 2 (Night Run + classic) |
 | Audio toggle controls on screen | 2 (navbar + Magic Box) | 1 (Magic Box) |
+| Invisible keyboard tab stops (mobile) | 4 | 0 |
+| Offline on first visit | failed | boots fully |
 | Lint errors / warnings | 10 / 12 | **0 / 0** |
 | Tests | none | 67 passing |
 | Requests on first load | — | 30, none for audio |

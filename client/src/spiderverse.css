@@ -1666,7 +1666,24 @@
 }
 
 .animate-fade-in {
-    animation: fade-in 0.5s ease-in-out forwards;
+    animation: fade-in 0.5s ease-in-out backwards forwards;
+}
+
+/* Used by the Spider-Verse contact panels. This class was referenced three times
+   but never defined, so those panels snapped in with no animation at all. */
+@keyframes panel-in {
+    from {
+        opacity: 0;
+        transform: translateY(18px) rotate(0.6deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+.animate-panel-in {
+    animation: panel-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards forwards;
 }
 
 .animate-bounce-slow {
@@ -1802,7 +1819,7 @@
 }
 
 .animate-fade-in {
-    animation: fadeIn 0.5s ease-in-out forwards;
+    animation: fadeIn 0.5s ease-in-out backwards forwards;
 }
 
 @keyframes fadeIn {

@@ -281,7 +281,80 @@ grows.
 
 ---
 
-## 11. Generated assets
+## 11. Fonts: the trade-off worth recording
+
+This one went back and forth, and the reasoning is preserved because the obvious
+answer is wrong in both directions.
+
+**The problem.** Cumulative layout shift was failing Core Web Vitals at 0.193.
+Isolating the cause — by blocking the font CDN and re-measuring — dropped it to
+0.014, so **93% of the shift was the webfont swap** re-flowing the flex-centred
+hero when the real font replaced the fallback.
+
+**First fix: `display=optional`.** The browser keeps the fallback for that page
+view instead of swapping underneath the content. CLS fell to 0.010. But
+`optional` means a first-time visitor on a slow connection *never sees the real
+typography at all*, and on a portfolio whose impression is largely type, that
+trades a metric for the thing the site is for.
+
+**The fix that gets both: self-host.** `scripts/fetch-fonts.mjs` downloads the
+latin subsets from Google Fonts into `public/fonts/` and generates
+`src/fonts.css`. The files are same-origin, so the three faces used above the
+fold are `preload`ed and start downloading in parallel with the HTML instead of
+after a round trip to a third party. With `font-display: swap` they are normally
+in place before first paint — so there is no visible swap, and therefore no
+shift to suppress.
+
+Measured at 4× CPU throttle on a cold cache:
+
+| | CLS | LCP | FCP |
+| --- | --- | --- | --- |
+| CDN + `swap` (original) | 0.193 | — | — |
+| CDN + `optional` | 0.010 | 0.79 s | 0.64 s |
+| **self-hosted + `swap`** | **0.013** | **1.16 s** | **0.82 s** |
+
+Same shift, real fonts, and no third-party requests at all. The LCP cost is the
+honest trade: text is not painted in its final form until the font arrives.
+
+Only the `latin` subset is shipped — 15 faces, ~293 kB total — and only three
+files are preloaded. Preloading faces the first screen does not use would move
+~29 kB ahead of the CSS and entry JS in the critical path.
+
+---
+
+## 12. Entrance animations and `fill-mode`
+
+Every entrance animation in the project pairs an `opacity-0` utility (applied
+while hidden) with an animation class and an inline `animationDelay` (applied
+when revealed). Those animations were declared:
+
+```css
+animation: fade-in-up 0.8s ease-out forwards;
+```
+
+`forwards` only. During the delay the element renders with its **normal**
+computed styles — fully visible — and then snaps back to `opacity: 0` as the
+animation's `from` state takes over. Both contact forms blinked on first visit
+as a result: hidden, fully visible for 100–400 ms, then hidden again, then a
+fade in.
+
+Adding `backwards`:
+
+```css
+animation: fade-in-up 0.8s ease-out backwards forwards;
+```
+
+makes the `from` state apply *during* the delay, so the staggered entrance works
+as intended with no flash. Six declarations in `index.css` and two in
+`spiderverse.css` were affected.
+
+A related find: `.animate-panel-in` was referenced three times in
+`SpiderverseContact` and defined nowhere, so those panels snapped in with no
+animation at all. It now exists.
+
+---
+
+## 13. Generated assets
 
 Two generators, both dependency-free, so the committed binaries can be
 reproduced rather than trusted:
@@ -297,7 +370,7 @@ so no build step is needed to serve it.
 
 ---
 
-## 12. Testing
+## 14. Testing
 
 The suite deliberately targets places where a regression is **silent**:
 
@@ -315,12 +388,12 @@ assertions above do not.
 
 ---
 
-## 13. Known trade-offs
+## 15. Known trade-offs
 
 - **Google Fonts over self-hosting.** Self-hosting removes a third-party
   connection and the render-blocking risk, at the cost of several hundred kB of
-  font binaries in the repository plus a process to keep them in sync. Worth
-  revisiting if real-user data shows the font request is a bottleneck.
+  font binaries in the repository plus a process to keep them in sync.
+  Superseded — the fonts are self-hosted now; see §11.
 - **`spiderverse.css` duplicates visual rules** that `index.css` also has. This
   is the cost of the two-dimension model and is the reason the stylesheet is
   split out rather than shared.
